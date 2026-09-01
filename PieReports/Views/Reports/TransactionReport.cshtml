@@ -1,0 +1,117 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />    
+}
+
+
+<div class="content-wrapper" style="margin-top:2rem;">
+    <div id="GlobalwaitIn" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+        <img src="~/images/loader.gif" width="64" height="64" />
+    </div>
+
+    <div style="position:unset; background-color:white; padding:0.5rem;">
+
+        <div class="row justify-content-around mt-1">
+            <div class="input-group col-md-5 mb-0">
+                <div class="input-group-prepend">
+                    <label class="input-group-text DnB-RedLabel mb-1" for="ddlClientList">
+                        Client
+                    </label>
+                    <select class="form-control select2" id="ddlClientList" style="border-right: 1px solid black;
+                            border-top: 1px solid black; border-bottom: 1px solid black;">
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group col-md-6 mb-0">
+                <div class="input-group-prepend">
+                    <label class="input-group-text DnB-RedLabel mb-1" for="ddlScripList">
+                        Select Scrip
+                    </label>
+                    <select class="form-control select2" id="ddlScripList" style="border-right: 1px solid black;
+                            border-top: 1px solid black; border-bottom: 1px solid black;">
+                    </select>
+                </div>
+            </div>            
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-3">
+                <button type="button" onclick="FetchData()" class="btn DnB-RedLabel ml-2">View Report</button>
+            </div>
+        </div>
+
+
+        <div id="main_div" class="mt-2" style="display:none;">
+
+            <div style="padding:0.5rem; overflow-y:scroll; overflow-x:auto; max-height:65vh;">
+                <div class="SubTotalRow row mb-2" id="_EqHeaderCompact">
+                    <div class="offset-2"></div>
+                    <div class="col-8 d-flex justify-content-center">
+                        <div style="align-content:center;">Transaction Report of <span id="tranClientName"></span>
+                            for Scrip - <span id="tranScripName"></span>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="d-flex justify-content-end mt-1 mb-1">
+
+                            <button title="Export to Pdf" id="btnPdf" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
+                                <i class="far fa-file-pdf" style="color: white; padding:0; width:30px;"></i>
+                            </button>
+
+                            <button title="Export to Excel" id="btnExcel" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
+                                <i class="far fa-file-excel" style="color: white; padding:0; width:30px;"></i>
+                            </button>
+
+                            <button title="Email" id="btnEmail" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
+                                <i class="fas fa-envelope" style="color: white; padding:0; width:30px;"></i>
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-redbordered table-hover" id="tblScriptDet">
+                    <thead>
+                        <tr>
+                            <th>Value Date</th>
+                            <th>Transaction Date</th>
+                            <th>Remarks</th>
+                            <th>Buy</th>
+                            <th>Sell</th>
+                            <th>Rate</th>
+                            <th>Balance Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyScriptDet">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>
+
+<script src="~/Jquery/Reports/TransactionReport.js" asp-append-version="true"></script>

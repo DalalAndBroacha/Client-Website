@@ -1,0 +1,181 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+    <link href="~/css/Service Modules/Survey.css" rel="stylesheet" />
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+
+            <div class="row justify-content-center">
+                <div class="col-4">
+                    <select style="border: 1px solid #cccccc; height:38px;" class="form-control mb-1" id="ddlSurveyList">
+                    </select>
+                </div>
+                <div class="col-2">
+                    <button onclick="ViewSurveys()" class="btn DnB-RedLabel">View Survey</button>
+                </div>
+            </div>
+
+            <hr style="border: 1px solid #ee3426;" class="mt-0" />
+
+            <div class="row justify-content-center mt-1" style="height:73vh">
+                <div class="col-10 surveyContainer" id="surveyCont">
+                    <div class="surveyQuesTabs">
+                        <p>
+                            Regular communication of the Investment opportunities received from D & B For following.
+                            Please select option that most accurately reflects your satisfaction level.
+                        </p>
+                        <table class="table w-100">
+                            <colgroup>
+                                <col style="width:30%">
+                                <col style="width:11%">
+                                <col style="width:11%">
+                                <col style="width:11%">
+                                <col style="width:11%">
+                                <col style="width:11%">
+                                <col style="width:11%">
+                            </colgroup>
+                            <tr>
+                                <th></th>
+                                <th>Excellent</th>
+                                <th>Very Good</th>
+                                <th>Acceptable</th>
+                                <th>Fair</th>
+                                <th>Poor</th>
+                                <th>Not Applicable</th>
+                            </tr>
+                            <tr class="table-active">
+                                <td>Equity</td>
+                                <th><input type="radio" name="S1Q1" value="1"></th>
+                                <th><input type="radio" name="S1Q1" value="2"></th>
+                                <th><input type="radio" name="S1Q1" value="3"></th>
+                                <th><input type="radio" name="S1Q1" value="4"></th>
+                                <th><input type="radio" name="S1Q1" value="5"></th>
+                                <th><input type="radio" name="S1Q1" value="0"></th>
+                            </tr>
+                            <tr class="table-active">
+                                <td>Mutual Fund</td>
+                                <th><input type="radio" name="S1Q2" value="1"></th>
+                                <th><input type="radio" name="S1Q2" value="2"></th>
+                                <th><input type="radio" name="S1Q2" value="3"></th>
+                                <th><input type="radio" name="S1Q2" value="4"></th>
+                                <th><input type="radio" name="S1Q2" value="5"></th>
+                                <th><input type="radio" name="S1Q2" value="0"></th>
+                            </tr>
+                            <tr class="table-active">
+                                <td>Fixed Income product</td>
+                                <th><input type="radio" name="S1Q3" value="1"></th>
+                                <th><input type="radio" name="S1Q3" value="2"></th>
+                                <th><input type="radio" name="S1Q3" value="3"></th>
+                                <th><input type="radio" name="S1Q3" value="4"></th>
+                                <th><input type="radio" name="S1Q3" value="5"></th>
+                                <th><input type="radio" name="S1Q3" value="0"></th>
+                            </tr>
+                            <tr class="table-active">
+                                <td>PMS & AIF</td>
+                                <th><input type="radio" name="S1Q4" value="1"></th>
+                                <th><input type="radio" name="S1Q4" value="2"></th>
+                                <th><input type="radio" name="S1Q4" value="3"></th>
+                                <th><input type="radio" name="S1Q4" value="4"></th>
+                                <th><input type="radio" name="S1Q4" value="5"></th>
+                                <th><input type="radio" name="S1Q4" value="0"></th>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="surveyQuesTabs">
+                        <p>
+                            This questionnaire is issued on a rating system from poor to excellent, service.
+                            Please select option that most accurately reflects your satisfaction level.
+                        </p>
+                        <table class="table w-100">
+                            <colgroup>
+                                <col style="width:30%">
+                                <col style="width:14%">
+                                <col style="width:14%">
+                                <col style="width:14%">
+                                <col style="width:14%">
+                                <col style="width:14%">
+                            </colgroup>
+                            <tr>
+                                <td></td>
+                                <th><div>Excellent</div></th>
+                                <th><div>Very Good</div></th>
+                                <th><div>Acceptable</div></th>
+                                <th><div>Fair</div></th>
+                                <th><div>Poor</div></th>
+                            </tr>
+                            <tr class="table-active">
+                                <td>Response to the Enquiries</td>
+                                <th><input type="radio" name="S2Q1" value="1"></th>
+                                <th><input type="radio" name="S2Q1" value="2"></th>
+                                <th><input type="radio" name="S2Q1" value="3"></th>
+                                <th><input type="radio" name="S2Q1" value="4"></th>
+                                <th><input type="radio" name="S2Q1" value="5"></th>
+                            </tr>
+                            <tr class="table-active">
+                                <td>Frequency of Communication as per Expectations</td>
+                                <th><input type="radio" name="S2Q2" value="1"></th>
+                                <th><input type="radio" name="S2Q2" value="2"></th>
+                                <th><input type="radio" name="S2Q2" value="3"></th>
+                                <th><input type="radio" name="S2Q2" value="4"></th>
+                                <th><input type="radio" name="S2Q2" value="5"></th>
+                            </tr>
+                            <tr class="table-active">
+                                <td>Quality of service provided</td>
+                                <th><input type="radio" name="S2Q3" value="1"></th>
+                                <th><input type="radio" name="S2Q3" value="2"></th>
+                                <th><input type="radio" name="S2Q3" value="3"></th>
+                                <th><input type="radio" name="S2Q3" value="4"></th>
+                                <th><input type="radio" name="S2Q3" value="5"></th>
+                            </tr>
+                            <tr class="table-active">
+                                <td>Response to your request/suggestions</td>
+                                <th><input type="radio" name="S2Q4" value="1"></th>
+                                <th><input type="radio" name="S2Q4" value="2"></th>
+                                <th><input type="radio" name="S2Q4" value="3"></th>
+                                <th><input type="radio" name="S2Q4" value="4"></th>
+                                <th><input type="radio" name="S2Q4" value="5"></th>
+                            </tr>
+                            <tr class="table-active">
+                                <td>Response to the problems/complaints</td>
+                                <th><input type="radio" name="S2Q5" value="1"></th>
+                                <th><input type="radio" name="S2Q5" value="2"></th>
+                                <th><input type="radio" name="S2Q5" value="3"></th>
+                                <th><input type="radio" name="S2Q5" value="4"></th>
+                                <th><input type="radio" name="S2Q5" value="5"></th>
+                            </tr>
+                            <tr class="table-active">
+                                <td>Service Delivery performance</td>
+                                <th><input type="radio" name="S2Q6" value="1"></th>
+                                <th><input type="radio" name="S2Q6" value="2"></th>
+                                <th><input type="radio" name="S2Q6" value="3"></th>
+                                <th><input type="radio" name="S2Q6" value="4"></th>
+                                <th><input type="radio" name="S2Q6" value="5"></th>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="surveyQuesTabs">
+                        <p>
+                            D&B offers website, which enables you to view your portfolio & Investments from your web browser
+                        </p>
+                        <input type="radio" id="S3Yes" name="fav_language" value="1">
+                        <label for="S3Yes">Yes, I am aware.</label><br>
+                        <input type="radio" id="S3No" name="fav_language" value="0">
+                        <label for="S3No">No, I am not aware. Please, Send me the details.</label><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Jquery/Services/Surveys.js"></script>

@@ -1,0 +1,322 @@
+﻿@model ViewModel.Reports.RPT;
+
+@using ViewModel.Login
+@using Newtonsoft.Json
+@{ string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+
+<div id="waitInIncome" style="display: none;width: 69px; height: 89px; border: 1px solid black; position: absolute; top: 50%; left: 50%; padding: 2px;"><img src="~/images/loader.gif" width="64" height="64" /><br>Loading..</div>
+
+    <div class="content-wrapper">
+
+        @*<div class="card" style="margin-top: 69px;">*@
+        <nav class="navbar navbar-expand mb-mtop0" style="margin-top:60px;">
+            <h3 class="main-title1 mb-mleft0" style="margin-left:27px;margin-top:7px;">Income Report</h3><br />
+             
+
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown" id="IncomeAddtoFavourite">
+                <a class="nav-link" onclick="IncomeUpdateFev()" data-toggle="dropdown" href="#" aria-expanded="true">
+                    <span><img src="~/images/AddtoFavourite.png" style="width:27px;" /></span>
+                </a>
+
+            </li>
+            <li class="nav-item dropdown" id="IncomeRemoveFavourite">
+                <a class="nav-link" onclick="IncomeDeleteFev()" data-toggle="dropdown" href="#" aria-expanded="true">
+                    <span><img src="~/images/RemoveFavourite.png" id="removefev" style="width:27px;" /></span>
+                </a>
+
+            </li>
+            <li class="nav-item dropdown" id="liRemoveFavourite">
+                <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
+                    <span><img src="~/images/ShareIcon1.png" id="removefev" style="width:27px;" /></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                    <div class="form-group-dashboard">
+
+                        <p id="btnIncomeExport" name="loginname" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
+                            <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                ExporttoExcel
+                            </a>
+                        </p>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="form-group-dashboard">
+                        <p id="btnExportPdf" name="Changepassword" data-toggle="modal" class="dropdown-item">
+                            <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                ExporttoPdf
+                            </a>
+                        </p>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="form-group-dashboard">
+                        <p onclick="print('#PrintIncome')" name="trading" data-toggle="modal" class="dropdown-item">
+                            <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                Print
+                            </a>
+                        </p>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                   
+                </div>
+            </li>
+        </ul>
+        </nav>
+        <section class="content" id="PrintIncome">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <p style="margin-left:25px;">FinYear:<b id="bFinYear"></b> &nbsp;&nbsp;  Family:<b id="bfamilyName"></b><span style="float:right;">Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span></p>
+
+                            <div class="card-body table-responsive p-0  modal-panel-body" style="height: 600px;" id="hideshow">
+                                <table class="table table-head-fixed text-nowrap popup-grid1">
+                                    <thead>
+                                        <tr>
+                                            <th style="background-color:#ffb3b3;vertical-align:top;border: 1px solid #dddddd;"><p><b>Client</b></p></th>
+                                            <th style="background-color:#ffb3b3;vertical-align:top;border: 1px solid #dddddd;"><p><b>Category<br />SubCategory</b></p></th>
+                                            <th style="background-color:#ffb3b3;vertical-align:top;border: 1px solid #dddddd;"><p><b>Interest</b></p></th>
+                                            <th style="background-color:#ffb3b3;vertical-align:top;border: 1px solid #dddddd;"><p><b>Dividend</b></p></th>
+                                            <th style="background-color:#ffb3b3;vertical-align:top;border: 1px solid #dddddd;"><p><b>Short-Term<br /> Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                                            <th style="background-color:#ffb3b3;vertical-align:top;border: 1px solid #dddddd;"><p><b>Long-Term <br />Profit/</b><b style="color:red;">(Loss) </b></p></th>
+                                            <th style="background-color:#ffb3b3;vertical-align:top;border: 1px solid #dddddd;"><p><b>Long-Term Profit/</b><b style="color:red;">(Loss)</b><b><br />GrandFathering</b></p></th>
+                                            <th style="background-color:#ffb3b3;vertical-align:top;border: 1px solid #dddddd;"><p><b>Realised <br />Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                                            <th style="background-color:#ffb3b3;vertical-align:top;border: 1px solid #dddddd;"><p><b>Taxable <br />Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyBinding" style="background-color:#ffe6e6;">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="noReFound"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+<div class="modal fade" id="myModalst_pnl">
+    <div class="modal-dialog mb-mtop70">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title mb-mleft0" style="margin-left:20px;margin-top:10px;">Income Report --> Realised Profit/Loss Report</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+            </div>
+
+
+            <div class="modal-body  modal-panel-body" style="overflow:auto">
+                <p class="mb-mleft0" style="margin-left:22px;">Family: <b id="pFamily"></b> </p> 
+              
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Period</label>
+                            <select class="form-control" id="inputPeriodStatus">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Year</label>
+                            <select class="form-control" id="inputYearStatus">
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Period_Value</label>
+                            <select class="form-control" id="inputPeriod_ValueStatus">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <input id="txtclient_id" name="txtclient_id" hidden />
+                            <input id="txtsub_category" name="txtsub_category" hidden />
+                            <p class="p-lineclass" style="text-align: right; margin-right: 10px;">Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b> </p>
+                            <button type="button" class="b-lineclass btn btn-primary btn-md btn-block waves-effect waves-light text-center m-b-20" style="width:50%;margin-top:10px;" id="btnViewReportModal">Submit</button>
+                            <ul class="navbar-nav ml-auto" style="float: right; margin-top: -50px;">
+                                <li class="nav-item dropdown" id="liRemoveFavourite">
+                                    <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
+                                        <span><img src="~/images/ShareIcon1.png" class="img-responsive8" id="removefev" style="width:27px;" /></span>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                                        <div class="form-group-dashboard">
+
+                                            <p id="btnIncomeRealisedProfitLossReportExport" name="loginname" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
+                                                <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                                    ExporttoExcel
+                                                </a>
+                                            </p>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="form-group-dashboard">
+                                            <p id="btnIncomeRealisedProfitLossReportPdf" name="Changepassword" data-toggle="modal" class="dropdown-item">
+                                                <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                                    ExporttoPdf
+                                                </a>
+                                            </p>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <div class="form-group-dashboard">
+                                            <p onclick="print('#myModalst_pnl')" name="trading" data-toggle="modal" class="dropdown-item">
+                                                <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                                    Print
+                                                </a>
+                                            </p>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table popup-grid1">
+                    <thead>
+
+                        <tr style="background-color:#ffb3b3;" id="tbodyBindingrealisedHeader"></tr>
+                        
+                    <tr style="background-color:#ffe6e6;">
+                        <th style="background-color: #ffb3b3;border: 1px solid #dddddd;"></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="3"><p class="tableheading"><b>BUY</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="3"><p class="tableheading"><b>SELL</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="4"><p class="tableheading"><b>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                    </tr>
+                    <tr>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Qty.</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Date</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Rate</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Amount</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Date</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Rate</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Amount</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Intraday</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Short term</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Long term</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Total</b></p></th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="tbodyBindingrealised">
+                    </tbody>
+                </table>
+                <div id="noReFoundrealised"></div>
+            </div>
+           
+        </div>
+    </div>
+</div>
+@*</div>*@
+
+@*<div class="container">*@
+<div class="modal fade" id="myModalst_dividend">
+    <div class="modal-dialog mb-mtop70">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title mb-mleft0" style="margin-left: 20px; margin-top: 10px;">Income Report -->  Dividend Report</h4>
+                @*<button id="btnincomedivExportPopup" style="float: right;width:35px;position: absolute; right: 226px;">
+                    <img alt="New" title="Excel" src="~/images/ExportExcel.png" style="width: 27px;background: white;">
+                </button>*@
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+
+            <div class="modal-body  modal-panel-body" style="overflow:auto">
+                <p class="mb-mleft0" style="margin-left:22px;margin-top:10px;">FinYear: <b id="divFinYear"></b> &nbsp;&nbsp;Family: <b id="divFamily"></b><span style="float:right;margin-right:35px;">Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span></p>
+                <input type="text" name="popclient_id" id="popclient_id" hidden />
+                <ul class="navbar-nav ml-auto" style=" float:right;margin-top:-50px;">
+
+                    <li class="nav-item dropdown" id="liRemoveFavourite">
+                        <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
+                            <span><img src="~/images/ShareIcon1.png" id="removefev" style="width:27px;" /></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                            <div class="form-group-dashboard">
+
+                                <p id="btnincomedivExportPopup" name="ExporttoExcel" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoExcel
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p id="btnincomedivExportPdfPopup" name="ExporttoPdf" class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoPdf
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p onclick="print('#myModalst_dividend')" name="trading" data-toggle="modal" class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        Print
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            @*<div class="form-group-dashboard">
+                        <p name="trading" data-toggle="modal" class="dropdown-item">
+                            <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                EmailExcel
+                            </a>
+                        </p>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="form-group-dashboard">
+                        <p name="trading" data-toggle="modal" class="dropdown-item">
+                            <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                EmailPdf
+                            </a>
+                        </p>
+                    </div>
+                    <div class="dropdown-divider"></div>*@
+                        </div>
+                    </li>
+                </ul>
+                @*<table class="table">
+            <tr style="background-color:#ffb3b3;">
+                <td style="width:100%;">
+                    <h4>Dividend Report</h4>
+                </td>
+
+            </tr>
+        </table>*@
+                <table class='table popup-grid1' id="myTable" style="border-collapse: collapse; table-layout: fixed;">
+                    <tr class="header" style="background-color:#ffb3b3;">
+                        @*<th style="border: 1px solid #dddddd;"><p><b>Family</b></p></th>*@
+                        <th class="divicol1" style="border: 1px solid #dddddd;"><p class="tableheading1"><b>Client</b></p></th>
+                        <th class="divicol2" style="border: 1px solid #dddddd;"><p class="tableheading"><b>Date</b></p></th>
+                        <th class="divicol2" style="border: 1px solid #dddddd;"><p class="tableheading"><b>ISIN</b></p></th>
+                        <th class="divicol3" style="border: 1px solid #dddddd;"><p class="tableheading1"><b>Scrip</b></p></th>
+                        <th class="divicol4" style="border: 1px solid #dddddd;"><p class="tableheading"><b>Amount</b></p></th>
+                    </tr>
+                    <tbody id="tbodyBindingrealisedDividend">
+                    </tbody>
+                </table>
+                <div id="noReFoundrealiseddivindend"></div>
+            </div>
+            <div class="modal-footer">
+                <input id="txtclient_id_divindend" name="txtclient_id_divindend" hidden />
+                <input id="txtsub_category_divindend" name="txtsub_category_divindend" hidden />
+                @*<button type="button" class="btn btn-default" data-dismiss="modal" id="btnCloseModal">Close</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+@*</div>*@
+<script src="~/Jquery/IncomeReport.js"></script>
+<script src="~/Jquery/IncomeReport.js"></script>

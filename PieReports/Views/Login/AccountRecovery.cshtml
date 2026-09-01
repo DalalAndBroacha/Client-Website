@@ -1,0 +1,174 @@
+﻿@model ViewModel.Login.InputForgotUser;
+
+    <div class="theme-loader">
+        <div class="loader-track">
+            <div class="preloader-wrapper">
+                <div class="spinner-layer spinner-blue">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+                <div class="spinner-layer spinner-red">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+
+                <div class="spinner-layer spinner-yellow">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+
+                <div class="spinner-layer spinner-green">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="login-block mb-mtop0" id="divOtpHide">
+        <!-- Container-fluid starts -->
+        @*<div class="container">*@
+
+        @if (Model.sql_status == "Success" && Model.response=="1")
+        {
+            <input id="txtemailotp" name="txtemailotp" hidden value="@Model.email_id" />
+            <input id="txtmobileotp" name="txtmobileotp" hidden value="@Model.mobile_number" />
+            <input id="txtAccountotp" name="txtAccountotp" hidden value="@Model.account_code" />
+            <input id="txtPanotp" name="txtPanotp" hidden value="@Model.pan_number" />
+            Html.RenderPartial("_OTPPartial", Model.otps);
+        }
+
+        @if (Model.sql_status == null || Model.sql_status == "Fail")
+            {
+            <div class="row">
+                <div class="col-sm-12">
+
+
+                    @using (Html.BeginForm("AccountRecovery", "Login", FormMethod.Post))
+                    {
+                        <div class="md-float-material form-material">
+                            @*<div class="text-center">
+                                <img src="~/images/logo.png" alt="logo.png">
+                            </div>*@
+                            <div class="auth-box card">
+                                <div class="card-block">
+                                    <div class="row m-b-20">
+                                        <div class="col-md-12">
+                                            <div class="text-center" id="divRedireLogin">
+                                                <a href="@Url.Action("Index", "Login")"> <img src="~/images/logo.svg" class="img-responsive2" alt="logo"></a>
+                                            </div>
+                                            <br />
+                                            <h4 class="text-center">
+                                                Forgot Username
+                                            </h4>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group form-primary">
+                                        @*<input type="text" name="email" id="txtemail" class="form-control" required="">*@
+                                        @Html.TextBoxFor(m => m.email_id, new { autocomplete = "off", @type = "text", @name = "txtemail", @id = "txtemail", @class = "form-control", @required = "", @tabindex = "1" })
+                                        <span class="form-bar"></span>
+                                        <span class="msg" style="color: #d81e1e" ;></span>
+                                        <label class="float-label">
+                                            Email Id <span style="color:red;">*</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group form-primary">
+                                        @Html.TextBoxFor(m => m.mobile_number, new { autocomplete = "off", minlength="8", maxlength = "12", @type = "text", @name = "txtmobile", @id = "txtmobile", @class = "form-control", @required = "", @tabindex = "2" })
+                                        @*<input type="text" name="mobile" id="txtmobile" autocomplete="off" maxlength="10" class="form-control" required="">*@
+                                        <span class="form-bar"></span>
+                                        <span class="msgg" style="color: #d81e1e" ;></span>
+                                        <label class="float-label">Mobile No <span style="color:red;">*</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="auth-box card" style=" margin-top: -30px;">
+                                <div class="card-block">
+                                    @if (Model.response == "2")
+                                    {
+                                        <div class="form-group form-primary">
+                                            @*<input type="text" name="pan" autocomplete="off" class="form-control" required="">*@
+                                            @Html.TextBoxFor(m => m.pan_number, new { autocomplete = "off", @type = "text", @name = "txtPan", @id = "txtPan", @class = "form-control" })
+                                            <span class="form-bar"></span>
+                                            <label class="float-label">PAN No <span style="color:red;">*</span></label>
+                                        </div>
+                                    }
+                                    <div class="form-group form-primary">
+                                        <label>
+                                            @*<input type="checkbox" value="">*@
+                                            @*<span class=""><i class="cr-icon icofont icofont-ui-check txt-primary"></i></span>*@
+
+                                            @if (Model.response == "0")
+                                            {
+                                                <span style="color: #d81e1e"> User not found</span>
+                                            }
+                                            else
+                                            {
+                                                <span style="color: #d81e1e">@Model.sql_message</span>
+                                            }
+                                        </label>
+
+                                    </div>
+                                    <div class="row m-t-25 text-left">
+                                        <div class="col-md-12">
+                                            @* <div class="card-block" style=" margin-left: -18px;">*@
+                                            <div class="checkbox-fade fade-in-primary d-">
+                                                <a href="/ClientPortal/Login/Index" tabindex="4">  <p class="float-label" style="margin-top:-15px; margin-left: 15px;pointer-events: inherit;">Go Back to Login</p></a>
+                                            </div>
+                                            <div class="forgot-phone text-right f-right">
+                                                @*<button type="button" class="btn btn-primary btn-md btn-block waves-effect waves-light text-center m-b-20">Submit</button>*@
+                                                <input class="btn btn-primary btn-md btn-block waves-effect waves-light text-center m-b-20" type="submit" value="Submit" tabindex="3" />
+                                            </div>
+                                        </div>
+                                        @* </div>*@
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+    </section>
+
+    <section class ="login-block" id="seUserNAme">
+      
+    @Html.Partial("_ChangeUsername", Model.changeUsername);
+      
+
+        </section>
+        @*<script src="~/Jquery/ForgotUser.js"></script>*@
+        @*<script src="../../Jquery/ForgotUser.js"></script>*@
+        <script src="~/Jquery/ForgotUser.js"></script> 

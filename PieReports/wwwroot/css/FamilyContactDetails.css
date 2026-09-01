@@ -1,0 +1,39 @@
+﻿#PassMsg {
+    display: none;
+    background: #FCE0E0;
+    color: #000;
+    position: relative;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+#PassMsg p {
+    /* padding: 10px 35px;
+font-size: 18px;*/
+    padding: 3px;
+    font-size: 14px;
+    margin-top: -15px;
+}
+
+/* Add a green text color and a checkmark when the requirements are right */
+.pass_valid {
+    color: green;
+}
+
+.pass_valid:before {
+    position: relative;
+    left: -5px;
+    content: "✔";
+}
+
+/* Add a red text color and an "x" when the requirements are wrong */
+.pass_invalid {
+    color: red;
+}
+
+    .pass_invalid:before {
+        position: relative;
+        left: -5px;
+        content: "✖";
+    }
+

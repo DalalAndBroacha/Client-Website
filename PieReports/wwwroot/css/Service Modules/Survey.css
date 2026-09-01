@@ -1,0 +1,19 @@
+﻿.surveyContainer {
+    height: 95%;
+    overflow-y: scroll;
+    border: 2px solid red;
+    border-radius: 5px;
+    box-shadow: 0 0 8px 5px lightsalmon;
+    padding:1em;
+}
+.surveyQuesTabs {
+    border: 1px solid grey;
+    border-radius: 5px;
+    padding: 0.5em;
+    margin-bottom: 1rem;
+    background-color: #F5B48C; /*#ede7f6  FAD8C3*/
+}
+
+.surveyQuesTabs table th{
+    vertical-align: middle;
+}

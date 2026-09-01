@@ -1,0 +1,98 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{ string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+            <div class="row">
+                <div class="d-flex justify-content-center col-7">
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <label>Branch</label>
+                            <select id="ddlBranch" class="select2">
+                            </select>
+                        </li>
+                        <li class="list-inline-item">
+                            <label>RM</label>
+                            <select id="ddlRM" class="select2">
+                            </select>
+                        </li>
+                        <li class="list-inline-item">
+                            <label>Asset</label>
+                            <select id="ddlAsset" class="select2">
+                            </select>
+                        </li>
+                        
+                    </ul>
+                </div>
+                <div class="col-5">
+                    <button onclick="GetRMDetails()" class="btn btn-success" style="margin-top:1.75rem;">View Report</button>
+                </div>
+            </div>
+            <div id="report_header_and_buttons" style="display:none;">
+                @{
+
+                    ViewBag.ReportName = "RM Details";
+                    ViewBag.ReportHeaderDiv = "RM_Details";
+                    ViewBag.GenDate = "False";
+                    ViewBag.PrimaryReport = "True";
+
+                    ViewBag.ElementPDFBtnID = "btnPDFRMDetails";
+                    ViewBag.ElementExcelBtnID = "btnExportRMDetails";
+                    ViewBag.ElementEmailBtnID = "btnEmailRMDetails";
+
+                    ViewBag.ElementBackBtnID = null;
+
+                    <partial name="_ReportHeaderCompact"></partial>
+                    ViewData.Clear();
+                }
+            </div>
+            <div style="padding:2px; display:none" id="divTableRMDetails">
+                <table class="table table-hover dt-responsive nowrap w-100" id="tableRMDetails">
+                    <thead>
+                        <tr>
+                            <th>RM Name</th>
+                            <th>Family Name</th>
+                            <th>Client Name</th>
+                            <th>PAN</th>
+                            <th>Asset Name</th>
+                            <th>Account Code</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="norecordsMISRMDeatils" class="alert alert-danger" style="display:none;">
+                <p class='ReportTableFont  paraTextAlignCenter'>No data found.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+
+<script asp-src-include="~/Jquery/RMDetailsMIS.js"></script>

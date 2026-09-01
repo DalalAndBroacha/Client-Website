@@ -1,0 +1,411 @@
+﻿@model ViewModel.Login.Dashboard
+@using ViewModel.Login;
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dalal & Broacha Stock Broking Pvt. Ltd.</title>
+    <link rel="icon" type="image/x-icon" href="~/images/logo_short.png" />"> <!-- Favicon icon -->
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    
+    @* New *@
+
+    <link rel="stylesheet" href="/ClientPortal/pages/waves/css/waves.min.css" type="text/css" media="all">
+
+    <link rel="stylesheet" type="text/css" href="/ClientPortal/css/bootstrap/css/bootstrap.min.css" />
+    <!-- themify-icons line icon -->
+    <link rel="stylesheet" type="text/css" href="/ClientPortal/icon/themify-icons/themify-icons.css">
+    <!-- ico font -->
+    <link rel="stylesheet" type="text/css" href="/ClientPortal/icon/font-awesome/css/font-awesome.min.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <link rel="stylesheet" href="/ClientPortal/css/Allinone.css">
+    <!-- Font Awesome -->
+    <!-- Style.css -->
+    <link href="/ClientPortal/css/jquery.mCustomScrollbar.css" rel="stylesheet" />
+    <link href="/ClientPortal/css/export.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/ClientPortal/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/ClientPortal/css/Allinone.css">
+    <script type="text/javascript" src="/ClientPortal/js/jquery/jquery.min.js"></script>
+    <link href="/ClientPortal/css/IndexPage.css" rel="stylesheet" />
+    <link href="/ClientPortal/css/responsive.css" rel="stylesheet" />
+
+    @* New *@
+
+
+    <!-- overlayScrollbars -->
+    <link href="~/plugins/select2/css/select2.css" rel="stylesheet" />
+    <link href="~/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/css/CommonReport.css">
+    <link rel="stylesheet" href="~/css/IFrame.css">
+    <link rel="stylesheet" href="~/css/Allinone.css">
+    <link rel="stylesheet" href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <link href="~/css/DnB.css" rel="stylesheet" />
+    <script src="~/Jquery/DnB.js"></script>
+    @*<link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">*@
+    @*<link rel="stylesheet" href="~/dist/css/adminlte.min.css">*@
+    <script src="~/Jquery/Dashboard.js"></script>
+    <link href="~/css/ChangePassword.css" rel="stylesheet" />
+    <script src="~/Jquery/changePassword.js"></script>
+    <script src="~/Jquery/ForgotUser.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6FJ1RE3WC0"></script>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+
+    <div class="wrapper">
+        <nav class="main-header navbar navbar-expand navbar-dark navpanel pd-bottom40">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav" id="main_UL">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item mb-mleft5" style="margin-left: 10px;">
+                    <img id="img_ddlFinyear" src="~/New Icons/Calander.svg" class="img-responsive5" style="width:35px;" />
+                </li>
+                <li class="nav-item mb-mleft10" style="margin-left: 7px;">
+                    <select id="ddlFinyear" class="form-control select2">
+                        @if (Model.dashboardFinYears != null)
+                        {
+                            @foreach (var key in Model.dashboardFinYears)
+                            {
+                                <option value="@key.ID">@key.year</option>
+                            }
+                        }
+                    </select>
+                </li>
+                <li class="nav-item mb-mleft10" style="margin-left: 10px;">
+                    <img id="img_ddlFamilyList" src="~/New Icons/FamIcon.png" class="img-responsive5" style="width:35px;" />
+                </li>
+                <li class="nav-item mb-mleft10" style="margin-left: 7px;">
+                    <select class="form-control select2" id="ddlFamilyList">
+                        @if (Model.familyLists != null)
+                        {
+                            @if (Model.familyLists.Count < 501)
+                            {
+                                @foreach (var key in Model.familyLists)
+                                {
+                                    <option value="@key.Family_Token">@key.Family_Name</option>
+                                }
+
+                            }
+                            else
+                            {
+                                @foreach (var key in Model.familyLists.Take(501))
+                                {
+                                    <option value="@key.Family_Token">@key.Family_Name</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <input type="text" id="preservedFamToken" hidden>
+                    <input type="text" id="preservedFamText" hidden>
+                </li>
+            </ul>
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto right_sidebar">
+
+                @*<li class="nav-item dropdown">
+                        <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="true">
+                            <span><i class="fas fa-star fa-2x White_Red_Icon" title="Favourites"></i></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                            <div id="divFetchfev"></div>
+                        </div>
+                    </li>*@
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="/ClientPortal/Pie/Contact_Us">
+                        <span>
+                            <i class="fas fa-phone-square-alt fa-2x White_Red_Icon" title="Contact Us"></i>
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" data-toggle="dropdown" data-target="#myModalLayout" onclick="ReportIFrameLayout('https://dalal-broacha.com/pdfs/Client%20Portal%20User%20Manual.pdf','User Manual');" class="nav-link">
+                        @*<span><img src="~/images/Info.png" class="img-responsive5" style="width:27px;" /></span>*@
+                        <span><i class="fas fa-info-circle fa-2x White_Red_Icon" title="User Manual"></i></span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="/ClientPortal/Pie/Download_Reports">
+                        @*<span><img src="~/images/Info.png" class="img-responsive5" style="width:27px;" /></span>*@
+                        <span><i class="fas fa-cloud-download-alt fa-2x White_Red_Icon" title="Go to Downloads"></i></span>
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="true">
+                        @*<span><img src="~/images/profile.png" class="img-responsive5" style="width:27px;" /></span>*@
+                        <span><i class="fas fa-user fa-2x White_Red_Icon" title="User Details"></i></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                        <div class="form-group-dashboard">
+
+                            <p name="loginname" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
+                                Logged in as:<br /><span style="background-color:#ffb3b3;font-size:14px;">  @Model.Login_client_name </span>
+                                <input type="text" id="LoggedInUID" value=@Model.Id hidden readonly />
+                                <input type="text" id="LoggedInUserHash" value=@Model.row_guid hidden readonly />
+                                <input type="text" id="LoggedInRoleName" value=@Model.Role_Name hidden readonly />
+                                <input type="text" id="Curr_Fam_ID" hidden />
+                            </p>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="form-group-dashboard">
+                            <p name="Changepassword" data-toggle="modal" @*data-target="#ChangePasswordM"*@ class="dropdown-item">
+                                <a href="/ClientPortal/Pie/Profile_Update" style="font-family: inherit; font-size: 15px;">
+                                    Update Profile
+                                </a>
+                            </p>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        @*<div class="form-group-dashboard">
+                                <p name="trading" data-toggle="modal" data-target="#ChangeUsernameM" class="dropdown-item">
+                                    <a href="#" onclick="ChangeUsernameDashboardModel()" style="font-family: inherit; font-size: 15px;">
+                                        Change Username
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>*@
+                        @*<div class="form-group-dashboard">
+                                <p name="trading" class="dropdown-item">
+                                    <input type="checkbox" value="1" checked="checked" style="margin-left: 15px;"><span style="padding:10px;">Dark Mode</span>
+                                </p>
+                            </div>*@
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown" style="margin-left: 20px;">
+                    <p class="mb-mtop0 textweight" style="margin-top:10px;color: #000;"> @Model.Login_client_name </p>
+                </li>
+                <li class="nav-item dropdown mb-mtop0" style="margin-left: 20px;margin-top: 7px;">
+                    @using (Html.BeginForm("LogOut", "Dashboard", FormMethod.Post))
+                    {
+                        <a href="@Url.Action("LogOut", "Login")">
+                            @*<img src="~/images/logout.png" class="img-responsive5" style="width:27px;" />*@
+                            @*<img src="~/New Icons/Power_Button.svg" class="img-responsive5" style="width:2.25em;" />*@
+                            <span><i class="fas fa-power-off fa-2x White_Red_Icon" style="border-radius:5px; padding:2px;"></i></span>
+                        </a>}
+                </li>
+
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar elevation-4 sidebar-dark-primary">
+            <!-- Brand Logo -->
+            <a href="/ClientPortal/Pie/PieReport" class="brand-link">
+                <img src="~/images/logo.svg" alt="logo">
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        @foreach (var menu in Model.menus)
+                        {
+
+                        <li class="nav-item" id="Dparent1">
+                            @if (menu.parent_id == "0" && menu.name != "User Manual")
+                            {
+                                @if (menu.source_path == null || menu.source_path == "")
+                                {
+                                    <a href="@menu.source_path" class="nav-link active" id="parent_broacha1">
+                                            <img src="~/images/NavMenu/@menu.Icon_path" alt="logo.png" class="img-responsive6" style="width:25px;">
+                                        <p name="@menu.name" id="@menu.id" style="font-size:16px;">@menu.name</p>
+                                        <i class="right fas fa-angle-down"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@menu.source_path" class="nav-link active" id="parent_broacha1">
+                                        <img src="~/images/NavMenu/@menu.Icon_path" alt="logo.png" class="img-responsive6" style="width:25px;">
+                                        <p name="@menu.name" id="@menu.id" style="font-size:16px;">@menu.name</p>
+                                    </a>
+                                }
+
+                            }
+                            @foreach (var submenu in Model.menus.FindAll(x => x.parent_id.Equals(menu.id)))
+                            {
+
+                                <ul class="nav nav-treeview" style="margin-left:7px;">
+                                    <li class="nav-item" id="Dparent2">
+                                        @if(submenu.target == "1")
+                                        {
+                                            <a href="@submenu.source_path" class="nav-link" id="parent_broacha3" target="_blank">
+                                                @*<i class="far fa-circle nav-icon"></i>*@
+                                                <p class="findId" name="@submenu.name" id="@submenu.id" style="font-size:14px;">@submenu.name</p>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@submenu.source_path" class="nav-link" id="parent_broacha3">
+                                                @*<i class="far fa-circle nav-icon"></i>*@
+                                                <p class="findId" name="@submenu.name" id="@submenu.id" style="font-size:14px;">@submenu.name</p>
+                                                    @if (submenu.source_path == null || submenu.source_path == "")
+                                                    {
+                                                        <i class="right fas fa-angle-down"></i>
+                                                    }
+                                            </a>
+                                        }
+
+
+                                        @foreach (var submenu1 in Model.menus.FindAll(x => x.parent_id.Equals(submenu.id)))
+                                        {
+                                            //if (submenu1.id == "142" || submenu1.id == "23" || submenu1.id == "41" || submenu1.id == "167" || submenu1.id == "139" || submenu1.id == "168" || submenu1.id == "109" || submenu1.id == "174")
+                                            //{
+                                            <ul class="nav nav-treeview mb-mleft0" style="margin-left:15px;">
+                                                <li class="nav-item" id="Dparent3">
+                                                    <a href="@submenu1.source_path" class="nav-link" id="parent_broacha4">
+                                                        
+                                                        <p class="findId" name="@submenu1.name" id="@submenu1.id" style="font-size:12px;">@submenu1.name</p>
+                                                            @if (submenu1.source_path == null || submenu1.source_path == "")
+                                                            {
+                                                                <i class="right fas fa-angle-down"></i>
+                                                            }
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            //}
+                       
+                                        }
+                                    </li>
+                                </ul>
+                            }
+                        </li>
+
+
+
+                        }
+                    </ul>
+
+                </nav>
+
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <div class="modal fade" id="myModalLayout">
+            <div class="modal-dialog modal-lg modal-dialog-centered" style="min-width:100%;">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h6 class="modal-title" style="padding:10px;"></h6>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" style="padding: 0rem !important;">
+                        <iframe src="" style="width: 100% !important;height:600px" frameborder="0" allowtransparency="true"></iframe>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="modal fade" id="ChangePasswordM">
+            <div class="modal-dialog modal-lg modal-dialog-centered" style="min-width:90%;">
+                <div class="modal-content">-->
+        <!-- Modal Header -->
+        <!--<div class="modal-header">
+                        <h6 class="modal-titlecp" style="padding:10px;">Change Password</h6>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body" style="padding: 0rem !important;">
+                        @@{
+                            dtoInputChangePassword modal = new dtoInputChangePassword();
+                            modal.Flag = "deshboard";
+                            Html.RenderPartial("_ChangePassword", modal);
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>-->
+
+        <div class="modal fade" id="ChangeUsernameM">
+            <div class="modal-dialog modal-lg modal-dialog-centered" style="min-width:90%;">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h6 class="modal-titlecu" style="padding:10px;">Change Username</h6>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body" style="padding: 0rem !important;">
+                        <section class="login-block">
+                            @{
+                                ChangeUsername modal1 = new ChangeUsername();
+                                modal1.Flag = "deshboard";
+                                Html.RenderPartial("_ChangeUsername", modal1);
+                            }
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       @*  <div class="modal fade" id="myModalMenu">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h6 class="modal-title"></h6>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" style="padding: 0rem !important;">
+                        <iframe src="" style="width: 100% !important;height:500px" frameborder="0" allowtransparency="true"></iframe>
+                    </div>
+                </div>
+
+            </div>
+        </div> *@
+
+    </div>
+
+    @* <script type="text/javascript" src="~/js/jquery/jquerylatest.min.js"></script> *@
+
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- overlayScrollbars -->
+    <script src="~/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/dist/js/adminlte.js"></script>
+
+    
+
+    
+
+    <!-- PAGE PLUGINS -->
+    <!-- jQuery Mapael -->
+    <script src="~/plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
+    <script src="~/plugins/raphael/raphael.min.js"></script>
+    <script src="~/plugins/jquery-mapael/jquery.mapael.min.js"></script>
+    <script src="~/plugins/jquery-mapael/maps/usa_states.min.js"></script>
+    <!-- ChartJS -->
+    <script src="~/plugins/chart.js/Chart.min.js"></script>
+
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/dist/js/demo.js"></script>
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <script src="~/dist/js/pages/dashboard2.js"></script>
+
+    <script src="~/js/jquery.base64.js"></script>
+    <script src="~/js/jquery.base64.min.js"></script>
+</body>
+</html >

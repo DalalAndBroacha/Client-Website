@@ -1,0 +1,29 @@
+﻿#main_div button[aria-expanded=true] .fa-plus-square {
+    display: none;
+}
+
+#main_div button[aria-expanded=false] .fa-minus-square {
+    display: none;
+}
+
+
+#date_pills button
+{
+    width: 8em;
+    border:none;
+}
+
+#date_pills button:disabled {
+    color: darkgrey;
+}
+
+.global_report_accords {
+    max-height: 1200px !important;
+    overflow: auto;
+}
+
+#divSections .sectionContent {
+    border-left: 1px solid red;
+    /*border-right: 1px solid red;*/
+    padding:0.25rem;
+}

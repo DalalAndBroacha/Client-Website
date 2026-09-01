@@ -1,0 +1,322 @@
+﻿@model ViewModel.Shared.familyMappingDisplay
+@using ViewModel.Login
+@using Newtonsoft.Json
+@{ string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+    <link href="~/css/familymapping.css" rel="stylesheet" asp-append-version="true" />
+}
+
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        
+        @{
+
+            ViewBag.ReportName = "Family Mapping";
+            ViewBag.ReportHeaderDiv = "cr8Fam";
+            ViewBag.GenDate = "False";
+
+            Html.RenderPartial("_ReportHeader");
+        }
+
+        <div class="d-flex row justify-content-center SubTotalRow">
+            <ul id="UL_nav_pills" class="nav nav-pills-tab">
+                <li class="nav-item" id="NavPillCreate"><a class="nav-link active" href="#divCreateFam" data-toggle="tab">Map PAN</a></li>
+                <li class="nav-item" id="NavPillRmMap"><a class="nav-link" href="#divBranchRmMap" data-toggle="tab">Map RM & Branch</a></li>
+            </ul>
+        </div>
+
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+
+            <div style="padding:5px;" class="container">
+
+                <div id="divTabContent" class="tab-content">
+
+                    <div class="tab-pane active" id="divCreateFam">
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="input-group mb-1 offset-3 col-md-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text DnB-RedLabel" for="txtCreateFamPAN">Enter PAN</label>
+                                    </div>
+                                    <input type="text" id="txtCreateFamPAN" class="form-control" maxlength="10"
+                                           @* oninput="this.value = this.value.toUpperCase()"*@ style="text-transform:uppercase;" autocomplete="off">
+                                </div>
+                                <div class="input-group mb-1 offset-1 col-md-1">
+                                    <button type="button" onclick="searchPAN()" id="btnSearchPAN" class="btn DnB-RedLabel" disabled>Search</button>
+                                </div>
+                            </div>
+
+                            <div id="divCurrFamDetails" class="componentWrapper mb-4" style="display:none;">
+                                <div class="c1header">Current Family Details</div>
+                                <table id="tblCurrFamDetails" class="table-redbordered mt-2 mb-2 w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>Client Name</th>
+                                            <th>Family Name</th>
+                                            <th>Family Mobile</th>
+                                            <th>Family Email-Id</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyCurrFamdetails">
+                                    </tbody>
+                                </table>
+                                <input id="CurrFamId" type="hidden" readonly/>
+                                <div class="row justify-content-center mt-1">
+                                    <button id="btnCreateFam" type="button" onclick="initCreateFam()" class="btn btn-info">Create New Family</button>
+                                    <button id="btnUpdateFam" type="button" onclick="initUpdateFam()" class="btn btn-warning ml-2">Change Family</button>
+                                </div>
+                            </div>
+
+                            <div id="divNewFamDetails" class="componentWrapper" style="display:none;">
+                                <div class="c1header">Enter New Family Details</div>
+
+                                <div class="card-body mt-2">
+
+                                    <div class="form-row justify-content-center mb-2 mt-2">
+                                        <div class="input-group  col-md-6">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text DnB-RedLabel" for="inpFamName">Name</label>
+                                            </div>
+                                            <input type="text" class="form-control" id="inpFamName" maxlength="100">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row justify-content-center mb-2 mt-2">
+                                        <div class="input-group  col-md-6">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text DnB-RedLabel" for="inpMobile">Mobile</label>
+                                            </div>
+                                            <input type="tel" class="form-control" id="inpMobile" maxlength="10">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row justify-content-center mb-2 mt-2">
+                                        <div class="input-group  col-md-6">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text DnB-RedLabel" for="inpEmail">Email</label>
+                                            </div>
+                                            <input type="email" class="form-control" id="inpEmail" maxlength="100">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row justify-content-center mb-2 mt-2">
+                                        <div class="input-group justify-content-center col-md-8">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text DnB-RedLabel" for="ddlBranchList" style="height:fit-content;">
+                                                    Select Branch
+                                                </label>
+                                                <select id="ddlBranchList" style="width:70%">
+                                                    @foreach (var item in Model.branchList)
+                                                    {
+                                                        <option value="@item.id">@item.name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row justify-content-center mb-2 mt-2">
+                                        <div class="input-group justify-content-center col-md-8">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text DnB-RedLabel" for="ddlRMList">
+                                                    Select RM
+                                                </label>
+                                                <select id="ddlRMList" multiple>
+                                                    @foreach (var item in Model.RMList)
+                                                    {
+                                                        <option value="@item.rm_id">@item.rm_name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center mt-1">
+                                        <button id="btnCreateFam" type="submit" onclick="CreateFamily()" class="btn btn-success">Create Family</button>
+                                    </div>
+                                    <div id="divErrorList" class="row justify-content-center mt-1" style="display:none;">
+                                        <div id="errorList" class="col-4 row justify-content-center alert alert-danger">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="divUpdateFam" class="componentWrapper" style="display:none;">
+                                <div class="c1header">Change Family</div>
+
+                                <div class="card-body mt-2">
+
+                                    <div class="input-group row justify-content-center">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text DnB-RedLabel" for="ddlChangeFamilyList">
+                                                Select Family
+                                            </label>
+                                            <select class="form-control select2" id="ddlChangeFamilyList">
+
+                                                @if (dashboard.familyLists != null)
+                                                {
+                                                    @if (dashboard.familyLists.Count < 501)
+                                                    {
+                                                        @foreach (var key in dashboard.familyLists)
+                                                        {
+                                                            <option value="@key.Family_Token">@key.Family_Name</option>
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        @foreach (var key in dashboard.familyLists.Take(501))
+                                                        {
+                                                            <option value="@key.Family_Token">@key.Family_Name</option>
+                                                        }
+                                                    }
+                                                }
+                                            </select>
+
+                                        </div>
+                                    </div>
+
+                                    <div id="divChangeFamDetails" style="display:none;">
+                                        <table id="tblChangeFamDetails" class="table-redbordered mt-2 mb-2 w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="2">Selected Family Details</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Login Id</th>
+                                                    <th>Family Name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbodyChangeFamdetails">
+                                            </tbody>
+                                        </table>
+                                        <div class="row justify-content-center mt-1">
+                                            <button type="button" onclick="ChangeFam()" class="btn btn-success ml-2">Commit Change</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="tab-pane" id="divBranchRmMap">
+
+                        <div class="input-group row justify-content-center">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text DnB-RedLabel" for="ddlRMFamilyList">
+                                    Select Family
+                                </label> 
+                                <select class="form-control select2" id="ddlRMFamilyList">
+
+                                    @if (dashboard.familyLists != null)
+                                    {
+                                        @if (dashboard.familyLists.Count < 501)
+                                        {
+                                            @foreach (var key in dashboard.familyLists)
+                                            {
+                                                <option value="@key.Family_Token">@key.Family_Name</option>
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            @foreach (var key in dashboard.familyLists.Take(501))
+                                            {
+                                                <option value="@key.Family_Token">@key.Family_Name</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="divModBranch" class='componentWrapper mb-4' style="display:none;">
+                            <div class="c1header">Modify Branch</div>
+                            <div class="card-body">
+                                <div class="row justify-content-center">
+                                    <table class="table-redbordered mt-2 mb-2 w-100">
+                                        <tr>
+                                            <td><p class="font-weight-bolder p-2">Current Branch - <span id="currBranch"></span></p></td>
+                                            <td>
+                                                <div class="input-group col-md-4">
+                                                    <div class="input-group-prepend mt-2">
+                                                        <label class="input-group-text DnB-RedLabel" for="ddlModBranch" style="height:fit-content;">
+                                                            Select New Branch
+                                                        </label>
+                                                        <select id="ddlModBranch" style="width:70%">
+                                                            @foreach (var item in Model.branchList)
+                                                            {
+                                                                <option value="@item.id">@item.name</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="row justify-content-center mt-1">
+                                    <button type="button" onclick="ChangeBranch()" class="btn btn-success ml-2">Change Branch</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="divModRM" class='componentWrapper mb-4' style="display:none;">
+                            <div class="c1header">Modify RM</div>
+                            <div class="card-body">
+                                <div class="row justify-content-center mt-1">
+                                    <table id="tblRMList" class="table-redbordered mt-2 mb-2 w-100">
+                                        <thead>
+                                            <tr>
+                                                <th>RM Name</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyRmList">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row justify-content-center mt-1">
+                                    <div class="input-group justify-content-center col-md-6 mb-0">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text DnB-RedLabel" for="ddlAddRMList">
+                                                Select RM
+                                            </label>
+                                            <select id="ddlAddRMList" multiple>
+                                                @foreach (var item in Model.RMList)
+                                                {
+                                                    <option value="@item.rm_id">@item.rm_name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="AddNewRm()" class="btn btn-success btn-sm ml-2">Add New RM</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                       
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+@*<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>*@
+<script asp-src-include="~/Jquery/FamilyMapping.js"></script>
+
+

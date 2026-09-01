@@ -1,0 +1,121 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{ string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+
+    <link href="~/css/FamilyContactDetails.css" rel="stylesheet" />
+}
+
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+            @{
+                ViewBag.ReportName = "Profile Update";
+                ViewBag.ReportHeaderDiv = "ProfUpdate";
+                ViewBag.GenDate = "False";
+                ViewBag.GenPeriod = "False";
+
+                ViewBag.PrimaryReport = "True";
+                ViewBag.ElementPDFBtnID = null;
+                ViewBag.ElementExcelBtnID = null;
+                ViewBag.ElementEmailBtnID = null;
+
+                ViewBag.ElementBackBtnID = null;
+
+                Html.RenderPartial("_ReportHeaderCompact");
+                ViewData.Clear();
+            }
+            <div class="row justify-content-center mt-2">
+                <div class="card col-6" id="dsp_div" style="display:none;">
+                    <div class="card-body">
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-3">
+                                    <label for="txtUID">User Name</label>
+                                    <input type="text" class="form-control" id="txtUID" readonly>
+                                </div>
+                                <div class="form-group col-7">
+                                    <label for="txtDspName">Display Name</label>
+                                    <input type="text" class="form-control disablePaste" onkeypress="return blockSpecialChar(event)" maxlength="100" id="txtDspName">
+                                </div>
+                                <div class="form-group col-2">
+                                    <label for="txtNickName">Nickname</label>
+                                    <input type="text" class="form-control disablePaste" onkeypress="return blockSpecialChar(event)" maxlength="50" id="txtNickName">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-3">
+                                    <label for="txtContactNum">Contact Number</label>
+                                    <input type="tel" class="form-control" maxlength="15" id="txtContactNum">
+                                </div>
+                                <div class="form-group col-9">
+                                    <label for="txtEmail">E-Mail</label>
+                                    <input type="email" onkeypress="return preventCommaAndSpace(event)"  class="form-control disablePaste" maxlength="100" id="txtEmail">
+                                </div>
+                            </div>
+                            <div class="form-group row justify-content-between" id="divTogResetPass">
+                                <div class="col-4">
+                                    <p style="font-size:14px; font-weight:bold;">Change Password?</p>
+                                </div>
+                                <div class="col-4">
+                                    <input type="checkbox" id="PassTog" name="PassTog" data-toggle="toggle" data-size="sm" data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-6" id="divChangePass" style="display:none;">
+                                    <label for="txtNewPass">New Password</label>
+                                    <div class="input-group" title="Hide/Show Password">
+                                        <input type="password" class="form-control" id="txtNewPass" value=" " maxlength="20" autocomplete="off">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-eye-slash" aria-hidden="true" id="eyeTog"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <label for="txtConfPass">Confirm Password</label>
+                                    <input type="password" class="form-control" id="txtConfPass" maxlength="20" disabled autocomplete="off">
+                                    <p id="matchConfPass" style="display:none;" class="pass_invalid"></p>
+                                </div>
+                                <div class="form-group col-6">
+                                    <div id="PassMsg" style="display:none;">
+                                        <h6>Password must contain:</h6><br />
+                                        <p id="pass_capitals" class="pass_invalid">An Uppercase Letter (A-Z)</p>
+                                        <p id="pass_letters" class="pass_invalid">A Lowercase Letter (a-z)</p>
+                                        <p id="pass_sym" class="pass_invalid">A Special Characters (!@@#$%^&*)</p>
+                                        <p id="pass_number" class="pass_invalid">A number (0-10)</p>
+                                        <p id="pass_length" class="pass_invalid">Between 8-20 Characters</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row justify-content-center">
+                                <button id="btnUpdate" type="button" onclick="SaveDetails()" class="btn btn-success">Update</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+                <div id="norecords" style="display:none">
+                    <p class="alert alert-danger">No Data. Select other Family.</p>
+                </div>
+                <div id="updateSucc" style="display:none">
+                    <p class="alert alert-success">Updated Successfully!!!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>
+<script src="~/Jquery/Services/ProfileUpdate.js"></script>

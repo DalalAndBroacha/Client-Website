@@ -1,0 +1,133 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{ string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div id="GlobalwaitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+
+            <div class="row justify-content-center">
+                <div class="input-group col-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text DnB-RedLabel" for="inpAsOnDate">As on Date</label>
+                    </div>
+                    <input class="form-control" type="date" id="inpAsOnDate">
+                </div>
+
+                <div class="col-2">
+                    <button onclick="ViewMIS()" class="btn btn-sm DnB-RedLabel">View Report</button>
+                </div>
+
+                @* <div class="col-2">
+                    @Html.ActionLink("Test", "MISBrokerage", "SSRS_API", null, new { @class = "btn btn-sm DnB-RedLabel" }) 
+                </div> *@
+            </div>
+
+            @{
+                ViewBag.ReportName = "Equity Volume and Brokerage report as on : ";
+                ViewBag.ReportHeaderDiv = "Brokerage_MIS";
+                ViewBag.GenDate = "True";
+                ViewBag.GenPeriod = "False";
+
+                ViewBag.PrimaryReport = "True";
+                ViewBag.ElementPDFBtnID = "btnBrokerage_MISExportPdf";
+                ViewBag.ElementExcelBtnID = "btnBrokerage_MISExportExcel";
+                ViewBag.ElementEmailBtnID = "btnEMailBrokerage_MIS";
+
+                ViewBag.ElementBackBtnID = null;
+
+                Html.RenderPartial("_ReportHeaderComponent");
+                ViewData.Clear();
+            }
+
+            <div id="div_data" style="display:none;">
+                @* @{
+                    ViewBag.ReportName = "Equity Volume and Brokerage report as on : ";
+                    ViewBag.ReportHeaderDiv = "Brokerage_MIS";
+                    ViewBag.GenDate = "True";
+                    ViewBag.GenPeriod = "False";
+
+                    ViewBag.PrimaryReport = "True";
+                    ViewBag.ElementPDFBtnID = "btnBrokerage_MISExportPdf";
+                    ViewBag.ElementExcelBtnID = "btnBrokerage_MISExportExcel";
+                    ViewBag.ElementEmailBtnID = "btnEMailBrokerage_MIS";
+
+                    ViewBag.ElementBackBtnID = null;
+
+                    Html.RenderPartial("_ReportHeaderComponent");
+                    ViewData.Clear();
+                } *@
+
+                <table class="table table-hover table-redbordered mt-2">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="vertical-align:middle">Exchange</th>
+                            <th colspan="2">For the Day</th>
+                            <th colspan="2">For the Month</th>
+                            <th colspan="2">For the Year</th>
+                        </tr>
+                        <tr>
+                            <th>Volume</th>
+                            <th>Brokerage</th>
+                            <th>Volume</th>
+                            <th>Brokerage</th>
+                            <th>Volume</th>
+                            <th>Brokerage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyExchange">
+                    </tbody>
+                </table>
+
+                <table class="table table-hover table-redbordered mt-2">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="vertical-align:middle">Branch</th>
+                            <th colspan="2">For the Day</th>
+                            <th colspan="2">For the Month</th>
+                            <th colspan="2">For the Year</th>
+                        </tr>
+                        <tr>
+                            <th>Volume</th>
+                            <th>Brokerage</th>
+                            <th>Volume</th>
+                            <th>Brokerage</th>
+                            <th>Volume</th>
+                            <th>Brokerage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyBranch">
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+<script src="~/Jquery/Reports/BrokerageMIS.js"></script>

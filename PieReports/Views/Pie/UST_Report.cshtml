@@ -1,0 +1,222 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div style="background-color:white !important; padding:5px;">
+            <div class="row" id="divDdlListsContent">
+                <div class="input-group mb-1 col-4">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text DnB-RedLabel" for="ddlUSClientList">Clients</label>
+                    </div>
+                    <select id="ddlUSClientList">
+                    </select>
+                </div>
+                <div class="input-group mb-1 col-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text DnB-RedLabel" for="ddlCategoryList">Category</label>
+                    </div>
+                    <select id="ddlCategoryList">
+                    </select>
+                </div>
+                <div class="input-group mb-1 col-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text DnB-RedLabel" for="ddlCalYearList">Calendar Year</label>
+                    </div>
+                    <select id="ddlCalYearList">
+                    </select>
+                </div>
+
+                <div class="input-group mb-1 d-flex justify-content-end col-2">
+                    <button type="button" class="btn DnB-RedLabel" onclick="GetSummaryData()" id="btn_ViewData">View Data</button>
+                </div>
+            </div>
+
+        </div>
+        <div id="div_summary_report">
+            @{
+
+                ViewBag.ReportName = "US Taxation Report";
+                ViewBag.GenDate = "False";
+
+                ViewBag.PrimaryReport = "True";
+                ViewBag.ElementPDFBtnID = "btnUSTExportPdf";
+                ViewBag.ElementExcelBtnID = "btnUSTExportExcel";
+                ViewBag.ElementEmailBtnID = "btnEMailMainUST";
+            }
+            <partial name="_ReportHeaderCompact"></partial>
+            @{
+                ViewData.Clear();
+            }
+            <div class="d-flex justify-content-center SubTotalRow row"  >
+                <ul class=" nav nav-pills-tab" style="display: none" id="IRSUSDTab">
+                    <li class="nav-item" id="IRS_data">
+                        <a class="nav-link  active" data-toggle="tab" href="#IRSReport"> INR </a>
+                    </li>
+                    <li class="nav-item" id="USD_data">
+                        <a class="nav-link" data-toggle="tab" href="#USDReport"> USD </a>
+                    </li>
+                </ul>
+            </div>
+            <div style="padding-top:5px" class="tab-content">
+                <div class="tab-pane active" id="IRSReport">
+                    <div id="div_data">
+                        <table class="table table-bordered dt-responsive w-100" id="display_table"></table>
+                        <table class="table table-bordered dt-responsive w-100" id="display_table_high_bal"></table>
+                        <table class="table table-bordered dt-responsive w-100" id="display_table_high_nav"></table>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="USDReport">
+                    <div id="div_data_usd">
+                        <table class="table table-bordered dt-responsive w-100" id="display_tableusd"></table>
+                        <table class="table table-bordered dt-responsive w-100" id="display_table_high_balusd"></table>
+                        <table class="table table-bordered dt-responsive w-100" id="display_table_high_navusd"></table>
+
+                        <table class="table table-bordered dt-responsive w-100" id="currency_rate"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* Bank Interest *@
+
+
+        <!-- Bank Interest Modal -->
+        <div class="modal fade" id="NRI_Bank_Interest" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="width:80%; height:80vh; margin: auto">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div> <!-- end modal header -->
+                    <div class="modal-body">
+                        @{
+
+                            ViewBag.ReportName = "Bank Interest Report";
+                            ViewBag.GenDate = "False";
+
+                            ViewBag.PrimaryReport = "True";
+                            ViewBag.ElementPDFBtnID = "btnUSTBankInterestExportPdf";
+                            ViewBag.ElementExcelBtnID = "btnUSTBankInterestExportExcel";
+                            ViewBag.ElementEmailBtnID = "btnEMailMainUSTBankInterest";
+                            
+                        }
+                        <partial name="_ReportHeaderCompact"></partial>
+                   
+
+                        <table class='table' id="BankInterest_table" style="border-collapse: collapse;">
+                                
+                        </table>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div> <!-- end modal footer -->
+                </div> <!-- end modal content-->
+            </div>
+        </div>
+        <!-- Bank Interest Modal -->
+
+        <!-- Dividend Interest Modal -->
+        <div class="modal fade" id="NRI_Divi_Int" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="width:80%; height:80vh; margin: auto">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div> <!-- end modal header -->
+                    <div class="modal-body">
+                        @{
+
+                            ViewBag.ReportName = "Dividend/Interest Report";
+                            ViewBag.GenDate = "False";
+
+                            ViewBag.PrimaryReport = "True";
+                            ViewBag.ElementPDFBtnID = "btnUSTDivi_IntPdf";
+                            ViewBag.ElementExcelBtnID = "btnUSTDivi_IntExcel";
+                            ViewBag.ElementEmailBtnID = "btnEMailMainUSTDivi_Int";
+                            
+                        }
+                        <partial name="_ReportHeaderCompact"></partial>
+
+                        <input type="hidden" id="txthidCat" />
+                        <table class="table table-redbordered" id="DiviInt_table" style="border-collapse: collapse;">
+                        </table>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div> <!-- end modal footer -->
+                </div> <!-- end modal content-->
+            </div>
+        </div>
+        <!-- Dividend Interest Modal -->
+
+        <!-- Taxwithheld Modal -->
+        <div class="modal fade" id="NRI_TaxWithHeld" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="width:80%; height:80vh; margin: auto">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div> <!-- end modal header -->
+                    <div class="modal-body">
+                        @{
+
+                            ViewBag.ReportName = "Tax Withheld";
+                            ViewBag.GenDate = "False";
+
+                            ViewBag.PrimaryReport = "True";
+                            ViewBag.ElementPDFBtnID = "btnUSTNRI_TaxWithHeldPdf";
+                            ViewBag.ElementExcelBtnID = "btnUSTNRI_TaxWithHeldExcel";
+                            ViewBag.ElementEmailBtnID = "btnEMailMainUSTNRI_TaxWithHeld";
+
+                        }
+                        <partial name="_ReportHeaderCompact"></partial>
+
+
+                        <table class="table table-redbordered" id="NRI_TaxWithHeld_table" style="border-collapse: collapse;">
+                        </table>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div> <!-- end modal footer -->
+                </div> <!-- end modal content-->
+            </div>
+        </div>
+        <!-- Taxwithheld Modal -->
+
+
+    </div>
+</div>
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+<script src="~/jquery/us taxation/ust_report.js" asp-append-version="true"></script>

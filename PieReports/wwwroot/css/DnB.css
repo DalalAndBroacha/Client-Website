@@ -1,0 +1,220 @@
+﻿.negavtiveValueField
+{
+    color:red !important;
+}
+
+.TableDataNumericData {
+    border: 1px solid #ff0000 !important;
+    text-align: right;
+}
+.tableDataWithRedBorders {
+    border: 1px solid #ff0000 !important;
+}
+.TableHeaderRow {
+    vertical-align: middle;
+    border: 1px solid #ff0000 !important;
+    text-align: center;
+}
+
+.TableHeadAlignment{
+    vertical-align: middle !important;
+    text-align:center !important;
+}
+
+
+
+
+.GrandTotalRow {
+    /*background-color: #FF3333;*/
+    background-color: #FF9999;
+}
+
+.table-hover .GrandTotalRow:hover {
+    background-color: #FF9999;
+}
+
+.GrandTotalRowData {
+    border: 1px solid #ff0000 !important;
+    text-align: right;
+    color: black;
+    font-weight: bold;
+}
+
+.GrandTotalRowDataWithoutBorders {
+    text-align: right;
+    color: black;
+    font-weight: bold;
+}
+
+.SubTotalRow {
+    background-color: #FCE0E0;
+    font-weight: bold;
+}
+
+.table-hover .SubTotalRow:hover {
+    background-color: #FCE0E0;
+}
+
+
+.SubTotalRowBotBorder {
+    background-color: #FCE0E0;
+    font-weight: bold;
+    border-bottom: solid 3px red;
+}
+
+.table-hover .SubTotalRowBotBorder:hover {
+    background-color: #FCE0E0;
+}
+
+.strikethrough_icon {
+    position: relative;
+}
+
+.strikethrough_icon:before {
+    position: absolute;
+    content: "";
+    left: 0;
+    top: 50%;
+    right: 0;
+    border-top: 2px solid;
+    border-color: white;
+    -webkit-transform: rotate(-40deg);
+    -moz-transform: rotate(-40deg);
+    -ms-transform: rotate(-40deg);
+    -o-transform: rotate(-40deg);
+    transform: rotate(-40deg);
+}
+
+.table-redbordered {
+    border: 1px solid #ff0000 !important;
+}
+
+.table-redbordered td {
+    border: 1px solid #ff0000 !important;
+}
+.table-redbordered th {
+    border: 1px solid #ff0000 !important;
+    font-weight: bold;
+}
+
+.ReportTableFont {
+        font-size: 14px;
+        font-family: Roboto, sans-serif;
+    }
+
+.paraTextAlignLeft {
+    text-align: left !important;
+}
+.paraTextAlignCenter {
+    text-align: center !important;
+}
+.paraTextAlignRight {
+    text-align: right !important;
+}
+
+.accordianButtons {
+    color: black;
+    padding: 0;
+    width: 30px;
+}
+
+.White_Red_Icon{
+    background-color:white;
+    color:#ff3333;
+}
+
+.Lightred_Icon {
+    background-color: #e35259;
+    color: white;
+    margin-right:5px;
+}
+
+
+.scrolledTable {
+    overflow-x: auto;
+    clear: both;
+}
+
+.DnB-RedLabel {
+    background-color: #DA2929; /*#f15c51*/
+    border-color: black;
+    color: white;
+}
+
+.tableDataLowerCol {
+    font-size: 12px !important;
+    font-family: Roboto, sans-serif;
+}
+
+.DnB-DisabledRow {
+    background-color: #E5E8E8;
+}
+
+.toggle.RedLabelround_tog, .toggle-on.RedLabelround_tog, .RedLabelround_tog.round_tog {
+    border-radius: 20rem;
+}
+
+.table_sticky_heads {
+    position: sticky;
+    top: 0;
+    border: inherit;
+    background: inherit;
+}
+
+.stickyThead {
+    position: sticky;
+    top: 0;
+    background: white;
+}
+
+.blackBorderComplete {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+.blackBorderNonRight {
+   border-top: 1px solid black;
+   border-bottom: 1px solid black;
+   border-left: 1px solid black
+}
+
+.redHR {
+    border: 1px solid #ee3426;
+}
+
+.cardOrange {
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid orangered;
+    border-radius: 0.25rem;
+    /*-webkit-box-shadow: 8px 0px 16px 3px rgba(255,135,71,0.14);
+    -moz-box-shadow: 8px 0px 16px 3px rgba(255,135,71,0.14);
+    box-shadow: 8px 0px 16px 3px rgba(255,135,71,0.14);*/
+}
+
+/*#ee3426*/
+
+/* Makes the animation pause on hover */
+.marq-text:hover {
+    animation-play-state: paused;
+}
+
+/* The animation */
+@keyframes marquee {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* media query to enable animation for only those who want it */
+@media (prefers-reduced-motion: no-preference) {
+    .marq-text {
+        animation: marquee 15s linear infinite;
+    }
+}

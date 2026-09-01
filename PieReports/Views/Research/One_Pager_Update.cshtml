@@ -1,0 +1,232 @@
+﻿@* @model List<ViewModel.Reports.ResearchReport.psp_dsp_model_portfolio> *@
+@using ViewModel.Login
+@using Newtonsoft.Json
+@* @using ViewModel.Reports.ResearchReport *@
+
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>
+    (dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+    <link href="~/css/research/onepager.css" rel="stylesheet" asp-append-version="true" />
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <div style="position:unset; background-color:white; padding:0.5rem">
+            @* 
+             <form>
+                <div class="form-row">
+                <input type="text" id="repo_rec_id" value="0" hidden />
+
+                    <div class="form-group col-sm-4 input-group">
+                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Report Name</label>
+                        <input type='text' id='repo_name' class='form-control' ng-trim="true" style="height:2rem">
+                    </div>
+                    <div class="form-group col-sm-3 input-group">
+                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Title</label>
+                        <input type='text' id='repo_title'class='form-control' ng-trim="true" style="height:2rem">
+                    </div>
+                    <div class="form-group col-sm-4 input-group">
+                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Sub Title</label>
+                        <input type='text' id='repo_subtitle'class='form-control' ng-trim="true" style="height:2rem">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm-4 input-group">
+                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:60%;height:2rem" for="repo_name">Recommandation Price</label>
+                        <input type='number' id='repo_reco_price' class='form-control' ng-trim="true" style="height:2rem">
+                    </div>
+                    <div class="form-group col-sm-3 input-group">
+                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Target Price</label>
+                        <input type='number' id='repo_target_price' class='form-control' ng-trim="true" style="height:2rem">
+                    </div>
+                    <div class="form-group col-sm-4 input-group">
+                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Analyst Name</label>
+                        <input type='text' id='repo_analyst' class='form-control' ng-trim="true" style="height:2rem">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-sm-12 input-group">
+                     <table class="table table-redbordered w-100">
+                         <colgroup>
+                            <col style="width: 95%;">
+                            <col style="width: 5%;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th style="background-color:#FCE0E0">Section</th>
+                                <th style="background-color:#FCE0E0"><button type="button" title="Add" id="btnaddsection" onclick="addsection()">+</button>
+  
+                                </th>
+                            </tr>
+                        </thead>  
+                         <tbody id="tblsection">
+                                <tr id="trow" style="height:2rem" class="d-none">
+                                    <td> <input type='text' name="section" id='section' onchange="createdropdown(this)" class='form-control sectionbox' ng-trim="true" style="width: 100%">
+
+                                    </td>
+                                    <td><button id="btndelsection" name="btndelsection" class="btn Del_rec" type="button" title="Delete" onclick="btn_secdelete(this)"><i class="fas fa-trash-alt fa-lg White_Red_Icon"></i></button></td>
+                                </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                  </div>
+
+                <div class="form-row">
+                    <div class="form-group col-sm-12 input-group">
+                        <table class="table table-redbordered w-100" id="tblsubsection">
+                            <thead>
+                                <tr> 
+                                    <th colspan="3" style="background-color:#FCE0E0;width: 95%;">Sub Section</th>
+                                    <th style="background-color:#FCE0E0;width: 5%;"><button type="button" title="Add" onclick="addsubsection()">+</button></th>
+                                </tr>
+                                <tr>
+                                    <th style="background-color:#FCE0E0;width: 20%;">Section</th>
+                                    <th style="background-color:#FCE0E0;width: 20%;">Title</th>
+                                    <th colspan="2" style="background-color:#FCE0E0;width: 60%;">Detail</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblsubsection">
+                                <tr id="trowsub" class="d-none trowsub">
+                                    <td> <select class="form-control ddlSectionlist" name="ddlSectionlist" id="ddlSectionlist" style="width: 100%"></select></td>
+                                    <td>  <input type='text' id='Subsectiontitle' class='form-control Subsectiontitle' name="Subsectiontitle" ng-trim="true" style="width: 100%"></td>
+                                    <td>  <textarea class="form-control subsectiondetail" id="subsectiondetail" name="subsectiondetail" style="width: 100%"></textarea></td>
+                                    <td><button name="btndelsubsection" class="btn Del_rec" type="button" title="Delete" onclick="btn_subsecdelete(this)"><i class="fas fa-trash-alt fa-lg White_Red_Icon"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <span id="chars"></span>
+                    </div>
+                </div>
+                <div class="float-right" id="div_add_new">
+                    <button type="button" id="btn_submit" class="btn DnB-RedLabel" onclick="SubmitData()">SUBMIT</button>
+                </div>
+            </form>
+          *@ 
+          <form>
+            <div class="form-row">
+                <div class="form-group col-sm-4 input-group">
+                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Report Name</label>
+                    <input type='text' id='repo_name' class='form-control' ng-trim="true" style="height:2rem">
+                </div>
+                <div class="form-group col-sm-3 input-group">
+                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Title</label>
+                    <input type='text' id='repo_title' class='form-control' ng-trim="true" style="height:2rem">
+                </div>
+                <div class="form-group col-sm-4 input-group">
+                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Sub Title</label>
+                    <input type='text' id='repo_subtitle' class='form-control' ng-trim="true" style="height:2rem">
+                </div>
+             </div>
+            <div class="form-row">
+                <div class="form-group col-sm-4 input-group">
+                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:60%;height:2rem" for="repo_name">Recommandation Price</label>
+                    <input type='number' id='repo_reco_price' class='form-control' ng-trim="true" style="height:2rem">
+                </div>
+                <div class="form-group col-sm-3 input-group">
+                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Target Price</label>
+                    <input type='number' id='repo_target_price' class='form-control' ng-trim="true" style="height:2rem">
+                </div>
+                <div class="form-group col-sm-4 input-group">
+                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Analyst Name</label>
+                    <input type='text' id='repo_analyst' class='form-control' ng-trim="true" style="height:2rem">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="input-group mb-1 col-12">
+                    <table class="table table-redbordered w-100" id="tblSection">
+                    <colgroup>
+                        <col style="width: 95%;">
+                        <col style="width: 5%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th style="background-color:#FCE0E0">Section</th>
+                            <th style="background-color:#FCE0E0"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblsection">
+                        <tr id="trow" style="height:2rem">
+                            <td>
+                                <input type='text' name="section" id='section' class='form-control' ng-trim="true" style="width: 100%">
+                            </td>
+                            <td>
+                                <button type="button" title="Add" id="btnaddsection" onclick="addsection()">Save</button>
+                                        <input type="text" id="subsectblid" value="" hidden>
+                            </td>
+                           
+                        </tr>
+                        
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+          </form>
+
+            <div id="dsp_subsection" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog  modal-sm">
+                    <div class="modal-content">
+                        <div class='modal-header'>
+                            <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                        </div>
+                        <div class="modal-body" style="padding-bottom:0px; padding-top:30px">
+
+                            <form>
+                                <div class="form-row">
+
+                                    <div class="form-group col-sm-4 input-group">
+                                        <label class="input-group-text input-group-prepend" style="width:20%;background-color: #FCE0E0;font-size: 14px;" for="txtSection">Section</label>
+                                        <input type='text' id='txtSection' class='form-control' ng-trim="true" readonly style="font-size: 14px;height: 2rem">
+                                    </div>
+             
+                                    <div class="form-group col-sm-6 input-group">
+                                        <label class="input-group-text input-group-prepend" style="width:30%;background-color: #FCE0E0;font-size: 14px;" for="Subsectiontitle">Sub Section Name</label>
+                                        <input type='text' id='Subsectiontitle' class='form-control' name="Subsectiontitle" ng-trim="true" style="font-size: 14px;height: 2rem">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-sm-9 ">
+                                        <label class="input-group-text input-group-prepend" style="width:30%;background-color: #FCE0E0;font-size: 14px;" for="Subsectiontitle">Sub Section Detail</label>
+                                        <textarea type='text' id='Subsectiondetail' class='form-control' name="Subsectiontitle" rows="12" ng-trim="true" style="font-size: 14px;width:100%"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="mb-1 offset-5 col-3">
+                                        <div class="input-group-prepend" style="margin-top:20px">
+                                            <button type="button" class="btn btn-sm btn-success" id="btn_update" style="border:1px solid black; height:30px" onclick="ADDUpdate_SubSec()">Submit</button>
+                                            <button type="button" class="btn btn-sm btn-secondary" id="btn_cancel" style="border: 1px solid black; height:30px; margin-left: 20px" data-dismiss='modal'>Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>
+<script src="~/Jquery/Research/One_Pager_Update.js" asp-append-version="true"></script>

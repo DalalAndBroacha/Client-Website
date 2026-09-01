@@ -1,0 +1,119 @@
+﻿@model ViewModel.Login.ChangeUsername
+
+
+<div class="theme-loader">
+    <div class="loader-track">
+        <div class="preloader-wrapper">
+            <div class="spinner-layer spinner-blue">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+            <div class="spinner-layer spinner-red">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+
+            <div class="spinner-layer spinner-yellow">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+
+            <div class="spinner-layer spinner-green">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Pre-loader end -->
+
+<div class="row">
+    <div class="col-sm-12">
+
+        <div class="md-float-material form-material">
+
+            <div class="auth-box card">
+                <div class="card-block">
+                    <div class="row m-b-20">
+                        <div class="col-md-12">
+                            <div class="text-center" id="divRedireLogin">
+                                <a href="@Url.Action("Index","Login")"> <img src="~/images/logo.svg" alt="logo"></a>
+                            </div>
+                            <br />
+                            <h4 class="text-center">
+                                Change Username
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="form-group form-primary">
+                        @*<input type="text" name="txtEmail" id="txtEmail" class="form-control" required="" @Model.Email>*@
+                        @Html.TextBoxFor(m => m.new_username, new { autocomplete = "off", @type = "text", @name = "txtnew_username", @id = "txtnew_username", @class = "form-control", @required = "" })
+                        @*<i class=" fa fa-user"></i>*@
+                        <span class="form-bar"></span>
+                        <label class="float-label" style="font-weight:100;">New Username <span style="color:red;">*</span></label>
+                    </div>
+
+                    <div class="form-group form-primary">
+                        <label style="font-variant-caps: all-petite-caps;font-weight:100; color: red;" id="spnmsguser">
+                            @*<span style="font-variant-caps: all-petite-caps;font-weight:100; color: red;" id="spnmsguser"></span>*@
+                        </label>
+                    </div>
+                    <div class="row m-t-30" style="margin-top: 0px;">
+                        <div class="col-md-12">
+                            <div class="checkbox-fade fade-in-primary d-">
+                                @if (Model != null)
+                                {
+                                    @if (Model.Flag != "deshboard")
+                                    {
+                                        <div class="form-group form-primary">
+                                            <a href="/ClientPortal/Login/Index">  <p class="float-label" style="margin-top:-15px;pointer-events: inherit;">Go Back to Login</p></a>
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                            <div class="forgot-phone text-right f-right">
+                                @*<button type="button" class="btn btn-primary btn-md btn-block waves-effect waves-light text-center m-b-20">Login</button>*@
+                                <input class="btn btn-primary btn-md btn-block waves-effect waves-light text-center m-b-20" type="button" id="btnusernameForgote" value="Submit" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- end of col-sm-12 -->
+</div>
+
+<!-- end of container-fluid -->

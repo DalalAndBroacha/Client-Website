@@ -1,0 +1,33 @@
+﻿.levelOneTiles
+{
+    margin:0.25em;
+    max-height:200px;
+    overflow:auto;
+}
+
+.levelTwoTiles {
+    margin: 0.25em;
+    max-height: 250px;
+    overflow: auto;
+}
+
+.levelOneTiles .levelTwoTiles table th {
+    font-weight: bold;
+    background-color: #FCE0E0;
+}
+
+.tileHeader {
+    font-weight: 800;
+    border-bottom: 1px solid orangered;
+    border-right: 1px solid orangered;
+    border-left: 1px solid orangered;
+}
+
+#tbodyClientDetails a
+{
+    color:white;
+}
+
+#tbodyClientDetails a:hover {
+    color: black;
+}

@@ -1,0 +1,70 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+	string dtoq = TempData["myDeshbordData"].ToString();
+	TempData.Keep("myDeshbordData");
+	Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+	Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+	<link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+	<link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+	<link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+
+}
+
+
+<div class="wrapper">
+	<div class="content-wrapper">
+		<div style="background-color:white !important; padding:5px;">
+
+			@{
+
+				ViewBag.ReportName = "PMS Reports";
+
+				ViewBag.PrimaryReport = "True";
+				ViewBag.GenDate = "False";
+
+			}
+
+			<partial name="_ReportHeaderCompact">
+
+				<div class="row mt-1" id="DdlReportListsContent">
+					<div class="input-group mb-1 col-6">
+						<div class="input-group-prepend">
+							<label class="input-group-text DnB-RedLabel" for="ddlWSClientList">Clients</label>
+						</div>
+						<select id="ddlWSClientList">
+						</select>
+					</div>
+					<div class="input-group mb-1 col-5">
+						<div class="input-group-prepend">
+							<label class="input-group-text DnB-RedLabel" for="ddlReportList">Reports</label>
+						</div>
+						<select id="ddlReportList">
+						</select>
+					</div>
+				</div>
+				<div id="InputData"></div>
+
+				<div class="row justify-content-around">
+					<div id="btn_Submit_div">
+						<button type="button" class="btn DnB-RedLabel" onclick="savedata()" id="btn_Submit">Submit</button>
+					</div>
+					<div id="download_link"></div>
+				</div>
+
+				<div id="error_msg" class="alert alert-danger" style="margin-top:20px; text-align:center"></div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+<script src="~/jquery/ws_report_download.js" asp-append-version="true"></script>

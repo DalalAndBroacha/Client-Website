@@ -1,0 +1,362 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@model ViewModel.Login.UserLogin
+@using Recaptcha.Web.Mvc;
+@using Recaptcha.Web
+
+
+
+
+@section Styles {
+    <link asp-append-version="true" href="~/css/IndexPage.css" rel="stylesheet" type="text/css" />
+    <link href="https://s3.amazonaws.com/assets.freshdesk.com/widget/freshwidget.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    
+}
+
+
+<div class="theme-loader">
+    <div class="loader-track">
+        <div class="preloader-wrapper">
+            <div class="spinner-layer spinner-blue">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+            <div class="spinner-layer spinner-red">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+
+            <div class="spinner-layer spinner-yellow">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+
+            <div class="spinner-layer spinner-green">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Pre-loader end -->
+
+<div id="Header_Logo">
+    <div class="d-flex justify-content-center">
+        <img class="img-fluid" src="~/images/logo.svg" style="height:57px; margin-top:15px;" />
+    </div>
+</div>
+
+
+
+@if (@Configuration.GetValue<string>("dspNotification") == "Yes")
+{
+    string myMessage = Configuration.GetValue<string>("notificationMessage");
+
+    <div id="divNotification" class="mt-2 bg-danger">
+        <p class="lead marq-text">@myMessage</p>
+    </div>
+}
+<div class="login-block">
+    <div class="row">
+        <div class="col-sm-12">
+            <!-- Authentication card start -->
+
+            <div class="md-float-material form-material">
+
+                <div class="auth-box card">
+                    <div class="card-block">
+                        <div id="tabs">
+                            <div class="row m-b-20">
+                                <div class="col-sm-12">
+                                    <div class="d-flex justify-content-center">
+                                        <ul class="nav" id="TabsUL">
+                                            <li class="nav-item"><a class="nav-link cst_UL_active_tab" id="Nav_LoginByIDPass" onclick="Active_Tab(1)" href="#LoginByIDPass">Login ID</a></li>
+                                            <li class="nav-item"><a class="nav-link cst_UL_tab" id="Nav_LoginByPAN" onclick="Active_Tab(2)" href="#LoginByPAN">PAN</a></li>
+                                            <li class="nav-item"><a class="nav-link cst_UL_tab" id="Nav_LoginByUCC" onclick="Active_Tab(3)" href="#LoginByUCC">UCC</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div id="LoginByIDPass">
+                                @using (Html.BeginForm("AccountLogin", "Login", FormMethod.Post, new { autocomplete = "off" }))
+                                {
+                                    <div class="form-group form-primary">
+                                        <label for="txtEmail">Username</label>
+                                        @Html.TextBoxFor(m => m.Username, new { autocomplete = "off", @type = "text", @name = "txtEmail", @id = "txtEmail", @class = "form-control", @required = "", @tabindex = "1" })
+
+                                        @*<span class="form-bar"></span>
+                                            <label class="float-label">Username </label>*@
+                                    </div>
+                                    <div class="forgot-phone text-right f-right">
+                                        <a href="/ClientPortal/Login/AccountRecovery" class="text-left f-w-600">Forgot Username?</a>
+                                    </div><br />
+                                    <div class="form-group form-primary" id="show_hide_password">
+
+                                        <label for="txtPassword">Password</label>
+                                        @Html.TextBoxFor(m => m.Password, new { autocomplete = "off", @type = "password", @name = "txtPassword", @id = "txtPassword", @class = "form-control", @required = "", @tabindex = "2" })
+                                        @*<span class="form-bar"></span>
+                                            <label class="float-label">Password</label>*@
+                                        <div class="input-group-addon" style="margin-left: 330px; margin-top: -34px;">
+                                            <a><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="forgot-phone text-right f-right">
+                                        <a href="/ClientPortal/Login/ForgotPassword" class="text-left f-w-600">Forgot Password?</a>
+                                    </div>
+                                    <div class="row m-t-25 text-left">
+                                        <div class="col-12">
+                                            <div class="checkbox-fade fade-in-primary d-">
+                                                <label>
+                                                    <input type="checkbox" value="">
+                                                    <span style="color: #d81e1e">@Model.msg</span>
+                                                </label>
+                                            </div>
+                                            <br />
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+
+                                        @if (@Configuration.GetValue<string>("ShowCap") == "Yes")
+                                        {
+                                            if (@Configuration.GetValue<string>("CaptchaType") == "G")
+                                            {
+                                                //Google Recaptcha
+                                                @Html.RecaptchaWidget(null, true, RecaptchaTheme.Default, null, 3, RecaptchaSize.Normal)
+                                            }
+                                            else
+                                            {
+                                                <div id="img_cont" class="input-group">
+
+                                                    <img id="img_captcha" title="Can't read? Click to generate another image." src=@Url.Action("GetCaptchaImage", "Pie", new { id = "321" }) /> @* 321 is a dummy value needed for actionmethod *@
+
+                                                    @Html.TextBoxFor(m => m.CaptchaCode, new { autocomplete = "off", @type = "text", @placeholder = "Please enter Captcha.", @maxlength = "4", @id = "txtCaptcha", @class = "ml-1 form-control", @tabindex = "3", })
+
+                                                </div>
+                                            }
+                                        }
+
+                                        @*<div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>*@
+                                        @*Live*@ @*<div class="g-recaptcha" data-sitekey="6Lce8MwjAAAAANAmzmCU6VnQU__uIsUXUKbpjjkL"></div>*@
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <input style="width: 100%; border-radius: 3rem; background-color: #ee3426 !important; margin-top: 1rem; font-weight:bold; color:white;" class="btn btn-danger text-center" type="submit" value="Sign In" tabindex="4" />
+                                    </div>
+                                    <div class="d-flex justify-content-center mt-2">
+                                        <a href="https://www.dalal-broacha.com/pdfs/CP_Docs/Client%20Portal%20Login%20Process.pdf" target="_blank">Need help Siging In?</a>
+                                    </div>
+                                }
+                            </div>
+
+                            <div id="LoginByPAN" class="tab-pane">
+
+                                <div class="form-group form-primary">
+                                    <div class="row">
+                                        <div class="col-9">
+
+                                            <input type="text" class="form-control" autocomplete="off" placeholder="Please Enter Your PAN" id="txtPAN" tabindex="1" maxlength="10" oninput="this.value = this.value.toUpperCase()">
+                                            <span class="form-bar"></span>
+                                            <label id="lblInvalid" class="text-danger" style="font-size:10px;">Please Enter Valid PAN</label>
+                                        </div>
+                                        <div class="col-3" style="margin-top:15px;">
+                                            <input class="btn-sm btn-warning" id="btnGetOTP" type="button" onclick="GetOTPMethod()" value="Get OTP" tabindex="2" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="alert alert-success" id="otp_msg_PAN"></label>
+                                <div id="Div_Multi_MobNo">
+                                    <div id="Div_Mobile_List">
+
+                                    </div>
+                                    <div>
+                                        <input class="btn btn-info" id="btnSendOTPtoMob" onclick="SendOTPtoMethod()" type="button" value="Send OTP to this number" />
+                                    </div>
+                                </div>
+                                <br />
+                                @using (Html.BeginForm("AccountLoginViaPANorUCC", "Login", FormMethod.Post))
+                                {
+
+                                    <div class="row" id="Content_Verify_OTP_PAN">
+                                        <div class="col-8">
+                                            @*Hidden OTP Token Field*@
+                                            @Html.TextBoxFor(m => m.otp_token, new { autocomplete = "off", @type = "text", @name = "txtOTPTokenPAN", @id = "txtOTPTokenPAN", @style = "display: none;" })
+
+                                            @Html.TextBoxFor(m => m.otp, new { autocomplete = "off", @type = "text", @name = "OTP_from_PAN", @id = "OTP_from_PAN", @class = "input-group input-group-sm mb-2", @placeholder = "Please enter OTP", @tabindex = "3" })
+                                        </div>
+                                        <div class="col-3" id="OTP_Submit">
+                                            <input class="btn-sm btn-success" id="btn_verify_PAN_OTP" type="submit" value="Verify OTP" tabindex="4">
+                                        </div>
+                                    </div>
+                                    <div id="div_resend_otp_timer_PAN" class="alert alert-primary">
+                                        <div style="font-size:12px">
+                                            <div id="timer">
+                                                Haven't received OTP yet? <a id="Resend_Link" class="alert-link" onclick="Resend_OTP('PAN')" href="#">Resend OTP</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div id="LoginByUCC" class="tab-pane">
+
+                                <div id="UCC_Tabs">
+                                    <ul class="nav radio-inline" id="UCCTabsUL" style="margin-bottom:15px;">
+                                        <li class="nav-item"><input type="radio" checked="checked" name="UCC_List" id="radioTradingCode" onclick="UCC_Tabs(1)" /><label>Trading Code</label></li>
+                                        <li class="nav-item"><input type="radio" name="UCC_List" id="radioFolio" onclick="UCC_Tabs(2)" /><label>Folio Number</label></li>
+                                        <li class="nav-item"><input type="radio" name="UCC_List" id="radioBOID" onclick="UCC_Tabs(3)" /><label>BOID</label></li>
+                                    </ul>
+                                    <div class="form-group form-primary" id="UCC_TabTradingCode">
+
+                                        <div class="row">
+                                            <div class="col-9">
+
+                                                <input type="number" class="form-control" autocomplete="on" placeholder="Please Enter Your Trading Code" id="txt_UCC_TradingCode" tabindex="1">
+                                                <span class="form-bar"></span>
+                                                <label id="lblInvalidTC" class="text-danger" style="font-size:10px;">Please Enter Trading Code.</label>
+
+                                            </div>
+                                            <div class="col-3" style="margin-top:15px;">
+                                                <input class="btn-sm btn-warning" id="btnGetOTPTC" type="button" onclick="UCCGetOTPMethod('1')" value="Get OTP" tabindex="2" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group form-primary" id="UCC_TabFolio">
+
+                                        <div class="row">
+                                            <div class="col-9">
+
+                                                <input type="text" class="form-control" autocomplete="on" placeholder="Please Enter Your Folio Number" id="txt_UCC_Folio" tabindex="1" maxlength="15">
+                                                <span class="form-bar"></span>
+                                                <label id="lblInvalidFolio" class="text-danger" style="font-size:10px;">Please Enter Folio number.</label>
+
+                                            </div>
+                                            <div class="col-3" style="margin-top:15px;">
+                                                <input class="btn-sm btn-warning" id="btnGetOTPFolio" type="button" onclick="UCCGetOTPMethod('4')" value="Get OTP" tabindex="2" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group form-primary" id="UCC_TabBOID">
+
+                                        <div class="row">
+                                            <div class="col-9">
+
+                                                <input type="number" class="form-control" autocomplete="on" placeholder="Please Enter Your BOID" id="txt_UCC_BOID" tabindex="1">
+                                                <span class="form-bar"></span>
+                                                <label id="lblInvalidBOID" class="text-danger" style="font-size:10px;">Please Enter BOID.</label>
+
+                                            </div>
+                                            <div class="col-3" style="margin-top:15px;">
+                                                <input class="btn-sm btn-warning" id="btnGetOTPBOID" type="button" onclick="UCCGetOTPMethod('6')" value="Get OTP" tabindex="2" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <label class="alert alert-success" id="otp_msg_UCC"></label>
+
+                                </div>
+
+                                @using (Html.BeginForm("AccountLoginViaPANorUCC", "Login", FormMethod.Post))
+                                {
+                                    <div id="Content_Verify_OTP_UCC">
+                                        <div class="row">
+                                            <div class="col-8">
+                                                @*Hidden OTP Token Field*@
+                                                @Html.TextBoxFor(m => m.otp_token, new { autocomplete = "off", @type = "text", @name = "txtOTPTokenUCC", @id = "txtOTPTokenUCC", @style = "display: none;" })
+
+                                                @Html.TextBoxFor(m => m.otp, new { autocomplete = "off", @type = "text", @name = "OTP_from_UCC", @id = "OTP_from_UCC", @class = "input-group input-group-sm mb-2", @placeholder = "Please enter OTP", @tabindex = "3" })
+                                                @*<input class="input-group input-group-sm mb-2" id="OTP_from_UCC" type="text" placeholder="Please enter OTP" tabindex="3">*@
+                                            </div>
+                                            <div class="col-3" id="OTP_Submit">
+                                                <input class="btn-sm btn-success" id="btn_verify_UCC_OTP" type="submit" value="Verify OTP" tabindex="4">
+                                            </div>
+                                        </div>
+                                        <div id="div_resend_otp_timer_UCC" class="alert alert-primary">
+                                            <div style="font-size:12px">
+                                                <div id="timer">
+                                                    Haven't received OTP yet? <a id="Resend_Link" class="alert-link" onclick="Resend_OTP('UCC')" href="#">Resend OTP</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+                            <br />
+                        </div>
+
+                        <div class="row m-t-25 text-left" id="MobApp_links">
+                            <div class="col-12">
+                                <div class="checkbox-fade fade-in-primary d-">
+                                    <a href="https://apps.apple.com/us/app/dalal-broacha/id1474594128" target="_blank"><img src="~/images/AppStore.png" class="img-responsive3" style="width:120px;" /></a>
+                                </div>
+                                <div class="forgot-phone text-right f-right">
+                                    <a href="https://play.google.com/store/apps/details?id=com.dalal.broacha.app&hl=en_IN&gl=US" target="_blank"> <img src="~/images/GooglePlay.png" class="img-responsive4" style="width:120px;" /></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end of form -->
+        </div>
+        
+        <!-- end of col-sm-12 -->
+    </div>
+    @* Footer *@
+    <partial name="_IndexFooter">
+    @* <div class="mt-4 text-center" style="background-color: #fbe7e4">
+        <p id="footerContent" class="p-3">
+            SEBI Registration Nos. : BSE Cash / BSE Deri / NSE Cash / NSE Deri: INZ000210337 | CDSL: IN – DP – 421 – 2019 | PMS: INP000001975 | Research Analyst: INH000001246<br>
+            <a target="_blank" href="https://www.dalal-broacha.com/pdfs/D&B%20disclaimer.pdf">Disclaimer</a> | <a target="_blank" href="https://www.dalal-broacha.com/downloadable_forms.html">Downloadable Forms</a><br>
+            GO TO: <a target="_blank" href="https://www.nseindia.com/">NSE</a> | <a target="_blank" href="https://www.bseindia.com/">BSE</a> |
+            <a target="_blank" href="https://www.cdslindia.com/">CDSL</a> | <a target="_blank" href="https://smartodr.in/login">SMARTODR</a> |
+            <a target="_blank" href="https://www.dalal-broacha.com/External_Links.html">SCORES</a> <br />
+            
+            Dalal & Broacha Stock Broking Pvt. Ltd. © 2010, All Rights Reseved.<br/>
+            Regd. Office: 506, Maker Chambers V, 221, Nariman Point, Mumbai - 400021.
+        </p>
+    </div> *@
+    @* Footer *@
+    <!-- end of container-fluid -->
+</div>
+
+
+
+<script asp-append-version="true" src="~/Jquery/login.js"></script>
+<script src="~/js/bootstrap/js/bootstrap.min.js"></script>
+
+

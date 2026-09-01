@@ -1,0 +1,43 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        @*Loader*@
+        <div id="DwnRepowaitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+        @*Loader*@
+
+        <div id="main_Div" class="card" style="position: unset; background-color: white; overflow-y:scroll; max-height:500px; margin-top:70px; display:none;">
+            <div style="padding-left:12px;">
+                <div><h2 class="paraTextAlignCenter">Downloads</h2></div>
+                <div class="float-right" id="timer"></div>
+            </div>
+            <div style="margin-top:5px;">
+                <table class="table table-hover dt-responsive w-100">
+                    <thead>
+                        <tr>
+                            <th class="tableDataWithRedBorders font-weight-bold">Description</th>
+                            <th class="tableDataWithRedBorders font-weight-bold">Copy Description</th>
+                            <th class="tableDataWithRedBorders font-weight-bold">Export Type</th>
+                            <th class="tableDataWithRedBorders font-weight-bold">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyDownloadsTable">
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div id="noDwnldsFound"></div>
+    </div>
+</div>
+
+<script src="~/Jquery/Downloads.js" asp-append-version="true"></script>

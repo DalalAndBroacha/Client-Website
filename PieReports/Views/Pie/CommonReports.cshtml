@@ -1,0 +1,45 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@* @section Styles {
+     <link asp-append-version="true" href="~/css/Reports/GlobalReport.css" rel="stylesheet" /> 
+
+     psp_dsp_common_report_module_list
+} *@
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+            <div class="d-flex justify-content-center">
+                <div class="input-group mb-1 offset-2 col-md-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text DnB-RedLabel" for="ddlClientList">Report</label>
+                        <select id="ddlRepot">
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group mb-1 offset-2 col-md-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text DnB-RedLabel" for="ddlClientList">Export Type</label>
+                        <select id="ddlExportType" class="select2">
+                            <option value="1" selected>PDF</option>
+                            <option value="2">Excel</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group mb-1 col-md-2">
+                    <button id="btnGenRepo" type="button" onclick="generateReport()" class="btn DnB-RedLabel">Generate Report</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script asp-append-version="true" src="~/Jquery/Services/CommonReports.js"></script>

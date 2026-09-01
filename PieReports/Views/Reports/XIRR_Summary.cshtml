@@ -1,0 +1,760 @@
+﻿@model ViewModel.Reports.XIRR;
+
+@using ViewModel.Login
+@using Newtonsoft.Json
+@{ string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+    
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+}
+
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+
+            <div id="divViewRepo">
+                <div class="d-flex justify-content-center">
+                    <div class="col-4">
+                        <label>Account Code</label>
+
+                        @if (@ViewBag.Acc == "0")
+                        {
+                            <input type="text" id="txtAccCode" />
+                        }
+                        else
+                        {
+                            <input type="text" id="txtAccCode" value="@ViewBag.Acc" />
+                        }
+
+                    </div>
+                    <div class="col-2">
+                        <button onclick="myFunctionLoadData()" class="btn btn-sm DnB-RedLabel">View Report</button>
+                    </div>
+                </div>
+            </div>
+
+
+            
+            @*<div id="XIRR_Level_2">*@
+            <div id="XIRR_Summary" style="display:none;">
+
+                @{
+
+                    ViewBag.ReportName = "Equity APR";
+                    ViewBag.ReportHeaderDiv = "EqAPR";
+                    ViewBag.GenDate = "True";
+
+                    ViewBag.PrimaryReport = "True";
+
+                    ViewBag.ElementPDFBtnID = "btnExportPdfXIRRPageClientWise";
+                    ViewBag.ElementExcelBtnID = "btnExportXIRRPageClientWise";
+                    ViewBag.ElementEmailBtnID = "btnEMailXIRRPageClientWise";
+
+                    ViewBag.ElementBackBtnID = "btnXIRRback";
+
+                    Html.RenderPartial("_ReportHeaderCompact");
+                }
+                <input type="text" id="client_acc_code" hidden>
+                <input type="text" id="client_name" hidden>
+                <input type="text" id="family_name" hidden>
+                <div class="card" style="padding: 5px; position: unset;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class='table table-bordered' id="myTableclientflow">
+                                <tr class="header" style="border: 1px solid #dddddd;">
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Family</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Client (Code)</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Acc Opening Date</b></p></th>
+                                </tr>
+                                <tbody id="tbodyBindingclientflow">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <table class='table' id="myTableclientflow1" style="border-collapse: collapse;">
+
+                                <tr class="header" style="border: 1px solid #dddddd;">
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Portfolio Activity</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading2"><b>Amount</b></p></th>
+
+                                </tr>
+                                <tbody id="tbodyBindingclientflow1">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <table class='table' id="myTableclientflow2" style="border-collapse: collapse;">
+
+                                <tr class="header" style="border: 1px solid #dddddd;">
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Sector</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading2"><b>Amount</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading2"><b>Holding %</b></p></th>
+
+                                </tr>
+                                <tbody id="tbodyBindingclientflow2">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="div_XIRR_PnL">
+                        <table class='table' id="XIRR_PnL_table" style="border-collapse: collapse;">
+                            <tr style="border: 1px solid #dddddd;">
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd; text-align:center; vertical-align:middle;" rowspan="2"><p><b>F.Y.</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="4"><p class="tableheading"><b>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="1"> </th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="4"><p class="tableheading"><b>Performance (%)</b></p></th>
+                            </tr>
+                            <tr class="header" style="border: 1px solid #dddddd;">
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Intraday</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Short Term</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Long Term</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Total</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Dividend</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>ABS</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>XIRR</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>NIFTY</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>MIDCAP</b></p></th>
+                            </tr>
+                            <tbody id="tbodyBindingXIRRPnL">
+                            </tbody>
+                        </table>
+                        <div id="referlink"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dividend Modal -->
+            <div class="modal fade" id="XIRR_dividend" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content" style="width:80%; height:80vh; margin: auto">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div> <!-- end modal header -->
+                        <div class="modal-body">
+                            @{
+                                ViewBag.ReportName = "";
+                                ViewBag.ReportHeaderDiv = "XirrDivi";
+                                ViewBag.GenDate = "False";
+
+                                ViewBag.PrimaryReport = "True";
+
+                                ViewBag.ElementPDFBtnID = "btnExportPdfXirrDivi";
+                                ViewBag.ElementExcelBtnID = "btnExportXirrDivi";
+                                ViewBag.ElementEmailBtnID = "btnEMailXirrDivi";
+
+                            }
+                            <partial name="_ReportHeaderCompact">
+
+                                <input type="text" id="txtXirrDiviFY" hidden>
+                                <input type="text" id="txtXirrDiviCliCode" hidden>
+
+                            <div class="d-flex justify-content-center SubTotalRow">
+                                <p id="paraXirrDivi" style="text-align:center">Dividend of <span id="XirrDiviCliName"></span> for the FY - <span id="XirrDiviFY"></span></p>
+                            </div>
+
+                            <table class='table table-redbordered' id="XirrDivi" style="border-collapse: collapse;">
+                                <thead class="stickyThead">
+                                    <tr class="header" style="border: 1px solid #dddddd;">
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Date</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Scrip Name</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Amount</b></p></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyXirrDivi">
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div> <!-- end modal footer -->
+                    </div> <!-- end modal content-->
+                </div>
+            </div>
+            <!-- Dividend Modal -->
+
+            <!-- Gain Loss Modal -->
+            <div class="modal fade" id="XIRR_PNL" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content" style="width:80%; height:80vh; margin: auto">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div> <!-- end modal header -->
+                        <div class="modal-body">
+                            @{
+                                ViewBag.ReportName = "";
+                                ViewBag.ReportHeaderDiv = "XirrPNL";
+                                ViewBag.GenDate = "False";
+
+                                ViewBag.PrimaryReport = "True";
+
+                                ViewBag.ElementEmailBtnID = "btnEMailXirrPNL";
+                                ViewBag.ElementPDFBtnID = "btnExportPdfXirrPNL";
+                                ViewBag.ElementExcelBtnID = "btnExportXirrPNL";
+
+                            }
+                            <partial name="_ReportHeaderCompact">
+
+                                <input type="text" id="txtXirrPNLFY" hidden>
+                                <input type="text" id="txtXirrPNLCliCode" hidden>
+
+                                <div class="d-flex justify-content-center SubTotalRow">
+                                    <p id="paraXirrPNL" style="text-align:center">Realised Gain/Loss of <span id="XirrPNLCliName"></span> for the FY - <span id="XirrPNLFY"></span></p>
+                                </div>
+                                @* <div class="d-flex justify-content-center">
+                                    
+                                </div> *@
+                                <table class='table table-redbordered' id="XirrPNL" style="border-collapse: collapse;">
+                                    <thead class="stickyThead">
+                                        <tr class="header">
+                                            <th><p class="tableheading"></th>
+                                            <th colspan="3"><p class="tableheading"><b>Buy</b></p></th>
+                                            <th colspan="3"><p class="tableheading"><b>Sell</b></p></th>
+                                            <th colspan="4"><p class="tableheading"><b>Gain / Loss</b></p></th>
+                                        </tr>
+                                        <tr class="header">
+                                            <th><p class="tableheading">Qty</th>
+                                            <th><p class="tableheading">Date</th>
+                                            <th><p class="tableheading">Rate</th>
+                                            <th><p class="tableheading">Amount</th>
+                                            <th><p class="tableheading">Date</th>
+                                            <th><p class="tableheading">Rate</th>
+                                            <th><p class="tableheading">Amount</th>
+                                            <th><p class="tableheading">Intraday</th>
+                                            <th><p class="tableheading">Short term</th>
+                                            <th><p class="tableheading">Long Term</th>
+                                            <th><p class="tableheading">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyXirrPNL">
+                                    </tbody>
+                                </table>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div> <!-- end modal footer -->
+                    </div> <!-- end modal content-->
+                </div>
+            </div>
+            <!-- Gain Loss Modal -->
+
+            <div id="noReFoundxxir"></div>
+
+            <div id="XIRR_Level_3" style="display:none;">
+
+                <div id="Div_CurrHolding">
+                    <div class="card" style="padding: 5px; position: unset;">
+
+                        <input type="text" id="txtHoldingType" hidden>
+
+                        <div id="div_XIRR_Opening_Val">
+                            @{
+
+                                ViewBag.ReportName = "Holding Statement as on : ";
+                                ViewBag.ReportHeaderDiv = "Xirr_Holding_statement";
+                                ViewBag.GenDate = "True";
+
+                                Html.RenderPartial("_ReportHeader");
+
+                                ViewBag.PrimaryReport = "False";
+
+                                ViewBag.ElementPDFBtnID = null;
+                                ViewBag.ElementExcelBtnID = "btnExportXIRROpBal";
+                                ViewBag.ElementPrintBtnID = "btnPrintXIRROpBal";
+                                ViewBag.ElementEmailBtnID = "btnEMailXIRROpBal";
+                                ViewBag.ElementPrintBtnOnClickEvent = "print('#PrintPerfo')";
+
+
+                                ViewBag.BackdropID = "#DivEMailXIRRClsBal";
+                                ViewBag.ElementBackBtnID = "btnOPBalback";
+
+                                Html.RenderPartial("_NonPerfReportButtonsDiv");
+                            }
+                            <table class='table dt-responsive' id="myTableclientDetailsOPBal" style="border-collapse: collapse;">
+
+                                <tr class="header" style="border: 1px solid #dddddd;">
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Account Code</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Client Name</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Family</b></p></th>
+                                </tr>
+                                <tbody id="tbodyclientDetailsOPBal">
+                                </tbody>
+                            </table>
+                            <table class="table table-hover dt-responsive w-100" id="XIRR_Opening_table" style="border-collapse: collapse;">
+                                <thead>
+                                    <tr class="header" style="border: 1px solid #dddddd;">
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Script Name</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>CDSL Quantity</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Quantity</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>CMP</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Current Value</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>% Holding</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Latest Buy</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Latest Sell</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Remarks</b></p></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyBindingXIRROpeningBal">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="div_XIRR_Closing_Val" style="display:none;">
+                            @{
+
+                                ViewBag.ReportName = "Holding Statement as on : ";
+                                ViewBag.ReportHeaderDiv = "Xirr_Holding_statement";
+                                ViewBag.GenDate = "True";
+
+                                Html.RenderPartial("_ReportHeader");
+
+                                ViewBag.PrimaryReport = "False";
+
+                                ViewBag.ElementPDFBtnID = "btnPDFXIRRClosingBal";
+                                ViewBag.PdfBackdropID = "#DivPDFXIRRClsBal";
+
+                                ViewBag.ElementExcelBtnID = "btnExcelXIRRClosingBal";
+                                ViewBag.ExcelBackdropID = "#DivExcelXIRRClsBal";
+
+                                ViewBag.ElementEmailBtnID = "btnEmailXIRRClosingBal";
+                                ViewBag.EmailBackdropID = "#DivEMailXIRRClsBal";
+
+                                ViewBag.ElementPrintBtnID = null;
+                                ViewBag.ElementPrintBtnOnClickEvent = null;
+
+
+                                ViewBag.ElementBackBtnID = "btnClsBalback";
+
+                                Html.RenderPartial("_NonPerfReportButtonsDiv");
+                            }
+                            <table class='table' id="myTableclientDetailsClosing" style="border-collapse: collapse;">
+                                <tr class="header" style="border: 1px solid #dddddd;">
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Family</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Client</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Holding Cost</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Current Valuation</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Gain Loss</b></p></th>
+                                </tr>
+                                <tr>
+                                    <td style='border: 1px solid #dddddd; text-align: center;'>
+                                        <span id="txtFamName"></span>
+                                    </td>
+                                    <td style='border: 1px solid #dddddd; text-align: center;'>
+                                        <span id="txtCliName"></span>
+                                    </td>
+                                    <td style='border: 1px solid #dddddd; text-align: center;'>
+                                        <span id="txtTHC"></span>
+                                    </td>
+                                    <td style='border: 1px solid #dddddd; text-align: center;'>
+                                        <span id="txtTVal"></span>
+                                    </td>
+                                    <td style='border: 1px solid #dddddd; text-align: center;'>
+                                        <span id="txtTPnL"></span>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            @*  <table class='table' id="myTableclientDetailsClosing" style="border-collapse: collapse;">
+                                <tr class="header" style="border: 1px solid #dddddd;">
+                                    <th colspan="3" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Total</b></p></th>
+                                </tr>
+
+                            </table> *@
+
+                            <div class="scrolledTable">
+                                <table class="table table-hover w-100" id="XIRR_Closing_table" style="border-collapse: collapse;">
+                                    <thead>
+                                        <tr class="header" style="border: 1px solid #dddddd;">
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Script Name</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>CDSL Quantity</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Quantity</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Purchase Cost</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Holding Cost</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>CMP</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Current Value</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>% Holding</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Gain Loss</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>ABS</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>XIRR</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Latest Buy</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Latest Sell</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Remarks</b></p></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyBindingXIRROpeningBal">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="DivEMailXIRRClsBal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content" style="width:55%; height:40vh; margin: auto">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div> <!-- end modal header -->
+                                    <div class="modal-body">
+                                        <p><h4>Please select whether you want Industry wise classification:</h4></p>
+                                        <input type="radio" id="Emailval1" name="ShowIndustryEmail" value="true">
+                                        <label for="Emailval1">Yes</label><br>
+                                        <input type="radio" id="Emailval2" name="ShowIndustryEmail" value="false" checked="checked">
+                                        <label for="Emailval2">No</label><br>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="SendValuationEmail()">Send Email</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div> <!-- end modal footer -->
+                                </div> <!-- end modal content-->
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="DivPDFXIRRClsBal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content" style="width:55%; height:40vh; margin: auto">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div> <!-- end modal header -->
+                                    <div class="modal-body">
+                                        <p><h4>Please select whether you want Industry wise classification:</h4></p>
+                                        <input type="radio" id="PDFval1" name="ShowIndustryPDF" value="true">
+                                        <label for="PDFval1">Yes</label><br>
+                                        <input type="radio" id="PDFval2" name="ShowIndustryPDF" value="false" checked="checked">
+                                        <label for="PDFval2">No</label><br>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="ExportValuationPDF()">Export to PDF</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div> <!-- end modal footer -->
+                                </div> <!-- end modal content-->
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="DivExcelXIRRClsBal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content" style="width:55%; height:40vh; margin:auto">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div> <!-- end modal header -->
+                                    <div class="modal-body">
+                                        <p><h4>Please select whether you want Industry wise classification:</h4></p>
+                                        <input type="radio" id="Xlsval1" name="ShowIndustryXls" value="true">
+                                        <label for="Xlsval1">Yes</label><br>
+                                        <input type="radio" id="Xlsval2" name="ShowIndustryXls" value="false" checked="checked">
+                                        <label for="Xlsval2">No</label><br>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="ExportValuationExcel()">Export to Excel</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div> <!-- end modal footer -->
+                                </div> <!-- end modal content-->
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div id="Inflow_Outflow" style="display:none">
+                    @{
+
+                        ViewBag.ReportName = "Cash Flow Statement as on ";
+                        ViewBag.ReportHeaderDiv = "Xirr_CashFLowState";
+                        ViewBag.GenDate = "True";
+
+                        ViewBag.PrimaryReport = "False";
+
+                        ViewBag.ElementPDFBtnID = "btnPdfXIRRCashFlow";
+                        ViewBag.PdfBackdropID = null;
+
+                        ViewBag.ElementExcelBtnID = "btnExcelXIRRCashFlow";
+                        ViewBag.ExcelBackdropID = null;
+
+                        ViewBag.ElementEmailBtnID = null;
+
+                        ViewBag.ElementBackBtnID = "btnCashFlowBack";
+
+                        Html.RenderPartial("_ReportHeaderCompact");
+                    }
+                    <div class="card" style="padding: 5px; position: unset;">
+                        <input type="hidden" id="inpFlowType" />
+                        <input type="hidden" id="inpClientCode" />
+                        <table class='table' id="myTableclientDetailsflow" style="border-collapse: collapse;">
+                            <tr class="header" style="border: 1px solid #dddddd;">
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Client Code</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Client Name</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Family</b></p></th>
+                            </tr>
+                            <tbody id="tbodyclientDetailsInflowOutFlow">
+                            </tbody>
+                        </table>
+                        <div id="div_XIRR_Inflow" style="display:none;">
+                            
+                            <div>
+                                <table class="table table-hover dt-responsive w-100" id="XIRR_Inflow_table" style="border-collapse: collapse;">
+                                    <thead>
+                                        <tr class="header" style="border: 1px solid #dddddd;">
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="paraTextAlignCenter"><b>Date</b></p></th>
+                                            <th style="background-color: #ffb3b3;"><p class="paraTextAlignLeft"><b>Remarks</b></p></th>
+                                            <th style="background-color: #ffb3b3;"><p class="paraTextAlignRight pr-1"><b>Amount</b></p></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyBindingXIRRInflow">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="div_XIRR_Outflow" style="display:none;">
+                            <div>
+                                <table class="table table-hover dt-responsive w-100" id="XIRR_Outflow_table" style="border-collapse: collapse;">
+                                    <thead>
+                                        <tr class="header" style="border: 1px solid #dddddd;">
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="paraTextAlignCenter"><b>Date</b></p></th>
+                                            <th style="background-color: #ffb3b3;"><p class="paraTextAlignLeft"><b>Remarks</b></p></th>
+                                            <th style="background-color: #ffb3b3;"><p class="paraTextAlignRight pr-1"><b>Amount</b></p></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyBindingXIRROutflow">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="XIRRWorking" style="display:none;">
+                    @{
+
+                        ViewBag.ReportName = "XIRR Working as on : ";
+                        ViewBag.ReportHeaderDiv = "Xirr_working";
+                        ViewBag.GenDate = "True";
+
+                        ViewBag.PrimaryReport = "False";
+
+                        ViewBag.ElementPDFBtnID = "btnExportXIRRWorkingPdf";
+                        ViewBag.ElementExcelBtnID = "btnExportXIRRWorkingXls";
+                        ViewBag.ElementEmailBtnID = "btnExportXIRRWorkingEmail";
+
+                        ViewBag.PdfBackdropID = null;
+                        ViewBag.ExcelBackdropID = null;
+                        ViewBag.EmailBackdropID = null;
+                        ViewBag.BackdropID = null;
+                        ViewBag.ElementBackBtnID = "btnXIRRWorkingback";
+
+                        Html.RenderPartial("_ReportHeaderCompact");
+                    }
+                    <div class="card" style="padding: 5px; position: unset;">
+
+                        <input type="hidden" id="txtFY"/>
+                        <input type="hidden" id="txtAcccode"/>
+
+                        <table class='table' id="XIRRWorkingclientDetailsflow" style="border-collapse: collapse;">
+                        </table>
+
+                        <table class="table table-hover dt-responsive" id="XIRRWorking_table" style="border-collapse: collapse; width:100%;">
+                            <thead>
+                                <tr class="header" style="border: 1px solid #dddddd;">
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Date</b></p></th>
+                                    <th style="background-color: #ffb3b3;"><p class="paraTextAlignLeft"><b>Remarks</b></p></th>
+                                    <th style="background-color: #ffb3b3;"><p class="paraTextAlignRight pr-1"><b>Amount</b></p></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyBindingXIRRWorking">
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Curr_Val Quantity -->
+            <div class="modal fade" id="OpenTradesModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
+                    <div class="modal-content p-1">
+                        <div class="modal-header">
+                            <h5 class="modal-title ml-auto" id="ModalTitle">Open Trade Details</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <!-- Modal Curr Val Quantity Body Start -->
+                        <div class="modal-body" style="height:550px; min-width:650px; overflow-y:auto;">
+                            <div class="row mt-1 mb-1">
+                                <div class="col-4">
+                                    <p>
+                                        <b>Client Name: </b><span id="OpenTradesCliName"></span>
+                                    </p>
+                                </div>
+                                <div class="col-4">
+                                    <p>
+                                        <b>Script Name: </b><span id="OpenTradesScripName"></span>
+                                    </p>
+                                </div>
+                                <div class="col-4">
+                                    <p>
+                                        <b>Current Market Price: </b><span id="OpenTradesCMP"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <table class="table table-redbordered table-hover" id="tblOpenTradesDet">
+                                    <colgroup>
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2">Transaction Date</th>
+                                            <th rowspan="2">Remarks</th>
+                                            <th rowspan="2">Buy</th>
+                                            <th rowspan="2">Rate</th>
+                                            <th colspan="2">Unrealised Gain/Loss</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Short Term</th>
+                                            <th>Long Term</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyOpenTradesDet">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Modal Curr Val Quantity Body End -->
+                        <div class="modal-footer p-1">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Curr_Val Quantity -->
+
+            <!-- Modal Curr_Val Scrip -->
+            <div class="modal fade" id="CliScripTradesModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
+                    <div class="modal-content p-1">
+                        <div class="modal-header">
+                            <h5 class="modal-title ml-auto" id="ModalTitle">Trade Details</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <!-- Modal Curr Val Quantity Body Start -->
+                        <div class="modal-body" style="height:550px; min-width:650px; overflow-y:auto;">
+                            <div class="row mt-1 mb-1">
+                                <div class="col-6">
+                                    <p>
+                                        <b>Client Name: </b><span id="tradeCliName"></span>
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <p>
+                                        <b>Script Name: </b><span id="tradeScripName"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <table class="table table-redbordered table-hover" id="tblScriptDet">
+                                    <colgroup>
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>Value Date</th>
+                                            <th>Transaction Date</th>
+                                            <th>Remarks</th>
+                                            <th>Buy</th>
+                                            <th>Sell</th>
+                                            <th>Rate</th>
+                                            <th>Balance Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyScriptDet">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Modal Curr Val Quantity Body End -->
+                        <div class="modal-footer p-1">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Curr_Val Scrip -->
+            <!-- trade Exception -->
+            <div id="exception_form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog  modal-sm">
+                    <div class="modal-content">
+                        <div class='modal-header'>
+                            <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                        </div>
+                        <div class="modal-body" style="padding-top:30px">
+                            <div style="text-align:center"><b>Trade Exceptions</b></div>
+                            <form>
+                                <div class="table-responsive p-0" style="margin-top: 5px;">
+                                    <table class="table table-hover table-head-fixed text-wrap" id="XIRR_tradeException" style="border-collapse: collapse; position: unset;width:100%;align-self:center">
+                                        <thead>
+
+                                            <tr>
+                                                <th class="TableHeaderRow"><p><b>Script Name</b></p></th>
+                                                <th class="TableHeaderRow"><p><b>Type</b></p></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyxirrtradeexception" style="background-color:#ffffff;">
+                                        </tbody>
+                                    </table>
+                                    <div><p style="font-size:14px"><b>Note: </b>For further details please refer <b>Performance > Transaction Statement</b></p></div>
+                                </div>
+                                <div id="noReFoundrealisedPerformance"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- trade Exception -->
+
+        </div>
+    </div>
+</div>
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+@*Jquery datatable Column Sum Plugin *@
+<script src="~/hyper/jquerydatatablesumplugin.js"></script>
+
+
+<script src="~/Jquery/XIRR_Summary.js" asp-append-version="true"></script>

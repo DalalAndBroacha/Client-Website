@@ -1,0 +1,690 @@
+﻿@model ViewModel.Reports.RPT;
+
+@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/css/Reports/PerformanceReport.css" rel="stylesheet" asp-append-version="true" />
+}
+
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <input type="text" id="Curr_Family_Id" hidden />
+        @*Loader*@
+        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:relative;top:50%;left:50%">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+        @*Loader*@
+
+        @*First Page*@
+        <div id="AssetAllocationLandingPage" style="position: unset; background-color: white;">
+            @{
+                ViewBag.ReportName = "Asset Allocation Report";
+                ViewBag.GenDate = "True";
+                ViewBag.GenPeriod = "False";
+
+                ViewBag.ElementPDFBtnID = "btnExportPdfAssetAllocation";
+                ViewBag.ElementExcelBtnID = "btnExportExcelAssetAllocation";
+                ViewBag.ElementEmailBtnID = "btnEMailAssetAllocation";
+
+                ViewBag.PrimaryReport = "True";
+
+
+                ViewBag.ElementBackBtnID = null;
+
+                Html.RenderPartial("_ReportHeaderCompact");
+            }
+            <div style="position:unset; background-color:white; padding:0.5rem" id="all_report">
+                <div class="row align-items-start">
+                    <div class="input-group mb-1 col-12">
+                       @*  <p id="FamilyName"></p> *@
+                        <h6 id="Report_head">Family: <span id="FamilyName" style="font-weight:bold"></span>&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; Fin Year: <span id="Fin_year" style="font-weight:bold"></span></h6>
+                    </div>
+                </div>
+                <br><br>
+                <div class="row align-items-start">
+                    <div class="input-group mb-1 col-6">
+                        <h6 style="font-weight:bold">Asset Allocation Categorywise</h6>
+                        <table class="table table-redbordered w-100" id="SummaryData">
+                            <colgroup>
+                                <col style="width: 40%;">
+                                <col style="width: 30%;">
+                                <col style="width: 20%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Holding</th>
+                                    <th>Holding %</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Summary_Familywise">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="input-group mb-1 offset-1 col-5">
+                        <canvas id="Summarychart" style="max-width:500px !important; max-height:500px !important"></canvas>
+
+                    </div>
+                </div>
+
+                <hr class="redHR"/>
+
+                <div class="row align-items-start">
+                    <div class="input-group mb-1 col-6">
+                        <h6 style="font-weight:bold">Asset Allocation Clientwise</h6>
+                        <table class="table table-redbordered w-100" id="ClientwiseData" style="padding:0.5rem">
+                            <colgroup>
+                                <col style="width: 50%;">
+                                <col style="width: 30%;">
+                                <col style="width: 20%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Client name</th>
+                                    <th>Holding</th>
+                                    <th>Holding %</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ClientWise_data">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="input-group mb-1 offset-1 col-5">
+                        <canvas id="ClientWiseDataChart" style="max-width:500px !important; max-height:500px !important"></canvas>
+                    </div>
+                </div>
+
+                <hr class="redHR" />
+
+                <div class="row align-items-start">
+                    <div class="input-group mb-1 col-6">
+                        <h6 style="font-weight:bold">Asset Allocation Client Categorywise</h6>
+                        <table class="table table-redbordered w-100" id="ClientCategoryWiseData" style="padding:0.5rem">
+                            <colgroup>
+                                <col style="width: 40%;">
+                                <col style="width: 30%;">
+                                <col style="width: 20%;">
+                            </colgroup> 
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Holding</th>
+                                    <th>Holding %</th>
+                                </tr>
+                            </thead> 
+                                <tbody id="ClientCategoryWise_Data">
+                            </tbody>
+                        </table>
+                     </div>
+
+                     @* <div class="input-group mb-1 offset-1 col-5" id="Clientcategorywise_ChartDiv">
+                          <canvas class="Clientcategorywise_Chart" style="width:100%;max-width:400px"></canvas>  
+                    </div>  *@
+
+                </div>
+
+            </div>
+        </div>
+         @*First Page*@
+
+        @*Direct Equity*@
+        <div id="myModalst_Performance" style="position: unset; background-color: white;">
+            <input type="text" id="popclient_id" hidden />
+            <input type="text" id="popsub_category" hidden />
+            <input id="txtclient_id_perfo" name="txtclient_id_perfo" hidden />
+            <input id="txtsub_category_perfo" name="txtsub_category_perfo" hidden />
+
+            @{
+                ViewBag.ReportName = "Direct Equity Performance As On : ";
+                ViewBag.DivReportHead = "DEHeader";
+                ViewBag.FlagAsOnDate = "True";
+                ViewBag.PrimaryReport = "False";
+                ViewBag.L3Report = "False";
+
+                ViewBag.ElementFamilyNameID = "bheDEfamilyName";
+                ViewBag.ElementClientNameID = "bheDEclientName";
+                ViewBag.ElementYearID = "bheDEFinYear";
+                ViewBag.ElementPANID = "bheDEPAN";
+
+                ViewBag.ElementBackBtnID = "btnBackDirectEquity";
+
+                ViewBag.ElementPDFBtnID = "btnExportDEPDF";
+                ViewBag.ElementExcelBtnID = "btnExportDEExcel";
+                ViewBag.ElementPrintBtnID = null;
+                ViewBag.ElementEmailBtnID = "btnEMailDirectEquity";
+                ViewBag.ElementPrintBtnOnClickEvent = "print('#Performance_Direct_Equity')";
+
+
+                Html.RenderPartial("_ReportButtonsDiv");
+            }
+
+            <div class="table-responsive p-0" style="height: 445px;">
+                <table class="table table-hover table-head-fixed text-wrap" id="Performance_Direct_Equity" style="border-collapse: collapse; position: unset;">
+                    <thead>
+
+                        <tr>
+                            <th class="TableHeaderRow"><p><b>Script Name</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Quantity</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Average</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Holding cost </b></p></th>
+                            <th class="TableHeaderRow"><p><b>Current Market Value</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Market Value</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>% Holding</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Dividend</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+
+                            <th class="TableHeaderRow"><p><b>ABS %</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>XIRR %</b></p></th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyBindingrealisedPerformance" style="background-color:#ffffff;">
+                    </tbody>
+                </table>
+            </div>
+            <div id="noReFoundrealisedPerformance"></div>
+        </div>
+
+        <div id="myModalst_PerformanceScript" style="display: none; position: unset; padding: 5px; background-color: white;">
+            @*<input type="text" id="DEclient_id" hidden />
+            <input type="text" id="DEScriptCode" hidden />
+            <input type="text" id="DEAccountCode" hidden />
+            <input type="text" id="DEMainClientID" hidden />*@
+
+            <input type="text" id="DEbtnIndicator" hidden /> 
+
+
+            @{
+                ViewBag.ReportName = "Performance Detail As On : ";
+                ViewBag.DivReportHead = "DEHeader";
+                ViewBag.FlagAsOnDate = "True";
+                ViewBag.PrimaryReport = "False";
+                ViewBag.L3Report = "True";
+
+                ViewBag.ElementFamilyNameID = null;
+                ViewBag.ElementClientNameID = "";
+                ViewBag.ElementYearID = "bheDEFinYear";
+                ViewBag.ElementPANID = null;
+                ViewBag.ElementScriptName = "";
+
+                ViewBag.ElementBackBtnID = "btnBackDirectEquityScriptwise";
+
+                ViewBag.ElementPDFBtnID = "btnDEScriptPDF";
+                ViewBag.ElementExcelBtnID = "btnDEScriptExcel";
+                ViewBag.ElementPrintBtnID = null;
+                ViewBag.ElementEmailBtnID = "btnEMailDirectEquityScriptwise";
+                ViewBag.ElementPrintBtnOnClickEvent = "print('#Performance_Direct_Equity_L3')";
+
+
+                Html.RenderPartial("_ReportButtonsDiv");
+            }
+
+            <div class="SubTotalRow" style="padding:3px;">
+                <table>
+                    <tr>
+                        <th><b>Client Name: </b></th>
+                        <th style="text-align:left;"><span id="DEScriptClientName"></span></th>
+                    </tr>
+                    <tr>
+                        <th><b>Script Name: </b></th>
+                        <th style="text-align:left;"><span id="DEScriptName"></span></th>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="table-responsive p-0" style="height: 445px;">
+                <table class='table table-hover table-head-fixed text-wrap' id="myTablePrintPoup12" style="border-collapse: collapse; position: unset;">
+                    <thead>
+                        <tr>
+                            <th class="TableHeaderRow"><p><b>Date</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Quantity</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Rate</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Market Value</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Dividend/<br />Interest</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+
+                            <th class="TableHeaderRow"><p><b>ABS %</b></p></th>
+                            <th class="TableHeaderRow"><p><b>XXIR %</b></p></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyBindingrealisedPerformanceScript" style="background-color:#ffffff;">
+                    </tbody>
+                </table>
+            </div>
+            <div id="noReFoundrealisedPerformanceScript"></div>
+        </div>
+        <input type="text" id="DEclient_id" hidden />
+        <input type="text" id="DEMainClientID" hidden />
+        <input type="text" id="DEScriptCode" hidden />
+        <input type="text" id="DEAccountCode" hidden />
+
+        @*Direct Equity*@
+        @*Reits and Invits*@
+        <div id="ReitsInvits_Performance" style="position: unset; background-color: white; display:none;">
+            @{
+                ViewBag.ReportName = "REITs & INVITs Performance As On : ";
+                ViewBag.DivReportHead = "RnIHeader";
+                ViewBag.FlagAsOnDate = "True";
+                ViewBag.PrimaryReport = "False";
+                ViewBag.L3Report = "False";
+
+                ViewBag.ElementFamilyNameID = "RnIfamilyName";
+                ViewBag.ElementClientNameID = "RnIclientName";
+                ViewBag.ElementYearID = "RnIFinYear";
+                ViewBag.ElementPANID = "RnIPAN";
+
+                ViewBag.ElementBackBtnID = "btnBackRnI";
+
+                ViewBag.ElementPDFBtnID = "btnExportRnIPDF";
+                ViewBag.ElementExcelBtnID = "btnExportRnIExcel";
+                ViewBag.ElementPrintBtnID = null;
+                ViewBag.ElementEmailBtnID = "btnEMailRnI";
+
+                Html.RenderPartial("_ReportButtonsDiv");
+            }
+
+            <div class="table-responsive p-0" style="height: 445px;">
+                <table class="table table-hover table-head-fixed text-wrap" id="Performance_RnI" style="border-collapse: collapse; position: unset;">
+                    <thead>
+
+                        <tr>
+                            <th class="TableHeaderRow"><p><b>Script Name</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Quantity</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Average</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Holding cost </b></p></th>
+                            <th class="TableHeaderRow"><p><b>Current Market Value</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Market Value</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>% Holding</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Dividend</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+
+                            <th class="TableHeaderRow"><p><b>ABS %</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>XIRR %</b></p></th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyBindingRnIPerformance" style="background-color:#ffffff;">
+                    </tbody>
+                </table>
+            </div>
+            <div id="noReFoundrealisedRnIPerformance"></div>
+        </div>
+        @*Reits and Invits*@
+
+        @*Bonds*@
+        <div id="myModalst_PerformanceBonds" style="position: unset; background-color: white;">
+            <input type="text" name="popclient_idBonds" id="popclient_idBonds" hidden />
+            <input type="text" name="popsub_categoryBonds" id="popsub_categoryBonds" hidden />
+
+            <input type="text" id="common_client_id_holder" hidden />
+            <input id="txtclient_id_perfo" name="txtclient_id_perfo" hidden />
+            <input id="txtsub_category_perfo" name="txtsub_category_perfo" hidden />
+
+            @{
+                ViewBag.ReportName = "Bonds Holding As On : ";
+                ViewBag.DivReportHead = "BondsHeader";
+                ViewBag.FlagAsOnDate = "True";
+                ViewBag.PrimaryReport = "False";
+                ViewBag.L3Report = "False";
+
+                ViewBag.ElementFamilyNameID = "bhefamilyNameBonds";
+                ViewBag.ElementClientNameID = "bheclientNameBonds";
+                ViewBag.ElementYearID = "bheFinYearBonds";
+                ViewBag.ElementPANID = "bhePANBonds";
+
+                ViewBag.ElementBackBtnID = "btnBackBonds";
+
+                ViewBag.ElementPDFBtnID = "btnBondsPDFExport";
+                ViewBag.ElementExcelBtnID = "btnBondsExcelExport";
+                ViewBag.ElementEmailBtnID = "btnEMailBonds";
+                ViewBag.ElementPrintBtnOnClickEvent = "print('#Performance_Bonds')";
+
+
+                Html.RenderPartial("_ReportButtonsDiv");
+            }
+
+            <div class="d-flex justify-content-center SubTotalRow">
+                <ul class="nav nav-pills-tab">
+                    <li class="nav-item"><a class="nav-link active" href="#Bond1Tog" data-toggle="tab">Bond Holding</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#Bond2Tog" data-toggle="tab">Bond Cash Flow</a></li>
+                </ul>
+            </div>
+            <div class="table-responsive p-0" style="height: 445px;">
+                <div class="tab-content" id="BondTablesData">
+                    <div class="tab-pane active" id="Bond1Tog">
+                        <table class="table table-hover table-head-fixed" id="Performance_Bonds" style="border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <th class="TableHeaderRow"><p><b>Security Name</b></p></th>
+                                    <th class="TableHeaderRow"><p><b>Rating</b></p></th>
+                                    <th class="TableHeaderRow"><p style="width:max-content"><b>Coupon %</b></p></th>
+                                    <th class="TableHeaderRow"><p><b> Interest Payment Date</b></p></th>
+                                    <th class="TableHeaderRow"><p><b>Call / Put / Maturity Date</b></p></th>
+                                    <th class="TableHeaderRow"><p><b>Date Of Purchase</b></p></th>
+                                    <th class="TableHeaderRow"><p><b>CDSL Quantity</b></p></th>
+                                    <th class="TableHeaderRow"><p><b>Pie Quantity</b></p></th>
+                                    <th class="TableHeaderRow"><p><b>Face Value</b></p></th>
+                                    <th class="TableHeaderRow"><p><b>Total Face</b></p></th>
+                                    <th class="TableHeaderRow"><p><b>Purchase Price</b></p></th>
+                                    <th class="TableHeaderRow"><p><b>Purchase Value</b></p></th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyBindingrealisedPerformanceBonds">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane" id="Bond2Tog">
+                        <table class="table table-hover table-head-fixed" id="Performance_Bonds_Cash_Flow" style="border-collapse: collapse;">
+                            <!--<thead id="theadBondsCashflow">-->
+                            @*<tr>
+                            <th class="TableHeaderRow"><p><b>Security Name</b></p></th>
+                            <th class="TableHeaderRow"><p><b>%</b></p></th>
+                            <th class="TableHeaderRow"><p><b>IP Date</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Maturity Date</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Dividend</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Total</b></p></th>
+                            </tr>*@
+                            <!--</thead>
+                            <tbody id="tbodyBindingrealisedPerformanceBondsCashflow">
+                            </tbody>-->
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="noReFoundrealisedPerformanceBonds"></div>
+        </div>
+        @*Bonds*@
+        @*Equity PMS*@
+        <div id="myModalst_PerformanceEquityPMS" style="position: unset; background-color: white;">
+
+
+            <input type="text" name="popclient_idEquityPMS" id="popclient_idEquityPMS" hidden />
+            <input type="text" name="popsub_categoryEquityPMS" id="popsub_categoryEquityPMS" hidden />
+            <input id="txtPMSClient" name="txtclient_id_perfo" hidden />
+
+            @{
+                ViewBag.ReportName = "Equity PMS Performance As On : ";
+                ViewBag.DivReportHead = "EqPMSHeader";
+                ViewBag.FlagAsOnDate = "True";
+                ViewBag.PrimaryReport = "False";
+                ViewBag.L3Report = "False";
+
+                ViewBag.ElementFamilyNameID = "bhefamilyNameEqPMS";
+                ViewBag.ElementClientNameID = "bheclientNameEqPMS";
+                ViewBag.ElementYearID = "bheFinYearEqPMS";
+                ViewBag.ElementPANID = "bhePANEqPMS";
+
+                ViewBag.ElementBackBtnID = "btnBackEqPMS";
+
+                ViewBag.ElementPDFBtnID = "btnEqPMSPDFExport";
+                ViewBag.ElementExcelBtnID = "btnEqPMSExcelExport";
+                ViewBag.ElementEmailBtnID = "btnEMailEqPMSSummary";
+                ViewBag.ElementPrintBtnOnClickEvent = "print('#Performance_EqPMS')";
+
+
+                Html.RenderPartial("_ReportButtonsDiv");
+            }
+
+            <div class="table-responsive p-0" style="height: 445px;">
+                <table class="table table-hover table-head-fixed text-wrap" id="Performance_EqPMS" style="border-collapse: collapse; position: unset;">
+                    <thead>
+
+                        <tr>
+                            <th class="TableHeaderRow"><p><b>Script Name</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Quantity</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Average</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Holding cost </b></p></th>
+                            <th class="TableHeaderRow"><p><b>Current Market Value</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Market Value</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>% Holding</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Dividend</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+
+                            @* <th class="TableHeaderRow"><p style="width:max-content"><b>ABS %</b></p></th>
+                            <th class="TableHeaderRow"><p style="width:max-content"><b>XIRR %</b></p></th> *@
+
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyBindingrealisedPerformanceEquityPMS" style="background-color:#ffffff;">
+                    </tbody>
+                </table>
+                <div id="noReFoundrealisedPerformanceEquityPMS"></div>
+            </div>
+        </div>
+        @*Equity PMS*@
+        @*Other PMS*@
+        <div id="myModalst_PerformanceOtherPMS" style="position: unset; background-color: white;">
+
+            <input type="text" name="Source_OtherPMS" id="SourceOtherPMS" hidden />
+            <input type="text" name="popclient_idOtherPMS" id="popclient_idEquityPMS" hidden />
+            <input name="popsub_categoryOtherPMS" id="popsub_categoryOtherPMS" hidden />
+            <input id="txtOtherPMSClient" name="txtclient_id_perfo" hidden />
+            <input id="txtOtherPMSFamily" name="txtFamily_id_perfo" hidden />
+            <input name="txtOtherPMSClientName" id="txtOtherPMS_perfo" hidden />
+
+            @{
+                ViewBag.ReportName = "Other PMS Holding As On : ";
+                ViewBag.DivReportHead = "OtherPMSHeader";
+                ViewBag.FlagAsOnDate = "True";
+                ViewBag.PrimaryReport = "False";
+                ViewBag.L3Report = "False";
+
+                ViewBag.ElementClientNameID = "bheclientNameOtherPMS";
+                ViewBag.ElementYearID = "bheFinYearOtherPMS";
+                ViewBag.ElementSubCategoryID = "OtherPMSsubcategory";
+                // ViewBag.ElementPANID = "bhePANEqPMS";
+
+                ViewBag.ElementBackBtnID = "btnBackOtherPMS";
+
+                ViewBag.ElementPDFBtnID = "btnOtherPMSPDFExport";
+                ViewBag.ElementExcelBtnID = "btnOtherPMSExcelExport";
+                ViewBag.ElementEmailBtnID = "btnEMailOtherPMSSummary";
+                // ViewBag.ElementPrintBtnOnClickEvent = "print('#Performance_EqPMS')";
+
+
+                Html.RenderPartial("_ReportButtonsDiv");
+            }
+
+            <div class="table-responsive p-0" style="height: 445px;">
+                <table class="table table-hover table-head-fixed text-wrap" id=" " style="border-collapse: collapse; position: unset;">
+                    <thead>
+
+                        <tr>
+                            <th class="TableHeaderRow"><p><b>Script Name</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Quantity</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Unit cost </b></p></th>
+                            <th class="TableHeaderRow"><p><b>Total Cost</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Market Rate</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Market Value</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Market Date</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Hold %</b></p></th>
+                            <th class="TableHeaderRow"><p><b>Profit/Loss</b></p></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyBindingPerformanceOtherPMS" style="background-color:#ffffff;">
+                    </tbody>
+                </table>
+                @* <div id="noReFoundrealisedPerformanceEquityPMS"></div>  *@
+            </div>
+        </div>
+        @*Other PMS*@
+        @* LiquiLoan  *@
+        <div id="LiquLoan_div" style="position: unset; background-color: white">
+
+            <input id="txtLiquiloanClient" name="txtclient_id_perfo" hidden />
+
+            @{
+                ViewBag.ReportName = "Liquiloan Investment Detail As On: ";
+                ViewBag.DivReportHead = "LiquiLoanHeader";
+                ViewBag.FlagAsOnDate = "True";
+                ViewBag.PrimaryReport = "False";
+                ViewBag.L3Report = "False";
+
+                ViewBag.ElementFamilyNameID = "Liqui_Family_Name";
+                ViewBag.ElementClientNameID = "Liqui_Client_Name";
+                ViewBag.ElementYearID = "Liqui_FinYear";
+                ViewBag.ElementPANID = "liqui_PAN";
+
+                ViewBag.ElementBackBtnID = "btnBackLiquiLoan";
+
+                ViewBag.ElementPDFBtnID = "btnLiquiLoanPDFExport";
+                ViewBag.ElementExcelBtnID = "btnLiquiLoanExcelExport";
+                ViewBag.ElementPrintBtnID = "btnPrintLiquiLoan";
+                ViewBag.ElementEmailBtnID = "btnEMailLiquiLoanSummary";
+                ViewBag.ElementPrintBtnOnClickEvent = "print('#Performance_LiquiLoan')";
+
+
+                Html.RenderPartial("_ReportButtonsDiv");
+            }
+
+            <div class="table-responsive" style="height: 445px; padding:5px;">
+                <table class="table" id="Performance_LiquiLoan_ClientDetails" style="border-collapse: collapse; position: unset;">
+                    <tbody>
+                        <tr>
+                            <th class="tableDataWithRedBorders"><b>Net Principal Investment</b></th>
+                            <th class="tableDataWithRedBorders"><b>Portfolio Value</b></th>
+                        </tr>
+                        <tr>
+                            <td class="tableDataWithRedBorders paraTextAlignCenter"><span id="Net_prin_Investment"></span></td>
+                            <td class="tableDataWithRedBorders paraTextAlignCenter"><span id="Port_Val"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table table-hover" id="Liquiloan_Investments">
+                    <thead>
+                        <tr>
+                            <th class="tableDataWithRedBorders SubTotalRow" colspan="9"><b>Investments</b></th>
+                        <tr>
+                        <tr>
+                            <th class="tableDataWithRedBorders"><b>Investment Date</b></th>
+                            <th class="tableDataWithRedBorders"><b>Scheme Details</b></th>
+                            <th class="tableDataWithRedBorders"><b>Amount</b></th>
+                            <th class="tableDataWithRedBorders"><b>XIRR</b></th>
+                            <th class="tableDataWithRedBorders"><b>Interest Repaid</b></th>
+                            <th class="tableDataWithRedBorders"><b>Principal Repaid</b></th>
+                            <th class="tableDataWithRedBorders"><b>Total Repaid</b></th>
+                            <th class="tableDataWithRedBorders"><b>Portfolio Value</b></th>
+                            <th class="tableDataWithRedBorders"><b>End Date</b></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody_Liquiloan_Investments">
+                    </tbody>
+                </table>
+                <table class="table table-hover" id="Liquiloan_CashFlow">
+                    <thead>
+                        <tr>
+                            <th class="tableDataWithRedBorders SubTotalRow" colspan="4"><b>Cash Flow</b></th>
+                        <tr>
+                        <tr>
+                            <th class="tableDataWithRedBorders"><b>Date</b></th>
+                            <th class="tableDataWithRedBorders"><b>Narration</b></th>
+                            <th class="tableDataWithRedBorders"><b>Type</b></th>
+                            <th class="tableDataWithRedBorders"><b>Amount</b></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody_Liquiloan_CashFlow">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @* LiquiLoan  *@
+        @*FD Details*@
+        <div id="myModalst_PerformanceFDDetails" style="position: unset; background-color: white; padding: 0.5rem">
+
+
+            @*  <input type="text" name="popclient_idOtherPMS" id="popclient_idEquityPMS" hidden /> *@
+
+            <input id="txtFDClient" name="txtclient_id_perfo" hidden />
+            <input id="txtFDclientName" name="txtFDClientName" hidden />
+            <input id="sub_categoryFDDetails" name="popsub_categoryFDDetails" hidden />
+            <input id="txtFDDetailsFamily" name="txtFamily_id_perfo" hidden />
+
+            @{
+                ViewBag.ReportName = "FD_Details For Period ";
+                ViewBag.DivReportHead = "header_div_";
+                ViewBag.GenDate = "True";
+                ViewBag.GenPeriod = "True";
+
+                ViewBag.ElementBackBtnID = "btnBackFDDetails";
+
+                ViewBag.ElementPDFBtnID = "btnFDDetailsPDFExport";
+                ViewBag.ElementExcelBtnID = "btnFDDetailsExcelExport";
+                ViewBag.ElementEmailBtnID = "btnEMailFDDetailsSummary";
+
+
+                Html.RenderPartial("_ReportHeaderCompact");
+            }
+            <div id="dsp_clientDetails" class="SubTotalRow row" style="padding-left:0.5rem"></div>
+            <div class="table-responsive p-0" style="margin-top:0.5rem">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="div_Holding">
+                        <table class="table table-hover table-head-fixed text-wrap" id="tbl_FDDetails" style="border-collapse: collapse; position: unset;">
+                            <tbody id="tbodyBindingPerformanceFDDetails" style="background-color:#ffffff;">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*FD Details*@
+    </div>
+</div>
+
+<script src="~/jquery/reports/asset allocation.js" asp-append-version="true"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script> 
+
+
+
+
+

@@ -1,0 +1,116 @@
+﻿@model ViewModel.Reports.RPT;
+
+@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+    <link href="~/css/Reports/GlobalReport.css" rel="stylesheet" asp-append-version="true" />
+}
+
+
+<div id="main_div" style="position: unset; background-color: white;">
+
+    <div class="wrapper">
+        <div class="content-wrapper">
+
+            <div id="HoldingwaitIn" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+                <img src="~/images/loader.gif" width="64" height="64" />
+            </div>
+
+            <div style="background-color:white !important; padding-top:0.5rem">
+                <input type="text" id="txtFamId" value="0" hidden readonly />
+
+                <div class="d-flex justify-content-left">
+
+                    <div class="input-group mb-1  col-md-5" style="margin-left:0.5rem">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text DnB-RedLabel" for="ddlClientList">Clients</label>
+                        </div>
+                        <select id="ddlClientList">
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-1 col-md-4">
+                        <input type="checkbox" id="Holdtype" name="dspSection" data-toggle="toggle" data-size="xxl"
+                               data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="success" data-on="Summary"
+                               data-off="Detail" checked="checked">
+                    </div>
+
+                    <div class="input-group mb-1 col-md-3">
+                        <button type="button" onclick="ViewReport()" class="btn DnB-RedLabel">View Data</button>
+                    </div>
+
+                    @* <div class="col-3">
+                    <label>Client</label>
+                    <select style="border: 1px solid #cccccc; height:38px;" class="form-control mb-1" id="ddlClientList">
+                    </select>
+                    </div> *@
+                    @*  <div class="col-5 mt-1 ml-4 p-1 row justify-content-center">
+                    <div class="ml-4">
+                    <input type="checkbox" id="Holdtype" name="dspSection" data-toggle="toggle" data-size="xxl"
+                    data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="success" data-on="Summary"
+                    data-off="Detail" checked="checked">
+                    </div>
+                    </div> *@
+                    @* <div class="col-3" >
+                    <button onclick="ViewReport()" class="btn btn-sm DnB-RedLabel" >View Report</button>
+                    </div> *@
+                </div>
+
+                <div id="content_div" style="display:none;">
+                    @{
+                        ViewBag.ReportName = "Holding Report";
+                        ViewBag.GenDate = "True";
+                        ViewBag.GenPeriod = "True";
+
+                        ViewBag.ElementPDFBtnID = "btnExportPdfHolding";
+                        ViewBag.ElementExcelBtnID = "btnExportExcelHolding";
+                        ViewBag.ElementEmailBtnID = "btnEMailHolding";
+
+                        ViewBag.PrimaryReport = "True";
+
+
+                        ViewBag.ElementBackBtnID = null;
+
+                        Html.RenderPartial("_ReportHeaderCompact");
+                    }
+
+                    <input type="text" id="txtHoldingFlag" hidden readonly />
+
+                    <div id="main_content" style="padding-top:5px">
+
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="div_Holding">
+                                <table id="tbodyBindingHolding" class="table mt-2 table-hover w-100 table-redbordered">
+                                </table>
+                            </div>
+                            @* <table class="table table-bordered dt-responsive w-100" id="tbodyBindingHolding"></table> *@
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>
+
+<script src="~/jquery/reports/holdingreport.js"></script>

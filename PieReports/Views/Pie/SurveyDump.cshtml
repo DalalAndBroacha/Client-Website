@@ -1,0 +1,108 @@
+﻿@using Newtonsoft.Json
+@using ViewModel.Login
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+
+    <link href="~/css/Service Modules/SurveyDump.css" rel="stylesheet" />
+}
+
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+
+        @{
+
+            ViewBag.ReportName = "All Responses";
+            ViewBag.ReportHeaderDiv = "AllResp";
+            ViewBag.GenDate = "False";
+
+            ViewBag.PrimaryReport = "True";
+            ViewBag.ElementPDFBtnID = null;
+            ViewBag.ElementExcelBtnID = "btnSDumpExportExcel";
+            ViewBag.ElementEmailBtnID = "btnEMailSDump";
+
+            ViewBag.ElementBackBtnID = null;
+
+            Html.RenderPartial("_ReportHeaderCompact");
+            ViewData.Clear();
+
+        }
+
+    <div style="position:unset; background-color:white; padding:1rem;">
+        <div id="dataDiv" style="display:none;">
+            <table id="tableSurveyDataDump" class="table table-hover table-bordered">
+            </table>
+            <div class="mt-1">
+                <table>
+                    <tr>
+                        <td><span class="mr-1" style="display: block; background-color: #b1dfbb; height:9px; width: 15px; border: 1px solid black"></span></td>
+                        <td><span style="font-size:9px;">Interaction with client completed</span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="remarksModal" tabindex="-1" role="dialog" aria-labelledby="FamTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title ml-auto" id="FamTitle"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="height:auto; width:650px; overflow-y:auto;">
+                        <input type="text" id="txtHidFamId" hidden readonly>
+                        <input type="text" id="txtHidFilledOn" hidden readonly>
+                        <input type="text" id="txtHidSurveyId" hidden readonly>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="txtRemarks">Remarks</label>
+                                <input type="text" id="txtRemarks" class="form-control" maxlength="2000" placeholder="Enter Remarks">
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-4">
+                                <label for="interactDate">Interaction Date</label>
+                                <input type="date" class="form-control" id="interactDate" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnSave" class="btn btn-success hidden" onclick="saveRemarksData()">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+
+<script src="~/Jquery/Services/SurveyDump.js"></script>
+

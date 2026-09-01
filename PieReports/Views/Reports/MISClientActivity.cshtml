@@ -1,0 +1,126 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{ string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/css/Reports/ClientActivityMIS.css" rel="stylesheet" />
+
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div id="MISCliActwaitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+            @{
+
+                ViewBag.ReportName = "Client Activity";
+                ViewBag.ReportHeaderDiv = "MIS_ClientActivity";
+                ViewBag.GenDate = "False";
+
+                Html.RenderPartial("_ReportHeader");
+            }
+
+            <div style="position:unset; background-color:white; padding:0.5rem;">
+                <div id="divMainTbl" style="display:none;">
+                    <table id="tblMain" class="table table-bordered w-100 table-hover">
+                        <thead>
+                            <tr>
+                                <th><b>Client Name</b></th>
+                                <th><b>Last Equity Trade</b></th>
+                                <th><b>Last Mutual Fund Trade</b></th>
+                                <th><b>Last Review</b></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyMainTbl">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <!-- Modal History -->
+            <div class="modal fade" id="historyModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
+                    <div class="modal-content p-1">
+                        <div class="modal-header">
+                            <h5 class="modal-title ml-auto" id="HistoryModalTitle">History</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <!-- Modal History Body Start -->
+                        <div class="modal-body" style="height:350px; width:500px; overflow-y:auto;">
+                            <table class="table table-striped table-hover table-bordered">
+                                <tbody id="tbodyHistoryData">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Modal History Body End -->
+                        <div class="modal-footer p-1">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal History-->
+
+            <!-- Modal Add -->
+            <div class="modal fade" id="AddModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
+                    <div class="modal-content p-1">
+                        <div class="modal-header">
+                            <h5 class="modal-title ml-auto" id="AddTitle">Add</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <!-- Modal Add Body Start -->
+                        <div class="modal-body" style="height:auto; width:650px; overflow-y:auto;">
+                            <div class="col-5">
+                                <label for="inpReviewDate">Review Date</label>
+                                <input type="date" id="inpReviewDate" class="form-control">
+                            </div>
+                            <div class="col-12 mt-1">
+                                <label for="txtRemarks">Remarks</label>
+                                <input type="text" id="txtRemarks" class="form-control" maxlength="2000" placeholder="Enter Remarks">
+                                <input type="text" id="mCliId" readonly hidden>
+                            </div>
+                        </div>
+                        <!-- Modal Add Body End -->
+                        <div class="modal-footer p-1">
+                            <button type="button" id="btnSave" class="btn btn-success hidden" onclick="saveRemarksData()">Save</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Add-->
+
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+<script src="~/Jquery/Reports/MISClientActivity.js"></script>

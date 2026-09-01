@@ -1,0 +1,14 @@
+﻿.myCstDatatable {
+    font-family: Roboto, sans-serif;
+}
+.myCstDatatable td
+{
+    font-size:14px;
+    text-align:center;
+}
+.myCstDatatable th {
+    vertical-align:middle !important;
+    font-size:14px;
+    text-align: center;
+    font-weight: bold;
+}

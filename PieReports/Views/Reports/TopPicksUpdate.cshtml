@@ -1,0 +1,224 @@
+﻿@model List<ViewModel.Reports.ResearchReport.psp_dsp_model_portfolio>
+@using ViewModel.Login
+@using Newtonsoft.Json
+@using ViewModel.Reports.ResearchReport
+
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>
+    (dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+    <link href="~/css/Reports/TopPicks.css" rel="stylesheet" />
+}
+
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <div style="position:unset; background-color:white; padding:0.5rem">
+            <div class="float-right" id="div_add_new">
+                <button type="button" class="btn DnB-RedLabel" id="btn_Add_New">Add New</button>
+            </div>
+            <div id="dsp_form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog  modal-sm">
+                    <div class="modal-content">
+                        <div class='modal-header'>
+                            <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                        </div>
+                        <div class="modal-body" style="padding-bottom:0px; padding-top:30px">
+
+                            <form>
+                                <div class="form-row">
+                                    <input type="text" id="inp_rec_id" value="0" hidden />
+                                    <div class="form-group col-sm-2">
+                                        @*<label class="input-group-text">Date</label>*@
+                                        <input type='date' id='reco_date' class='form-control'>
+                                    </div>
+                                    <div class="form-group col-sm-1">
+                                        <label class="input-group-text">Active</label>
+                                    </div>
+                                    <div class="form-group col-sm-1">
+                                        <input type='checkbox' id="chk_active" data-toggle='toggle' data-onstyle='success' data-offstyle='danger' data-on='Yes' data-off='No' data-size='xs' class='switchButton' style="width: 90px; height:50px">
+                                    </div>
+
+                                    <div class="form-group col-sm-1">
+                                        <label class="input-group-text">Actionable</label>
+                                    </div>
+                                    <div class="form-group col-sm-1">
+                                        <input type='checkbox' id="chk_actionable" data-toggle='toggle' data-onstyle='success' data-offstyle='danger' data-on='Yes' data-off='No' data-size='xs' class='switchButton' style="width: 90px; height: 50px; margin-top: 15px">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-sm-9 input-group">
+                                        <label class="input-group-text input-group-prepend" style="width:10%" for="isin">Security</label>
+                                        <input type='text' id='isin' maxlength="12" class='form-control' placeholder="ISIN" ng-trim="true">
+                                        <input type='text' id='Script_Name' style="width:60%" class='form-control' placeholder="Security Name" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-8">
+                                        <label class="input-group-text ">INV Rationable</label>
+                                        <textarea type='text' rows="12" id='inv_rationable' class='form-control'></textarea>
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <div class="form-row">
+                                            <div class="form-group col-6">
+                                                <label class="input-group-text ">Risk Profile</label>
+
+                                                <select id="risk_profile" class="form-control" style="height:32px">
+                                                    <option value="0">Select Option</option>
+                                                    <option value="1">High</option>
+                                                    <option value="2">Low</option>
+                                                    <option value="3">Medium</option>
+                                                    <option value="4">Moderate</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-6">
+                                                <label class="input-group-text ">Portfolio Type</label>
+
+                                                <select id="portfolio_type" class="form-control" style="height:32px">
+                                                    <option value="0">Select Option</option>
+                                                    <option value="1">Core Portfolio</option>
+                                                    <option value="2">Satellite Portfolio</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-7 input-group">
+                                                <label class="input-group-text" id="lblhighlow" style="width:100%">52 Week High/Low</label>
+                                                <input type="number" id='wk_high' style="width:50%" placeholder="High" min="1" class='form-control'>
+                                                <input type="number" id='wk_low' style="width:50%" placeholder="Low" min="1" class='form-control'>
+                                            </div>
+                                            <div class="form-group col-5">
+                                                <label class="input-group-text current_price">Current Price</label>
+                                                <input type='number' id='current_price' class='form-control' placeholder="Current Price" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-4">
+                                                <label class="input-group-text input-group-prepend" id="lblpricetarget" for="price_target">Price Target</label>
+                                                <input type='number' id='price_target' class='form-control' min="1" placeholder="Price Target">
+                                            </div>
+                                            <div class="form-group col-8 input-group">
+                                                <label class="input-group-text" id="lblrange" style="width:100%">Buying Range</label>
+                                                <input type="number" id='range_start' class='form-control' placeholder="Range Start" readonly>
+                                                <input type='number' id='range_end' class='form-control' placeholder="Range End" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-4">
+                                                <label class="input-group-text" id="lbleps1" for="eps1">EPS 1</label>
+                                                <input type='number' id='eps1' class='form-control' min="1" placeholder="EPS 1">
+                                            </div>
+                                            <div class="form-group col-4">
+                                                <label class="input-group-text" id="lbleps2">EPS 2</label>
+                                                <input type="number" id='eps2' class='form-control' min="1" placeholder="EPS 2">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-12">
+                                                @*<label class="input-group-text ">Stock Action</label>*@
+                                                <input type='text' id='stock_action' class='form-control' placeholder="Stock Action" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="mb-1 offset-5 col-3">
+                                        <div class="input-group-prepend" style="margin-top:20px">
+                                            <button type="button" class="btn btn-sm btn-success" id="btn_update" style="border:1px solid black; height:30px" onclick="ADDUpdate_topPicks()">Submit</button>
+                                            <button type="button" class="btn btn-sm btn-secondary" id="btn_cancel" style="border: 1px solid black; height:30px; margin-left: 20px" data-dismiss='modal'>Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-bordered dt-responsive w-100" id="display_table">
+                <thead>
+                    <tr>
+                        <th style="background-color: #FCE0E0">Date</th>
+                        <th style="background-color: #FCE0E0">ISIN</th>
+                        <th style="background-color: #FCE0E0">Script Name</th>
+                        <th style="background-color: #FCE0E0">Current Price</th>
+                        <th style="background-color: #FCE0E0">Target</th>
+                        <th style="background-color: #FCE0E0">Active</th>
+                        <th style="background-color: #FCE0E0">Actionable</th>
+                        <th style="background-color: #FCE0E0">Update</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodydsp_table">
+
+                    @foreach (var li in Model)
+                    {
+                        <tr>
+                            <td style="height:25px;" class=text-center data-sort="@li.reco_date.ToString("yyyyMMdd")"><input type="hidden" name="rec_id" value="@li.rec_id"> <input type="hidden" name="eps1" value="@li.eps1"> @li.reco_date.ToString("dd-MM-yyyy")</td>
+                            <td style="height:25px;" class=text-center> <input type="hidden" name="eps2" value="@li.eps2"> <input type="hidden" name="range_start" value="@li.range_start"> @li.isin  </td>
+                            <td style="height:25px;"><input type="hidden" name="portfolio_type" value="@li.portfolio_type">  <input type="hidden" name="range_end" value="@li.range_end">@li.stock_name </td>
+                            <td style="height:25px;"><input type="hidden" name="wk_high" value="@li.wk_high">  <input type="hidden" name="stock_action" value="@li.stock_action"><input type="hidden" name="reco_price" value="@li.reco_price"> @li.current_price</td>
+                            <td style="height:25px;"><input type="hidden" name="wk_low" value="@li.wk_low"> <input type="hidden" name="risk_profile" value="@li.risk_profile"> <input type="hidden" name="inv_rationale" value="@li.inv_rationale"> @li.price_target</td>
+
+                            @if (@li.active == "Y")
+                            {
+                                <td class="text-center" style="width: 90px; height:50px">
+                                    <input type='checkbox' checked data-toggle='toggle' data-onstyle='success' data-offstyle='danger' data-on='Yes' data-off='No' data-size='xs' class='switchButton' disabled>
+                                    <input type="hidden" name="active" value="@li.active">
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-center" style="width: 90px; height:50px">
+                                    <input type='checkbox' data-toggle='toggle' data-onstyle='success' data-offstyle='danger' data-on='Yes' data-off='No' data-size='xs' class='switchButton' disabled><input type="hidden" name="active" value="@li.active">
+                                </td>
+                            }
+                            @if (@li.actionable == "Y")
+                            {
+                                <td class="text-center" style="width: 90px; height:50px">
+                                    <input type='checkbox' checked data-toggle='toggle' data-onstyle='success' data-offstyle='danger' data-on='Yes' data-off='No' data-size='xs' class='switchButton' disabled><input type="hidden" name="actionable" value="@li.actionable">
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-center" style="width: 90px; height:50px">
+                                    <input type='checkbox' data-toggle='toggle' data-onstyle='success' data-offstyle='danger' data-on='Yes' data-off='No' data-size='xs' class='switchButton' disabled><input type="hidden" name="actionable" value="@li.actionable">
+                                </td>
+                            }
+
+                            <td class="text-center" style="width: 110px; height:25px">
+                                <button class='btn update_rec' type='submit' title='Edit'><i class='fas fa-pencil-alt fa-lg White_Red_Icon' style='font-weight: 600'></i></button>
+                            </td>
+                        </tr>
+
+
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>
+<script src="~/Jquery/Reports/TopPicks.js"></script>

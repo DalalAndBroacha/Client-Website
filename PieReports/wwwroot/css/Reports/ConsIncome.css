@@ -1,0 +1,11 @@
+﻿thead th{
+    font-weight:bold;
+}
+
+button[aria-expanded=true] .fa-plus-square{
+    display:none;
+}
+
+button[aria-expanded=false] .fa-minus-square {
+    display: none;
+}

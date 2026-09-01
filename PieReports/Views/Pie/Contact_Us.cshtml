@@ -1,0 +1,103 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+    <link href="~/css/Reports/GlobalReport.css" rel="stylesheet" />
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+
+            @{
+                ViewBag.ReportName = "Investor Grievances Escalation Matrix";
+                ViewBag.ReportHeaderDiv = "GlobalReport";
+                ViewBag.GenDate = "False";
+                ViewBag.GenPeriod = "False";
+
+                Html.RenderPartial("_ReportHeader");
+            }
+            @*<div class="row justify-content-center">
+            <h3><u>Investor Grievances Escalation Matrix</u></h3>
+        </div>*@
+
+            <table id="escalation_table" class="table table-redbordered">
+                <colgroup>
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 10%;">
+                    <col style="width: 10%;">
+                    <col style="width: 20%;">
+                    <col style="width: 20%;">
+                </colgroup>
+                <tr>
+                    <th style="text-align:center;">Details of</th>
+                    <th style="text-align:center;">Contact Person</th>
+                    <th style="text-align:center;">Address</th>
+                    <th style="text-align:center;">Contact Number</th>
+                    <th style="text-align:center;">E-mail Id</th>
+                    <th style="text-align:center;">Operational/Working Hours</th>
+                </tr>
+                <tr>
+                    <td>Customer care</td>
+                    <td>Ms. Rajasi Sawant</td>
+                    <td rowspan="5" style="text-align:center; vertical-align:middle;">506, Maker Chambers V, 221, Nariman Point, Mumbai – 21</td>
+                    <td>022 - 67141441</td>
+                    <td>info@dalal-broacha.com</td>
+                    <td>Monday to Friday 9.30 AM to 5.30 PM</td>
+                </tr>
+                <tr>
+                    <td>Head of Customer care</td>
+                    <td>Ms. Megha Lath</td>
+                    <td>022 – 67141422</td>
+                    <td>megha.lath@dalal-broacha.com</td>
+                    <td>Monday to Friday 9.30 AM to 5.30 PM</td>
+                </tr>
+                <tr>
+                    <td rowspan="2" style="vertical-align:middle;">Compliance Officer</td>
+                    <td>Mr. Praful Trivedi (Broking services)</td>
+                    <td>022 – 67141468/95</td>
+                    <td>compliance.officer@dalal-broacha.com</td>
+                    <td rowspan="2" style="vertical-align:middle;">Monday to Friday 9.30 AM to 5.30 PM</td>
+                </tr>
+                <tr>
+                    <td>Mr. Shivram Masaye(DP)</td>
+                    <td>022 - 67141423</td>
+                    <td>cds@dalal-broacha.com</td>
+                </tr>
+                <tr>
+                    <td>CEO</td>
+                    <td>Mr. Nailesh P Dalal</td>
+                    <td>022 – 67141401</td>
+                    <td>nailesh.dalal@dalal-broacha.com</td>
+                    <td>Monday to Friday 10.00 AM to 5.30 PM</td>
+                </tr>
+
+            </table>
+
+            <div style="padding:1em; font-size:1em; background-color: #fff; background-clip: border-box; border: 1px solid orangered; border-radius: 0.25rem;">
+                <p>
+                    In absence of response/complaint not addressed to your satisfaction, you may lodge a complaint with:
+                </p>
+                <ul style="list-style-type: disc; margin-left:1rem">
+                    <li>SEBI at <a href="https://scores.gov.in/scores/Welcome.html" target="_blank">https://scores.gov.in/scores/Welcome.html</a></li>
+                    <li>BSE at <a href="https://bsecrs.bseindia.com/ecomplaint/frmInvestorHome.aspx" target="_blank">https://bsecrs.bseindia.com/ecomplaint/frmInvestorHome.aspx</a></li>
+                    <li>NSE at <a href="https://investorhelpline.nseindia.com/NICEPLUS/" target="_blank">https://investorhelpline.nseindia.com/NICEPLUS/</a></li>
+                    <li>CDSL at <a href="https://www.cdslindia.com/Footer/grievances.aspx" target="_blank">https://www.cdslindia.com/Footer/grievances.aspx</a></li>
+                </ul>
+                <p>Please quote your Service Ticket/Complaint Ref No. while raising your complaint at SEBI SCORES/Exchange portal/Depository portal.</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Jquery/Services/ContactUs.js"></script>

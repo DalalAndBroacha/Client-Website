@@ -1,0 +1,9 @@
+﻿
+table.dataTable tbody > tr.selected, table.dataTable tbody > tr > .selected {
+    background-color: #FCE0E0;
+    color: black;
+}
+
+.bigdrop { /*select2 width */
+    width: fit-content !important;
+}

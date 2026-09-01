@@ -1,0 +1,189 @@
+﻿@model ViewModel.Login.Dashboard
+
+@{
+    Html.RenderPartial("~/Pages/_Layout.cshtml", Model);
+}
+
+@section Styles {
+    <link href="~/css/Dashboard.css" rel="stylesheet" />
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div id="DashwaitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+
+        <div style="position: unset; background-color: white; padding: 0.5rem;">
+            <div id="initDashboard" style="display:none;">
+
+                @*@Html.ActionLink("Global", "GlobalReport", "Reports", new { family_token = "123", main_client_id = "321" })*@
+
+                <div class="row justify-content-center">
+
+                    @*<div class="cardOrange col-5o5 levelOneTiles">
+                        <p class="SubTotalRow tileHeader text-center">RM Details</p>
+                        <div class="card-body">
+                            <table class="table table-redbordered table-hover">
+                                <thead class="stickyThead">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>E-mail</th>
+                                        <th>Mobile</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyRMDetails"></tbody>
+                            </table>
+                        </div>
+                    </div>*@
+
+                    <div class="cardOrange col-10 levelOneTiles">
+                        <p class="SubTotalRow tileHeader text-center">Clients</p>
+                        <div class="card-body">
+                            <table class="table table-redbordered table-hover">
+                                <thead class="stickyThead">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>PAN</th>
+                                        <th>Reports</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyClientDetails">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row justify-content-center mt-2">
+                    <div class="cardOrange col-11o5  levelTwoTiles">
+                        <p class="SubTotalRow tileHeader text-center">Asset Allocation</p>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <table class="table table-redbordered table-hover">
+                                        <thead class="stickyThead">
+                                            <tr>
+                                                <th>Asset</th>
+                                                <th>Holding Amount</th>
+                                                <th>Market Value</th>
+                                                <th>% Allocation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyAssetFamDetails">
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="ml-auto col-6">
+                                    <table class="table table-redbordered table-hover">
+                                        <thead class="stickyThead">
+                                            <tr>
+                                                <th>Client Name</th>
+                                                <th>Holding Amount</th>
+                                                <th>Market Value</th>
+                                                <th>% Allocation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyAssetCliDetails">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row mt-2 justify-content-around">
+
+                    <div class="cardOrange levelOneTiles col-5o5">
+                        <p class="SubTotalRow tileHeader text-center">Direct Equity Performance</p>
+                        <div class="card-body">
+                            <table class="table table-redbordered table-hover">
+                                <thead class="stickyThead">
+                                    <tr>
+                                        <th>Client Name</th>
+                                        <th>Stock Value</th>
+                                        <th>ABS</th>
+                                        <th>XIRR</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyXirrdetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="cardOrange col-6 levelOneTiles">
+                        <p class="SubTotalRow tileHeader text-center">SIP Details</p>
+                        <div class="card-body">
+                            <table class="table table-redbordered table-hover">
+                                <thead class="stickyThead">
+                                    <tr>
+                                        <th style="vertical-align:middle;">Client Name</th>
+                                        <th><p>Scheme Name<p><p class="tableDataLowerCol">Folio Number<p></th>
+                                        <th style="vertical-align:middle;">Period</th>
+                                        <th><p>Amount<p><p class="tableDataLowerCol">Frequency<p></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodySIPdetails"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="row mt-2 justify-content-center">
+                    <div class="cardOrange col-10 levelOneTiles">
+                        <p class="SubTotalRow tileHeader text-center">Notification</p>
+                        <div class="card-body">
+                            <p>
+                                <ul style="list-style:disc; margin:0.75rem">
+                                    <li>Income Updation Pending.</li>
+                                    <li>Your feedback helps us to improve. Please provide feedback click here to go to Survey.</li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                </div>*@
+
+
+
+                
+                
+
+            </div>
+
+            <!-- Login Modal -->
+                <input type="hidden" id="modalDsp" value="@Model.LoginModalDisplay.ToString()"/>
+                <div class="modal fade" id="LoginModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content" style="width:fit-content; height:fit-content; margin:auto; 
+                                    border: 2px solid red; box-shadow: 0px 0px 16px 9px indianred;">
+                            <div>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span class="mr-2" aria-hidden="true">&times;</span>
+                                    </button>
+                            </div> <!-- end modal header -->
+                            <div style="padding:1rem; overflow:hidden;">
+                                <ul style="list-style-type: disc; padding:5px;">
+                                        <li>
+                                            <p class="lead">@Model.LoginModalMessage</p>
+                                        </li>
+                                    </ul>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" onclick="location.href='@Url.Action("ChangePassword", "Login")'" class="btn btn-info">Change password</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                
+                            </div>
+                        </div> <!-- end modal content-->
+                    </div>
+                </div>
+            <!-- Login Modal -->
+        </div>   
+    </div>
+</div>
+
+
+<script src="~/Jquery/PieReport.js" asp-append-version="true"></script>

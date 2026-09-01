@@ -1,0 +1,28 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+            <div class="d-flex justify-content-center">
+                <div class="col-9" id="textAreaContent">
+                    <textarea id="message1" name="message"></textarea>
+                    <textarea id="message2" name="message"></textarea>
+                    <textarea id="message3" name="message"></textarea>
+                </div>
+                <div class="col-2">
+                    <div id="charCount">150 characters remaining</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Jquery/DevTest.js" asp-append-version="true"></script>

@@ -1,0 +1,7 @@
+﻿#main_data_div button[aria-expanded=true] .fa-plus-square {
+    display: none;
+}
+
+#main_data_div button[aria-expanded=false] .fa-minus-square {
+    display: none;
+}

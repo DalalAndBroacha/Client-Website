@@ -1,0 +1,241 @@
+﻿@model ViewModel.Reports.RPT
+@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        @{
+
+            ViewBag.ReportName = "Common Documents";
+            ViewBag.ReportHeaderDiv = "ComDocs";
+            ViewBag.GenDate = "False";
+
+            Html.RenderPartial("_ReportHeader");
+
+            ViewBag.PrimaryReport = "True";
+
+            ViewBag.ElementPDFBtnID = "btnExportPdfCommonDocs";
+            ViewBag.ElementExcelBtnID = "btnExportCommonDocs";
+            ViewBag.ElementPrintBtnID = "btnPrintCommonDocs";
+            ViewBag.ElementEmailBtnID = "btnEMailCommonDocs";
+            ViewBag.ElementPrintBtnOnClickEvent = "print('#CommonDocs')";
+
+            ViewBag.ElementBackBtnID = null;
+
+            Html.RenderPartial("_NonPerfReportButtonsDiv");
+        }
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                @foreach (var rpt in Model.commdocrpt.GroupBy(x => x.report_category))
+                {
+                    <div class="col-md-6 card-panel-grid">
+                        <div class="card card-primary">
+
+                            <div class="card-header" id="header" style="background-color: #ffb3b3;">
+                                <h3 class="card-title">@rpt.Key</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+
+                                @foreach (var item in rpt.GroupBy(y => y.report_subcategory))
+                                {
+
+
+                                    <div class="card-header" style="background-color: #ffe6e6;border:1px solid #ffb3b3;">
+                                        <h3 class="card-title">@item.Key</h3>
+                                    </div>
+                                    <br />
+                                    @foreach (var items in item)
+                                    {
+                                        <div class="form-group">
+                                            <label for="inputDescription" style=" font-weight: 500; margin-bottom: 0px;margin-left: 6px;"><a href="#" onclick="ReportIFrame('@items.report_link','@items.report_caption');" style="font-family: inherit; font-size: 15px;"> @items.report_caption </a></label>
+                                        </div>
+                                    }
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            </div>
+
+        </section>
+        <!-- /.content -->
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-lg modal-dialog-centered" style="min-width:90%;">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h6 class="modal-title" style="padding:10px;"></h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="padding: 0rem !important;">
+                <iframe src="" style="width: 100% !important;height:400px" frameborder="0" allowtransparency="true"></iframe>
+            </div>
+
+            <!--  Modal footer -->
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>*@
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () { 
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        //gtag('config', 'G-6FJ1RE3WC0'); 
+        gtag('config', 'G-6FJ1RE3WC0', {
+            'page_title': 'CommonDocument',
+            'page_path': '/Reports/CommonDocument'
+        });
+        gtag('event', 'CommonDocument', {
+            'event_category': 'CommonDocument',
+            'event_label': 'CommonDocument'
+        });
+    });
+    function CommonUpdateFev() {
+        var formdata = {
+            "module_id": $("p[name='Common Documents']").attr("id")
+        }
+        var posturl = "/ClientPortal/Pie/UpdateFev";
+        $.ajax({
+            url: posturl,
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify(formdata),
+            success: function (data) {
+                //  alert(data)
+                if (data.sql_status == "Fail") {
+                    alert(data.sql_message);
+                } else {
+                    FetchFev();
+                    setTimeout(function () {
+                        $(".fetchId").each(function () {
+                            if ($(this).attr('id') == $("p[name='Common Documents']").attr("id")) {
+                                $("#liAddtoFavourite").hide();
+                                $("#liRemoveFavourite").show();
+                                return false;
+                            } else {
+                                $("#liAddtoFavourite").show();
+                                $("#liRemoveFavourite").hide();
+                            }
+                        })
+                    }, 500);
+                }
+            },
+            error: function (xhr, err) {
+                alert(err)
+            }
+        })
+    }
+    function CommonDeleteFev() {
+        var formdata = {
+            "module_id": $("p[name='Common Documents']").attr("id")
+        }
+        var posturl = "/ClientPortal/Pie/UpdateFevRemove";
+        $.ajax({
+            url: posturl,
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify(formdata),
+            success: function (data) {
+                //  alert(data)
+                if (data.sql_status == "Fail") {
+                    alert(data.sql_message);
+                } else {
+                    FetchFev();
+
+                    setTimeout(function () {
+                        $(".fetchId").each(function () {
+                            if ($(this).attr('id') == $("p[name='Common Documents']").attr("id")) {
+                                $("#liAddtoFavourite").hide();
+                                $("#liRemoveFavourite").show();
+                                return false;
+                            } else {
+                                $("#liAddtoFavourite").show();
+                                $("#liRemoveFavourite").hide();
+                            }
+                        })
+                    }, 500);
+                }
+            },
+            error: function (xhr, err) {
+                alert(err)
+            }
+        })
+    }
+
+    function myFunctionRemoveFav(id) {
+        var formdata = {
+            "module_id": id
+        }
+        var posturl = "/ClientPortal/Pie/UpdateFevRemove";
+        $.ajax({
+            url: posturl,
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify(formdata),
+            success: function (data) {
+                //  alert(data)
+                if (data.sql_status == "Fail") {
+                    alert(data.sql_message);
+                } else {
+                    FetchFev();
+                    setTimeout(function () {
+                        $(".fetchId").each(function () {
+                            if ($(this).attr('id') == $("p[name='Common Documents']").attr("id")) {
+                                $("#liAddtoFavourite").hide();
+                                $("#liRemoveFavourite").show();
+                                return false;
+                            } else {
+                                $("#liAddtoFavourite").show();
+                                $("#liRemoveFavourite").hide();
+                            }
+                        })
+                    }, 500);
+                }
+            },
+            error: function (xhr, err) {
+                alert(err)
+            }
+        })
+    }
+    setTimeout(function () {
+        $(".fetchId").each(function () {
+            if ($(this).attr('id') == $("p[name='Common Documents']").attr("id")) {
+                $("#liAddtoFavourite").hide();
+                $("#liRemoveFavourite").show();
+                return false;
+            } else {
+                $("#liAddtoFavourite").show();
+                $("#liRemoveFavourite").hide();
+            }
+        })
+    }, 500);
+
+</script>

@@ -1,0 +1,133 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+
+        @{
+            ViewBag.ReportName = "Bank Master";
+            ViewBag.ReportHeaderDiv = "BankMaster";
+            ViewBag.GenDate = "False";
+
+            Html.RenderPartial("_ReportHeader");
+        }
+
+        <div style="background-color:white !important; padding:5px;">
+
+            <div class="row" id="divDdlListsContent">
+                <div class="input-group mb-1 col-5">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text DnB-RedLabel" for="ddlUSClientList">Clients</label>
+                    </div>
+                    <select id="ddlUSClientList">
+                    </select>
+                </div>
+                <div class="input-group mb-1 offset-5 col-2">
+                    <button type="button" class="btn DnB-RedLabel" onclick="GetExistingData()" id="btn_ViewData">
+                        View Data
+                    </button>
+                </div>
+            </div>
+
+            <div id="add_modify_form" class="mt-3 p-1" style="border:3px solid #ced4da;">
+                <div class="d-flex justify-content-center">
+                    <h5 style="text-decoration:underline" id="AMD_header">Add Record</h5>
+                </div>
+                <form autocomplete="off">
+                    <table class="table table-bordered dt-responsive w-100" id="table_inp">
+                        <colgroup>
+                            <col span="1" style="width: 25%;">
+                            <col span="1" style="width: 23%;">
+                            <col span="1" style="width: 17%;">
+                            <col span="1" style="width: 22%;">
+                            <col span="1" style="width: 13%;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>Bank Account Number</th>
+                                <th>Bank Name</th>
+                                <th>Bank Account type</th>
+                                <th>Client Category</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="text" id="input_BankAccNum" class="form-control">
+                                </td>
+                                <td>
+                                    <input type="text" id="input_BankName" class="form-control">
+                                    @*<select class="form-control" style="border: 1px solid #ced4da; height:38px;" id="ddlBankName">
+                                        <option value="1">Axis Bank</option>
+                                        <option value="2">Yes Bank</option>
+                                        <option value="3">HDFC Bank</option>
+                                    </select>*@
+                                </td>
+                                <td>
+                                    <select class="form-control" style="border: 1px solid #ced4da; height:38px;" id="ddlBankAcType">
+                                        @*SP used - psp_dsp_nri_bank_account_type_list*@
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" style="border: 1px solid #ced4da; height:38px;" id="ddlClientCat">
+                                        @*SP used - psp_dsp_nri_client_category_list*@
+                                    </select>
+                                </td>
+                                <td class="text-center" style="width:121px;">
+                                    <input type="text" id="inp_rec_id" value="0" hidden />
+                                    <button class="btn" type="button" onclick="addModifyRecord()" title="Add"><i class="fas fa-plus-square fa-lg White_Red_Icon"></i></button>
+                                    <button class="btn" type="button" onclick="ResetInputs()" title="Clear"><i class="fas fa-broom fa-lg White_Red_Icon"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+
+            <div id="div_dsptable" class="mt-3">
+                <table class="table table-bordered dt-responsive w-100" id="display_table">
+                    <thead>
+                        <tr>
+                            <th>Bank Account Number</th>
+                            <th>Bank Name</th>
+                            <th>Bank Account type</th>
+                            <th>Client Category</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodydsp_table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+<script src="~/Jquery/US taxation/BankMaster.js"></script>

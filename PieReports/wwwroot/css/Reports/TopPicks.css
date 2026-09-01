@@ -1,0 +1,28 @@
+﻿.input-group-text {
+    font-size: small;
+    font-weight: 800;
+    padding: 0px;
+    padding-left: 4px;
+    background-color: #FCE0E0;
+}
+.toggle.btn-xs {
+    min-width: 3.19rem;
+    min-height: 1.35rem;
+}
+.form-control {
+    height: 30px;
+}
+.modal-content {
+    box-shadow: 0.5REM 0.5rem 1rem rgb(68 40 43 / 50%);
+    border: 1px solid #ff3333;
+}
+/*
+.modal-dialog {
+    overflow-y: initial !important
+}
+
+.modal-body {
+    height: 250px;
+    overflow-y: auto;
+}*/
+

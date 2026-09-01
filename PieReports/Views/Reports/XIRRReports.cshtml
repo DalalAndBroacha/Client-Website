@@ -1,0 +1,612 @@
+﻿@model ViewModel.Reports.RPT;
+
+@using ViewModel.Login
+@using Newtonsoft.Json
+@{ string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard); }
+<div id="waitIn" style="display:none;width:69px;height:89px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+    <img src="~/images/loader.gif" width="64" height="64" />
+    <br>Loading..
+</div>
+<div class="wrapper" @*style="margin-top:85px;"*@>
+    <div class="content-wrapper">
+        <nav class="navbar navbar-expand mb-mtop0" style="margin-top:60px;">
+            <h3 class="main-title1 mb-mleft0" style="margin-left:27px;margin-top:7px;">XIRR Report</h3><br />
+            @*<button id="btnxirrExport" style="float: right;width:35px;position: absolute; right: 226px;">
+                    <img alt="New" title="Excel" src="~/images/ExportExcel.png" style="width: 27px;background: white;">
+                </button>
+
+                <button id="btnExportPdf" style="float: right;width: 35px;position: absolute; right: 177px;">
+                    <img alt="New" title="Pdf" src="~/images/ExportPDF1.png" style="width: 27px;background: white;">
+                </button>*@
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown" id="XIRRAddtoFavourite">
+                    <a class="nav-link" onclick="XIRRUpdateFev()" data-toggle="dropdown" href="#" aria-expanded="true">
+                        <span><img src="~/images/AddtoFavourite.png" style="width:27px;" /></span>
+                    </a>
+
+                </li>
+                <li class="nav-item dropdown" id="XIRRRemoveFavourite">
+                    <a class="nav-link" onclick="XIRRDeleteFev()" data-toggle="dropdown" href="#" aria-expanded="true">
+                        <span><img src="~/images/RemoveFavourite.png" id="removefev" style="width:27px;" /></span>
+                    </a>
+
+                </li>
+                <li class="nav-item dropdown" id="liRemoveFavourite">
+                    <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
+                        <span><img src="~/images/ShareIcon1.png" id="removefev" style="width:27px;" /></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                        <div class="form-group-dashboard">
+
+                            <p id="btnxirrExport" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
+                                <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                    ExporttoExcel
+                                </a>
+                            </p>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="form-group-dashboard">
+                            <p id="btnExportPdf" data-toggle="modal" class="dropdown-item">
+                                <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                    ExporttoPdf
+                                </a>
+                            </p>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="form-group-dashboard">
+                            <p onclick="print('#printValue')" name="trading" data-toggle="modal" class="dropdown-item">
+                                <a href="#" style="font-family: inherit; font-size: 15px;">
+                                    Print
+                                </a>
+                            </p>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        @*<div class="form-group-dashboard">
+                                <p name="trading" data-toggle="modal" class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        EmailExcel
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p name="trading" data-toggle="modal" class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        EmailPdf
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>*@
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+
+        <section class="content" id="printValue">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-table-grid">
+                            <p style="margin-left:25px;">FinYear: <b id="xFinYear"></b> &nbsp;&nbsp;&nbsp;&nbsp; Family:<b id="xfamilyName"></b><span style="float:right;">Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span></p>
+                            <input type="text" name="popclient" id="popclient" hidden />
+                            <div class="card-body table-responsive p-0" style="height: 600px;" id="hideshow">
+                                <table class="table table-head-fixed text-nowrap">
+                                    <thead>
+                                        <tr style="border: 1px solid #dddddd;">
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="4"> </th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="3"><p><b>Current Value</b></p></th>
+                                            @*<th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="2"><p><b>Focused Stock</b></p></th>*@
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="3"><b><p id="finyearshow"></p></b></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="2"><p><b>Since Inception</b></p></th>
+                                        </tr>
+                                        <tr style="border: 1px solid #dddddd;">
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" ><p class="tableheading1"><b>Client</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Opening Value</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Inflow Value</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Outflow  Value</b></p></th>
+
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Ledger</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Stock</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Total</b></p></th>
+                                            @*<th>Cash(%)</th>*@
+
+                                            @*<th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p><b>Value</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p><b>%</b></p></th>*@
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>XIRR</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Nifty XIRR</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>ABS</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>XIRR</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Nifty XIRR</b></p></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyBinding">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="noReFound"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+@*<div class="container">*@
+<div class="modal fade" id="myModalst_XXIR1" style="overflow: auto !important;">
+    <div class="modal-dialog mb-mtop70">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 style="margin-left: 20px; margin-top: 10px;">XIRR Report --> Account Performance</h4>
+                @*<button id="btnxirrExportPopup" style="float: right;width:35px;position: absolute; right: 226px;">
+                    <img alt="New" title="Excel" src="~/images/ExportExcel.png" style="width: 27px;background: white;">
+                </button>
+
+                <button id="btnExportPdfPopup" style="float: right;width: 35px;position: absolute; right: 177px;">
+                    <img alt="New" title="Pdf" src="~/images/ExportPDF1.png" style="width: 27px;background: white;">
+                </button>*@
+
+
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body modal-panel-body" id="printPopup">
+                <ul class="navbar-nav ml-auto" style="float:right;margin-top:-25px;">
+
+                    <li class="nav-item dropdown" id="liRemoveFavourite">
+                        <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
+                            <span><img src="~/images/ShareIcon1.png" class="img-responsive7" id="removefev" style="width:27px;" /></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                            <div class="form-group-dashboard">
+
+                                <p id="btnxirrExportPopup" name="ExporttoExcel" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoExcel
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p id="btnExportPdfPopup" name="ExporttoPdf" class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoPdf
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p onclick="print('#printPopup')" name="trading" data-toggle="modal" class="dropdown-item">
+                                    <a href="#" style="font-family: inherit; font-size: 15px;">
+                                        Print
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+
+                        </div>
+                    </li>
+                </ul>
+                <div class="row">
+                    @*<div class="col-md-12">*@
+                        <div class="col-md-12">
+                            <table class='table popup-grid1' id="myTableclientflow" style="border-collapse: collapse; table-layout: fixed;">
+
+                                <tr class="header" style="border: 1px solid #dddddd;">
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Family</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Client (Code)</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Acc Opening Date</b></p></th>
+
+                                </tr>
+                                <tbody id="tbodyBindingclientflow">
+                                </tbody>
+                            </table>
+                        </div>
+                    @*</div>*@
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <table class='table popup-grid1' id="myTableclientflow1" style="border-collapse: collapse; table-layout: fixed;">
+
+                            <tr class="header" style="border: 1px solid #dddddd;">
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Portfolio Activity</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading2"><b>Amount</b></p></th>
+
+                            </tr>
+                            <tbody id="tbodyBindingclientflow1">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <table class='table popup-grid1' id="myTableclientflow2" style="border-collapse: collapse; table-layout: fixed;">
+
+                            <tr class="header" style="border: 1px solid #dddddd;">
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Sector</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading2"><b>Amount</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading2"><b>Holding %</b></p></th>
+
+                            </tr>
+                            <tbody id="tbodyBindingclientflow2">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <table class='table popup-grid1' id="myTable" style="border-collapse: collapse; table-layout: fixed;">
+                    <tr style="border: 1px solid #dddddd;">
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="1"> </th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="3"><p class="tableheading"><b>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="1"> </th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="4"><p class="tableheading"><b>Performance (%)</b></p></th>
+                    </tr>
+                    <tr class="header" style="border: 1px solid #dddddd;">
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>F.Y.</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Dividend</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Intraday</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Short Term</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Long Term</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>ABS</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>XIRR</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>NIFTY</b></p></th>
+                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>MIDCAP</b></p></th>
+                    </tr>
+                    <tbody id="tbodyBindingxxir">
+                    </tbody>
+                </table>
+                <div id="noReFoundxxir"></div>
+
+                <div class="modal-footer">
+
+                    @*<button type="button" class="btn btn-default" data-dismiss="modal" id="btnCloseModal">Close</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*</div>*@
+
+
+<div class="modal fade" id="myModalst_Inflow">
+    <div class="modal-dialog mb-mtop70">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 style="margin-left: 20px; margin-top: 10px;">XIRR Report --> Account Performance --> Inflow and Outflow Report</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="overflow:auto">
+                @* <p style="margin-left:22px;margin-top:10px;">FinYear: <b id="divxFinYear"></b> <span style="float:right;margin-right: 35px;">Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span></p>*@
+                <ul class="navbar-nav ml-auto" style="float:right;margin-top:-25px;">
+
+                    <li class="nav-item dropdown" id="liRemoveFavourite">
+                        <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
+                            <span><img src="~/images/ShareIcon1.png" class="img-responsive7" id="removefev" style="width:27px;" /></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                            <div class="form-group-dashboard">
+
+                                <p id="btnInflowExportExcel" name="ExporttoExcel" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoExcel
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p id="btnInflowExportPdf" name="ExporttoPdf" class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoPdf
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p onclick="print('#myModalst_Inflow')" name="trading" data-toggle="modal" class="dropdown-item">
+                                    <a href="#" style="font-family: inherit; font-size: 15px;">
+                                        Print
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+
+                        </div>
+                    </li>
+                </ul>
+                <table class='table popup-grid1' id="myTable" style="border-collapse: collapse; table-layout: fixed;">
+                    <tr style="border: 1px solid #dddddd;" class="header">
+                        <th class="divicol1" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Trans Date</b></p></th>
+                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Remarks</b></p></th>
+                        @*<th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Qyt</b></p></th>
+                            <th class="divicol3" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Rate</b></p></th>*@
+                        <th class="divicol4" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Amount</b></p></th>
+                    </tr>
+                    <tbody id="tbodyBindingrealisedInflow">
+                    </tbody>
+                </table>
+                <div id="noReFoundrealisedInflow"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="myModalst_Valuation">
+    <div class="modal-dialog mb-mtop70">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 style="margin-left: 20px; margin-top: 10px;">XIRR Report --> Account Performance --> Valuation Report</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="overflow:auto">
+                @* <p style="margin-left:22px;margin-top:10px;">FinYear: <b id="divxinFinYear"></b><span style="float:right;margin-right: 35px;">Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span></p>*@
+                <ul class="navbar-nav ml-auto" style="float:right;margin-top:-25px;">
+
+                    <li class="nav-item dropdown" id="liRemoveFavourite">
+                        <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
+                            <span><img src="~/images/ShareIcon1.png" class="img-responsive7" id="removefev" style="width:27px;" /></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                            <div class="form-group-dashboard">
+
+                                <p id="btnxirrvaluationExportxxl" name="ExporttoExcel" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoExcel
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p id="btnxirrvaluationExportPdf" name="ExporttoPdf"  class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoPdf
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p onclick="print('#myModalst_Valuation')" name="trading" data-toggle="modal" class="dropdown-item">
+                                    <a href="#" style="font-family: inherit; font-size: 15px;">
+                                        Print
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+
+                        </div>
+                    </li>
+                </ul>
+                <table class='table popup-grid1' id="myTable" style="border-collapse: collapse; table-layout: fixed;">
+                    <tr style="border: 1px solid #dddddd;" class="header">
+                        <th class="divicol1" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Scrip Name</b></p></th>
+                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Holding Qty</b></p></th>
+                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>DP Holding Qty</b></p></th>
+                        <th class="divicol1" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Holding Rate</b></p></th>
+                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Holding cost</b></p></th>
+                        <th class="divicol3" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Holding MKT Rate</b></p></th>
+                        <th class="divicol1" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Market Value</b></p></th>
+                    </tr>
+                    <tbody id="tbodyBindingrealisedValuation">
+                    </tbody>
+                </table>
+                <div id="noReFoundrealisedValuation"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="container">*@
+<div class="modal fade" id="myModalst_dividend">
+    <div class="modal-dialog mb-mtop70">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 style="margin-left: 20px; margin-top: 10px;">XIRR Report --> Account Performance --> Inflow and Outflow Report</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="overflow:auto">
+                @*   <p style="margin-left:22px;margin-top:10px;">FinYear: <b id="divxFinYear"></b> <span style="float:right;margin-right: 35px;">Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span></p>*@
+
+                <ul class="navbar-nav ml-auto" style="float:right;margin-top:-25px;">
+
+                    <li class="nav-item dropdown" id="liRemoveFavourite">
+                        <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
+                            <span><img src="~/images/ShareIcon1.png" class="img-responsive7" id="removefev" style="width:27px;" /></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                            <div class="form-group-dashboard">
+
+                                <p id="btnxirrDivInOutFlowExportXxl" name="ExporttoExcel" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoExcel
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p id="btnDivInOutFlowExportPdf" name="ExporttoPdf"  class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoPdf
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p onclick="print('#myModalst_dividend')" name="trading" data-toggle="modal" class="dropdown-item">
+                                    <a href="#" style="font-family: inherit; font-size: 15px;">
+                                        Print
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+
+                        </div>
+                    </li>
+                </ul>
+                <table class='table popup-grid1' id="myTable" style="border-collapse: collapse; table-layout: fixed;">
+                    <tr style="border: 1px solid #dddddd;" class="header">
+                        @*<th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p><b>Family</b></p></th>*@
+                        <th class="divicol1" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Client</b></p></th>
+                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Date</b></p></th>
+                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>ISIN</b></p></th>
+                        <th class="divicol3" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Scrip</b></p></th>
+                        <th class="divicol4" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Amount</b></p></th>
+                    </tr>
+                    <tbody id="tbodyBindingrealisedDividend">
+                    </tbody>
+                </table>
+                <div id="noReFoundrealiseddivindend"></div>
+            </div>
+            <div class="modal-footer">
+                <input id="txtclient_id_divindend" name="txtclient_id_divindend" hidden />
+                <input id="txtsub_category_divindend" name="txtsub_category_divindend" hidden />
+                @*<button type="button" class="btn btn-default" data-dismiss="modal" id="btnCloseModal">Close</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+@*</div>*@
+
+
+
+<div class="modal fade" id="myModalst_InflowDetails">
+    <div class="modal-dialog mb-mtop70">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 style="margin-left: 20px; margin-top: 10px;">XIRR Report --> Account Performance --> Inflow and Outflow Report</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="overflow:auto">
+                @* <p style="margin-left:22px;margin-top:10px;">FinYear: <b id="divxFinYear"></b><span style="float:right;margin-right: 35px;">Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span></p>*@
+                <ul class="navbar-nav ml-auto" style=" float:right;margin-top:-20px;">
+
+                    <li class="nav-item dropdown" id="liRemoveFavourite">
+                        <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
+                            <span><img src="~/images/ShareIcon1.png" class="img-responsive7" id="removefev" style="width:27px;" /></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                            <div class="form-group-dashboard">
+
+                                <p id="btnxirrInOutFlowExportXxl" name="ExporttoExcel" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoExcel
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p id="btnxirrInOutFlowExportPdf" name="ExporttoPdf"  class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoPdf
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p onclick="print('#myModalst_InflowDetails')" name="trading" data-toggle="modal" class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        Print
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+
+                        </div>
+                    </li>
+                </ul>
+                <table class='table popup-grid1' id="myTable" style="border-collapse: collapse; table-layout: fixed;">
+                    <tr style="border: 1px solid #dddddd;" class="header">
+                        <th class="divicol1" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Trans Date</b></p></th>
+                        <th class="divicol3" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Scrip Name</b></p></th>
+                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Qyt</b></p></th>
+                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Rate</b></p></th>
+                        <th class="divicol4" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Amount</b></p></th>
+                    </tr>
+                    <tbody id="tbodyBindingrealisedInflowDetails">
+                    </tbody>
+                </table>
+                <div id="noReFoundrealisedInflowDetails"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="myModalst_ValuationDetails">
+    <div class="modal-dialog mb-mtop70">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 style="margin-left: 20px; margin-top: 10px;">XIRR Report --> Account Performance --> Valuation Details Report</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="overflow:auto">
+                @* <p style="margin-left:22px;margin-top:10px;">FinYear: <b id="divxinFinYear"></b><span style="float:right;margin-right: 35px;">Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span></p>*@
+                <ul class="navbar-nav ml-auto" style=" float:right;margin-top:-20px;">
+
+                    <li class="nav-item dropdown" id="liRemoveFavourite">
+                        <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
+                            <span><img src="~/images/ShareIcon1.png" class="img-responsive7" id="removefev" style="width:27px;" /></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                            <div class="form-group-dashboard">
+
+                                <p id="btnxirrValuationHoldingExportXxl" name="ExporttoExcel" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoExcel
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p id="btnxirrValuationHoldingExportPdf" name="ExporttoPdf"  class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoPdf
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p onclick="print('#myModalst_ValuationDetails')" name="trading" data-toggle="modal" class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        Print
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+
+                        </div>
+                    </li>
+                </ul>
+                <table class='table popup-grid1' id="myTable" style="border-collapse: collapse; table-layout: fixed;">
+                    <tr style="border: 1px solid #dddddd;" class="header">
+                        <th class="divicol3" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Scrip Name</b></p></th>
+                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Trade Date</b></p></th>
+                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Qty</b></p></th>
+                        <th class="divicol1" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Trade Rate</b></p></th>
+                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Short Unread Profit</b></p></th>
+                        <th class="divicol1" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Long Unread Profit</b></p></th>
+
+                    </tr>
+                    <tbody id="tbodyBindingrealisedValuationDetails">
+                    </tbody>
+                </table>
+                <div id="noReFoundrealisedValuationDetails"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Jquery/XIRRReports.js" asp-append-version="true"></script>

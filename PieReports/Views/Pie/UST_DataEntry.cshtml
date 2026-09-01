@@ -1,0 +1,172 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+
+}
+
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+
+        @{
+
+            ViewBag.ReportName = "Tax Entry";
+            ViewBag.ReportHeaderDiv = "TaxEntry_HoldingReport";
+            ViewBag.GenDate = "False";
+
+            Html.RenderPartial("_ReportHeader");
+        }
+
+    <div style="background-color:white !important; padding:5px;">
+
+        <div class="row" id="divDdlListsContent">
+            <div class="input-group mb-1 col-4">
+                <div class="input-group-prepend">
+                    <label class="input-group-text DnB-RedLabel" for="ddlUSClientList">Clients</label>
+                </div>
+                <select id="ddlUSClientList">
+                </select>
+            </div>
+            <div class="input-group mb-1 col-5">
+                <div class="input-group-prepend">
+                    <label class="input-group-text DnB-RedLabel" for="ddlBankAccountsList">Account</label>
+                </div>
+                <select id="ddlBankAccountsList">
+                </select>
+            </div>
+            <div class="input-group mb-1 col-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text DnB-RedLabel" for="ddlCalYearList">Calendar Year</label>
+                </div>
+                <select id="ddlCalYearList">
+                </select>
+            </div>
+        </div>
+        <div class="row" id="divReadOnly">
+            <div class="input-group mb-1 col-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text DnB-RedLabel" for="txt_Cat">Category</label>
+                </div>
+                <input type="text" class="form-control" id="txt_Cat" readonly>
+                <input type="text" class="form-control" id="txt_Cat_id" hidden>
+            </div>
+            <div class="input-group mb-1 offset-md-1 offset-lg-1 col-4">
+                <div class="input-group-prepend">
+                    <label class="input-group-text DnB-RedLabel" for="txt_BankName">Bank</label>
+                </div>
+                <input type="text" class="form-control" id="txt_BankName" readonly>
+            </div>
+            <div class="mb-1 d-flex justify-content-end col-3">
+                <button type="button" class="btn DnB-RedLabel" onclick="GetExistingTaxData()" id="btn_ViewData">View Data</button>
+            </div>
+            <input type="text" id="inp_bank_account" hidden /> @*Kept out of form so the clear button won't reset them*@
+            <input type="text" id="inp_mci" hidden />
+        </div>
+
+        <div id="add_modify_form" class="mt-3 p-1" style="display: none; border: 3px solid #ced4da;">
+            <div class="d-flex justify-content-center">
+                <h5 style="text-decoration:underline" id="AMD_header">Add Record</h5>
+            </div>
+            <form  autocomplete="off">
+                <table class="table table-bordered dt-responsive w-100" id="table_inp">
+                    <colgroup>
+                        <col style="width: 1%;">
+                        <col style="width: 12%;">
+                        <col style="width: 13%;">
+                        <col style="width: 47%;">
+                        <col style="width: 12%;">
+                        <col style="width: 13%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Transaction Date</th>
+                            <th>Segment</th>
+                            <th>Type</th>
+                            <th>Narration</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="date" id="inp_date" class="form-control">
+                            </td>
+                            <td>
+                                <select class="form-control" style="border: 1px solid #ced4da; height:38px;" id="ddlSegList">
+                                    <option value="1">Equity</option>
+                                    <option value="2">Mutual Fund</option>
+                                    <option value="3">Bonds</option>
+                                    <option value="4">Bank Account</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control" style="border: 1px solid #ced4da; height:38px;" id="ddlTypeList">
+                                    <option value="1">STCG</option>
+                                    <option value="2">LTCG</option>
+                                    <option value="3">Dividend Tax</option>
+                                    <option value="4">Interest Tax</option>
+                                    <option value="5">Interest</option>
+                                    <option value="6">Highest Balance</option>
+                                </select>
+                            </td>
+                            <td><input type="text" id="inp_narration" class="form-control"></td>
+                            <td><input type="number" id="inp_amount" class="form-control"></td>
+                            <td class="text-center" style="width:121px;">
+                                <input type="text" id="inp_rec_id" value="0" hidden />
+                                <button class="btn" type="button" onclick="addModifyRecord()" title="Add"><i class="fas fa-plus-square fa-lg White_Red_Icon"></i></button>
+                                <button class="btn" type="button" onclick="ResetInputs()" title="Clear"><i class="fas fa-broom fa-lg White_Red_Icon"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+
+        <div id="div_dsptable" class="mt-3" style="display:none">
+            <table class="table table-bordered dt-responsive w-100" id="display_table">
+                <thead>
+                    <tr>
+                        <th>Transaction Date</th>
+                        <th>Segment</th>
+                        <th>Type</th>
+                        <th>Narration</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodydsp_table">
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    </div>
+</div>
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+<script src="~/Jquery/US taxation/UST_DataEntry.js"></script>

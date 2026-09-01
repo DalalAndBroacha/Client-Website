@@ -1,0 +1,19 @@
+﻿#XIRR_Family  {
+    font-family: Roboto, sans-serif;
+}
+
+#XIRR_Family td {
+    font-size: 14px;
+    text-align: right;
+}
+#XIRR_Family td:first-of-type {
+    font-size: 14px;
+    text-align: left;
+}
+
+#XIRR_Family th {
+    vertical-align: middle;
+    font-size: 14px;
+    text-align: center;
+    font-weight: bold;
+}

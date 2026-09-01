@@ -1,0 +1,75 @@
+﻿@model ViewModel.Reports.RPT;
+
+@using ViewModel.Login
+@using Newtonsoft.Json
+@{ string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+    <link href="~/css/Reports/XIRR_Report.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+
+        <div id="XIRR_Client_List" style="display:none; position:unset; background-color:white; padding:0.5rem;">
+            @{
+
+                ViewBag.ReportName = "XIRR Clientwise as on ";
+                ViewBag.ReportHeaderDiv = "Xirr_client_list";
+                ViewBag.GenDate = "True";
+
+                Html.RenderPartial("_ReportHeader");
+
+                ViewBag.PrimaryReport = "True";
+
+                ViewBag.ElementPDFBtnID = "btnExportPdfXIRRMainPage";
+                ViewBag.ElementExcelBtnID = "btnExportXIRRMainPagexls";
+                ViewBag.ElementPrintBtnID = "btnPrintXIRRMainPage";
+                ViewBag.ElementEmailBtnID = "btnEMailXIRRMainPage";
+                ViewBag.ElementPrintBtnOnClickEvent = "print('#PrintPerfo')";
+
+                ViewBag.ElementBackBtnID = null;
+
+                Html.RenderPartial("_NonPerfReportButtonsDiv");
+            }
+
+            <div id="div_Xirr_Family_all">
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<script src="~/Jquery/Dashboard.js"></script>
+
+
+@*<script src="~/Hyper/MainJs/app.min.js"></script>
+    <script src="~/Hyper/MainJs/vendor.min.js"></script>
+    <script src="~/Hyper/js/vendor/apexcharts.min.js"></script>
+    <script src="~/Hyper/js/demo/demo.apex-pie.js"></script>*@
+
+@*<script src="~/Apex/ApexChatsCDN.js"></script>*@
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+
+<script src="~/Jquery/XIRR.js" asp-append-version="true"></script>

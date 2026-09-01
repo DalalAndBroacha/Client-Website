@@ -1,0 +1,362 @@
+﻿@model ViewModel.Reports.RPT;
+
+@using ViewModel.Login
+@using Newtonsoft.Json
+@{ string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard); }
+
+@section Styles {
+    <link href="~/css/SIPtable.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+}
+
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <div id="waitInSIP" style="display:none;width:69px;height:89px;border:1px solid black;position:absolute;top:35%;left:57%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+            <br>Loading..
+        </div>
+
+        <div style="position:unset;">
+
+            @{
+                ViewBag.ReportName = "SIP Report";
+                ViewBag.ReportHeaderDiv = "SIPReport";
+                ViewBag.GenDate = "False";
+                ViewBag.GenPeriod = "False";
+
+                ViewBag.PrimaryReport = "True";
+                ViewBag.ElementPDFBtnID = "btnSIPExportPdf";
+                ViewBag.ElementExcelBtnID = "btnSIPExportXls";
+                ViewBag.ElementEmailBtnID = null;
+
+                ViewBag.ElementBackBtnID = null;
+
+                Html.RenderPartial("_ReportHeaderCompact");
+                ViewData.Clear();
+            }
+
+            <input type="text" id="txtDetailsFlag" hidden>
+            <input type="text" id="txtFlagDescrip" hidden>
+
+            <div class="row" style="padding:5px;">
+                <div class="col-xs-8 col-sm-4">
+                    <div class="card d-block">
+                        <div id="Card_All_SIP" class="card-body GrandTotalRow" onclick="ShowTableData('All')" style="cursor:pointer">
+                            <div class="text-center">
+                                <h3>Total</h3>
+                            </div>
+                            <p class="card-text mt-3">
+                                Number of SIPs : <b id="TotalSIPs"></b>
+                            </p>
+                            <p class="card-text">
+                                Amount : <b id="TotalAmount"></b>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-8 col-sm-4">
+                    <div class="card d-block">
+                        <div id="Card_Recent_SIP" class="card-body" onclick="ShowTableData('Recent')" style="cursor:pointer">
+                            <div class="text-center">
+                                <h3>Recent</h3>
+                            </div>
+                            <p class="card-text mt-3">
+                                Number of SIPs : <b id="RecentSIPs"></b>
+                            </p>
+                            <p class="card-text">
+                                Amount : <b id="RecentAmount"></b>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-8 col-sm-4">
+                    <div class="card d-block">
+                        <div id="Card_Tert_SIP" class="card-body" onclick="ShowTableData('Terminating')" style="cursor:pointer">
+                            <div class="text-center">
+                                <h3>Terminanting</h3>
+                            </div>
+                            <p class="card-text mt-3">
+                                Number of SIPs : <b id="ExSIPs"></b>
+                            </p>
+                            <p class="card-text">
+                                Amount : <b id="ExAmount"></b>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div id="All_Div" class="card" style="padding: 5px; position: unset; display:none;">
+                <table id="All_SIP" class="myCstDatatable table table-hover dt-responsive nowrap w-100">
+                    <thead class="GrandTotalRow">
+                        <tr>
+                            <th>Family Name</th>
+                            <th>Client Name</th>
+                            <th><p style="font-size:14px;">Scheme Name<p><p class="tableDataLowerCol">Folio Number</p></th>
+                            <th>Period</th>
+                            <th><p style="font-size:14px;">Amount<p><p class="tableDataLowerCol">Frequncy</p></th>
+                            <th><p style="font-size:14px;">Bank Name<p><p style="font-size:14px;">Account Number</p></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="Recent_Div" class="card" style="padding: 5px; position: unset; display:none;">
+                <table id="Recent_SIP" class="myCstDatatable table table-hover dt-responsive nowrap w-100">
+                    <thead class="GrandTotalRow">
+                        <tr>
+                            <th>Family Name</th>
+                            <th>Client Name</th>
+                            <th><p style="font-size:14px;">Scheme Name<p><p class="tableDataLowerCol">Folio Number</p></th>
+                            <th>Period</th>
+                            <th><p style="font-size:14px;">Amount<p><p class="tableDataLowerCol">Frequncy</p></th>
+                            <th><p style="font-size:14px;">Bank Name<p><p style="font-size:14px;">Account Number</p></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="Terminating_Div" class="card" style="padding: 5px; position: unset; display:none;">
+                <table id="Terminating_SIP" class="myCstDatatable table table-hover dt-responsive nowrap w-100">
+                    <thead class="GrandTotalRow">
+                        <tr>
+                            <th>Family Name</th>
+                            <th>Client Name</th>
+                            <th><p style="font-size:14px;">Scheme Name<p><p class="tableDataLowerCol">Folio Number</p></th>
+                            <th>Period</th>
+                            <th><p style="font-size:14px;">Amount<p><p class="tableDataLowerCol">Frequncy</p></th>
+                            <th><p style="font-size:14px;">Bank Name<p><p style="font-size:14px;">Account Number</p></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="~/Hyper/MainJs/app.min.js"></script>
+<script src="~/Hyper/MainJs/vendor.min.js"></script>
+<script src="~/Jquery/SIPNewFormat.js" asp-append-version="true"></script>
+<script type="text/javascript" asp-append-version="true">
+    $(document).ready(function () {
+        startajaxrequestSIP();
+        HideFinYearList();
+        HideFamilyList();
+
+        var data_All = @Html.Raw(TempData["AllSIPData"]);
+        var data_Tert = @Html.Raw(TempData["TerminatingSIPData"]);
+        var data_Recent = @Html.Raw(TempData["RecentSIPData"]);
+
+        $('#Recent_SIP').DataTable({
+            "pagingType": "full_numbers",
+            "data": data_Recent,
+            "dataSrc": "",
+            "columns": [
+                {
+                    data: "Login_Name",
+                    render: function (data, type, src) {
+                        return '<p class = "paraTextAlignLeft">' + src.Login_Name;
+
+                    }
+                },
+                {
+                    data: "main_client_name",
+                    render: function (data, type, src) {
+                        return '<p class = "paraTextAlignLeft">' + src.main_client_name;
+
+                    }
+                },
+                {
+                    data: "Scheme_Name",
+                    render: function (data, type, src) {
+
+                        if (src.Tran_Type == "SIP") {
+                            return '<p>' + src.Scheme_Name + '</p>' + '<p class="tableDataLowerCol">' + src.Folio_no + '</p>';
+                        }
+                        else {
+                            return '<p>From: ' + src.Scheme_Name + '</p>' + '<p>To: ' + src.Target_scheme + '</p>'
+                                + '<p class="tableDataLowerCol">' + src.Folio_no + '</p>';
+                        }
+                    }
+                },
+                {
+                    data: "Start_Date",
+                    render: function (data, type, src) {
+                        if (src.terminating == "0") {
+                            return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p>' + formatDate(src.End_Date) + '</p>';
+                        }
+                        else {
+                            return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p style="color:red;" title="Expiring shortly">' + formatDate(src.End_Date) + '</p>';
+                        }
+                    }
+                },
+                {
+                    data: "Frequency",
+                    render: function (data, type, src) {
+                        return '<p>' + src.Amount + '</p>' + '<p class="tableDataLowerCol">' + src.Frequency + '</p>';
+                    }
+                },
+                {
+                    data: "Bank_Name",
+                    render: function (data, type, src) {
+                        return '<p>' + src.Bank_Name + '</p>' + '<p>' + src.Ac_No + '</p>';
+                    }
+                }
+            ]
+        });
+
+        $('#Terminating_SIP').DataTable({
+            "pagingType": "full_numbers",
+            //"initComplete": function (settings, json) {
+            //    completeajaxrequestwaitInSIP();
+            //},
+
+            "data": data_Tert,
+            "dataSrc": "",
+            "columns": [
+                {
+                    data: "Login_Name",
+                    render: function (data, type, src) {
+                        return '<p class = "paraTextAlignLeft">' + src.Login_Name;
+
+                    }
+                },
+                {
+                    data: "main_client_name",
+                    render: function (data, type, src) {
+                        return '<p class = "paraTextAlignLeft">' + src.main_client_name;
+
+                    }
+                },
+                {
+                    data: "Scheme_Name",
+                    render: function (data, type, src) {
+
+                        if (src.Tran_Type == "SIP") {
+                            return '<p>' + src.Scheme_Name + '</p>' + '<p class="tableDataLowerCol">' + src.Folio_no + '</p>';
+                        }
+                        else {
+                            return '<p>From: ' + src.Scheme_Name + '</p>' + '<p>To: ' + src.Target_scheme + '</p>'
+                                + '<p class="tableDataLowerCol">' + src.Folio_no + '</p>';
+                        }
+                    }
+                },
+                {
+                    data: "Start_Date",
+                    render: function (data, type, src) {
+                        if (src.terminating == "0") {
+                            return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p>' + formatDate(src.End_Date) + '</p>';
+                        }
+                        else {
+                            return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p style="color:red;" title="Expiring shortly">' + formatDate(src.End_Date) + '</p>';
+                        }
+                    }
+                },
+                {
+                    data: "Frequency",
+                    render: function (data, type, src) {
+                        return '<p>' + src.Amount + '</p>' + '<p class="tableDataLowerCol">' + src.Frequency + '</p>';
+                    }
+                },
+                {
+                    data: "Bank_Name",
+                    render: function (data, type, src) {
+                        return '<p>' + src.Bank_Name + '</p>' + '<p>' + src.Ac_No + '</p>';
+                    }
+                }
+            ]
+        });
+
+        $('#All_SIP').DataTable({
+            "pagingType": "full_numbers",
+            "data": data_All,
+            "dataSrc": "",
+            "columns": [
+                {
+                    data: "Login_Name",
+                    render: function (data, type, src) {
+                        return '<p class = "paraTextAlignLeft">' + src.Login_Name;
+
+                    }
+                },
+                {
+                    data: "main_client_name",
+                    render: function (data, type, src) {
+                        return '<p class = "paraTextAlignLeft">' + src.main_client_name;
+                        
+                    }
+                },
+                {
+                    data: "Scheme_Name",
+                    render: function (data, type, src) {
+
+                        if (src.Tran_Type == "SIP") {
+                            return '<p>' + src.Scheme_Name + '</p>' + '<p class="tableDataLowerCol">' + src.Folio_no + '</p>';
+                        }
+                        else {
+                            return '<p>From: ' + src.Scheme_Name + '</p>' + '<p>To: ' + src.Target_scheme + '</p>'
+                                + '<p class="tableDataLowerCol">' + src.Folio_no + '</p>';
+                        }
+                    }
+                },
+                {
+                    data: "Start_Date",
+                    render: function (data, type, src) {
+                        if (src.terminating == "0") {
+                            return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p>' + formatDate(src.End_Date) + '</p>';
+                        }
+                        else {
+                            return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p style="color:red;" title="Expiring shortly">' + formatDate(src.End_Date) + '</p>';
+                        }
+                    }
+                },
+                {
+                    data: "Frequency",
+                    render: function (data, type, src) {
+                        return '<p>' + src.Amount + '</p>' + '<p class="tableDataLowerCol">' + src.Frequency + '</p>';
+                    }
+                },
+                {
+                    data: "Bank_Name",
+                    render: function (data, type, src) {
+                        return '<p>' + src.Bank_Name + '</p>' + '<p>' + src.Ac_No + '</p>';
+                    }
+                }
+            ]
+        });
+
+        completeajaxrequestSIP();
+    });
+
+    function startajaxrequestSIP() {
+        $("#waitInSIP").css("display", "block");
+    }
+    function completeajaxrequestSIP() {
+        $("#waitInSIP").css("display", "none");
+    }
+
+</script>
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>

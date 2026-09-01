@@ -1,0 +1,102 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Dalal & Broacha Stock Broking Pvt. Ltd. | Track your Investements</title>
+    <link rel="icon" type="image/x-icon" href="~/images/logo_short.png" /> <!-- Favicon icon -->
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="Client Portal" />
+    <meta name="keywords" content="Dalal and Broacha,Client Portal" />
+    <meta name="author" content="codedthemes" />
+    
+    <!-- Google font-->
+    @*<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">*@
+    <!-- Required Fremwork -->
+    <!-- <link rel="stylesheet" type="text/css" href="~/css/bootstrap/css/bootstrap.min.css">-->
+    <!-- waves.css -->
+    <link rel="stylesheet" href="~/pages/waves/css/waves.min.css" type="text/css" media="all">
+
+    <link rel="stylesheet" type="text/css" href="~/css/bootstrap/css/bootstrap.min.css" />
+    <!-- themify-icons line icon -->
+    <link rel="stylesheet" type="text/css" href="~/icon/themify-icons/themify-icons.css">
+    <!-- ico font -->
+    <link rel="stylesheet" type="text/css" href="~/icon/font-awesome/css/font-awesome.min.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <link rel="stylesheet" href="~/css/Allinone.css">
+    @*<link rel="stylesheet" type="text/css" href="~/icon/icofont/css/icofont.css">*@
+    <!-- Font Awesome -->
+    <!-- Style.css -->
+    <link href="~/css/jquery.mCustomScrollbar.css" rel="stylesheet" />
+    <link href="~/css/export.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/css/style.css">
+    <link rel="stylesheet" type="text/css" href="~/css/Allinone.css">
+    <script type="text/javascript" src="~/js/jquery/jquery.min.js"></script>
+    @* <script src="~/js/jquery/jquerylatest.min.js"></script> *@
+    <link href="~/css/IndexPage.css" rel="stylesheet" />
+    <link href="~/css/responsive.css" rel="stylesheet" />
+    
+
+    @* Use to pass App settings values to Javascript files as global variables*@
+    @{
+        string myMessage = Configuration.GetValue<string>("gridPageNum");
+
+        <script type="text/javascript">
+            var globalDataGridPageLenght = @myMessage;
+        </script>
+    }
+    @* Use to pass App settings values to Javascript files as global variables*@
+</head>
+<body>
+
+    @RenderBody()
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script type="text/javascript" src="~/js/jquery-ui/jquery-ui.min.js "></script>
+    <script type="text/javascript" src="~/js/popper.js/popper.min.js"></script>
+    <script type="text/javascript" src="~/js/bootstrap/js/bootstrap.min.js "></script>
+
+    <script src="~/pages/widget/excanvas.js"></script>
+    <script type="text/javascript" src="~/pages/waves/js/waves.min.js"></script>
+    <!-- waves js -->
+    <!-- jquery slimscroll js -->
+    <script type="text/javascript" src="~/js/jquery-slimscroll/jquery.slimscroll.js "></script>
+    <!-- modernizr js -->
+     <script type="text/javascript" src="~/js/modernizr/modernizr.js"></script>
+    <script type="text/javascript" src="~/js/SmoothScroll.js"></script>
+    <script src="~/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    @* <script type="text/javascript" src="~/js/chart.js/Chart.js"></script>  *@
+
+
+    <!-- amchart js -->
+    <script src="~/js/amcharts.js"></script>
+    <script src="~/pages/widget/amchart/gauge.js"></script>
+    <script src="~/pages/widget/amchart/serial.js"></script>
+    <script src="~/pages/widget/amchart/light.js"></script>
+    <script src="~/pages/widget/amchart/pie.min.js"></script>
+    <script src="~/js/export.min.js"></script>
+    <!-- menu js -->
+    <script src="~/js/pcoded.min.js"></script>
+    <script src="~/js/vertical-layout.min.js "></script>
+    <!-- custom js -->
+    <!-- <script type="text/javascript" src="~/pages/dashboard/custom-dashboard.js"></script>-->
+    <script type="text/javascript" src="~/js/script.js "></script>
+    <script type="text/javascript" src="~/js/common-pages.js"></script>
+
+    <!-- <script src="~/pages/waves/js/waves.min.js"></script>-->
+    <!-- PAGE PLUGINS -->
+    <!-- jQuery Mapael -->
+    <script src="~/plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
+    <script src="~/plugins/raphael/raphael.min.js"></script>
+    <script src="~/plugins/jquery-mapael/jquery.mapael.min.js"></script>
+    <script src="~/plugins/jquery-mapael/maps/usa_states.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+    @RenderSection("Styles", required: false)
+</body>
+</html>

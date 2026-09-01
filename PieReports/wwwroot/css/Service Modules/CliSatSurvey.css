@@ -1,0 +1,33 @@
+﻿.surveyContainer {
+    height: 95%;
+    overflow-y: scroll;
+    border: 2px solid #f7cbdf;
+    border-radius: 5px;
+    box-shadow: 0 0 8px 5px peachpuff;
+    padding: 1em;
+}
+.surveyQuesTabs {
+    border: 1px solid grey;
+    border-radius: 5px;
+    padding: 0.5em;
+    margin-bottom: 1rem;
+    background-color: #ffe6e6; /*#f8a6a0*/
+}
+
+.surveyQuesTabs table th{
+    vertical-align: middle;
+}
+
+.redColor{
+    color:red;
+}
+
+.surveyContainer p {
+    font-weight: 700;
+    font-size:medium;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+input[type=radio] {
+    accent-color: palevioletred; /*#d5574e*/
+}

@@ -1,0 +1,185 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    @*<link href="~/css/Service Modules/KYC_Update.css" rel="stylesheet" />*@
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        <div id="CurrwaitIn" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+
+            <div class="d-flex justify-content-center">
+                <div class="col-3">
+                    <label>Master</label>
+                    <select style="border: 1px solid #cccccc; height:38px;" class="form-control mb-1" id="ddlMasterList">
+                        <option value=1 selected>Index</option>
+                        <option value=2>Currency</option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <label>Start Date</label>
+                    <input class="form-control" type="date" id="inpStartDate">
+                </div>
+                <div class="col-2">
+                    <label>End Date</label>
+                    <input class="form-control" type="date" id="inpEndDate">
+                </div>
+
+                <div class="offset-1 col-2 mt-4">
+                    <button id="btnViewData" class="btn btn-sm DnB-RedLabel">View Data</button>
+                </div>
+
+                <div class="col-2 mt-4">
+                    <button id="btnAddData" class="btn btn-sm DnB-RedLabel">Add New Data</button>
+                </div>
+
+            </div>
+
+
+            <div id="DataDiv" style="display:none;">
+                <table id="tblData" class="table mt-2 table-hover w-100 table-redbordered">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Name</th>
+                            <th>Rate</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblDataTbody">
+                        <tr>
+                            <td>Date</td>
+                            <td>Name</td>
+                            <td>Rate</td>
+                            <td class='text-center' style='width: 110px;'>
+                                <button class='btn Edit_rec' type='submit' title='Edit'><i class='fas fa-pencil-alt fa-lg White_Red_Icon'></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal Add -->
+            <div class="modal fade" id="AddModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
+                    <div class="modal-content p-1">
+                        <div class="modal-header">
+                            <h5 class="modal-title ml-auto" id="ModalTitle"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <!-- Modal Add Body Start -->
+                        <div class="modal-body" style="height:auto; width:650px; overflow-y:auto;">
+                            <div class="row justify-content-around">
+                                <div class="col-5">
+                                    <label>Master</label>
+                                    <select style="border: 1px solid #cccccc; height:38px;" class="form-control mb-1" id="ddlAddMstIndexDataList">
+                                        <option value=1 selected>Index</option>
+                                        <option value=2>Currency</option>
+                                    </select>
+                                </div>
+                                <div class="col-5">
+                                    <label>Value of</label>
+                                    <select style="border: 1px solid #cccccc; height:38px;" class="form-control mb-1" id="ddlAddSelectedIndexDataList">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row justify-content-around">
+
+                                <div class="col-5 mt-1">
+                                    <label>Date</label>
+                                    <input class="form-control" type="date" id="inpTrDate">
+                                </div>
+
+                                <div class="col-4 mt-1">
+                                    <label for="txtRemarks">Rate</label>
+                                    <input class="form-control" type="number" id="AddtxtRate" placeholder="Enter Rate">
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- Modal Add Body End -->
+                        <div class="modal-footer p-1">
+                            <button type="button" id="btnSave" class="btn btn-success hidden" onclick="AddData()">Save</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Add-->
+
+            <!-- Modal Edit -->
+            <div class="modal fade" id="EditModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
+                    <div class="modal-content p-1">
+                        <div class="modal-header">
+                            <h5 class="modal-title ml-auto" id="EditModalTitle"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <!-- Modal Add Body Start -->
+                        <div class="modal-body" style="height:auto; width:650px; overflow-y:auto;">
+                            <div class="row justify-content-around">
+                                <div class="col-5">
+                                    <label>Date</label>
+                                    <input class="form-control" type="date" id="EditInpTrDate">
+                                </div>
+                                <div class="col-5">
+                                    <label>Value of</label>
+                                    <select style="border: 1px solid #cccccc; height:38px;" class="form-control mb-1" id="EditddlIndexDataList">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col-4 mt-1">
+                                    <label for="EdittxtRate">Rate</label>
+                                    <input class="form-control" type="number" id="EdittxtRate" placeholder="Enter Rate">
+                                </div>
+                                <div>
+                                    <input type="hidden" id="EditRec"  />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Modal Add Body End -->
+                        <div class="modal-footer p-1">
+                            <button type="button" id="btnSave" class="btn btn-success hidden" onclick="UpdateData()">Save</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Edit-->
+
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+
+<script src="~/Jquery/Services/IndexandCurrency.js"></script>

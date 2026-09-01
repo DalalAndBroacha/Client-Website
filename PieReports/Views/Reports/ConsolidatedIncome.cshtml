@@ -1,0 +1,42 @@
+﻿@model ViewModel.Reports.RPT;
+
+@using ViewModel.Login
+@using Newtonsoft.Json
+@{ string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+    <link href="~/css/Reports/ConsIncome.css" rel="stylesheet" />
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        @{
+
+            ViewBag.ReportName = "Consolidated Income Report as on";
+            ViewBag.ReportHeaderDiv = "Cons_Income_Repo";
+            ViewBag.GenDate = "True";
+
+            Html.RenderPartial("_ReportHeader");
+
+            ViewBag.PrimaryReport = "True";
+
+            ViewBag.ElementPDFBtnID = "btnExportIncomeCons";
+            ViewBag.ElementExcelBtnID = "btnExportIncomeCons";
+            ViewBag.ElementPrintBtnID = "btnPrintIncomeCons";
+            ViewBag.ElementEmailBtnID = "btnEMailIncomeCons";
+            ViewBag.ElementPrintBtnOnClickEvent = "print('#IncomeCons')";
+
+            ViewBag.ElementBackBtnID = null;
+
+            Html.RenderPartial("_NonPerfReportButtonsDiv");
+        }
+        <div id="IncomeDetailsAllClients" style="padding:0.5em;">
+
+        </div>
+    </div>
+</div>
+<script src="~/Jquery/ConsolidatedIncome.js"></script>

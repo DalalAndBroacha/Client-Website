@@ -1,0 +1,269 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{ string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/css/bootstrap/css/bootstrap-multiselect.min.css" rel="stylesheet" />
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+
+            <div class="row">
+                <div class="justify-content-center offset-2 col-8">
+                    <ul class="list-inline">
+                        
+                        <li class="list-inline-item">
+                            <label>Asset</label>
+                            <select id="ddlAsset" class="select2">
+                                <option value="1" selected>Equity</option>
+                                <option value="2">Bonds</option>
+                                <option value="4">Mutual Fund</option>
+                            </select>
+                        </li>
+                        <li class="list-inline-item">
+                            <label>Script</label>
+                            <select id="ddlScript" class="select2">
+                            </select>
+                        </li>
+                        <li class="list-inline-item">
+                            <label>Report Format</label>
+                            <select id="ddlRepoFormat" class="select2">
+                                <option value="1">Condensed</option>
+                                <option value="2">Detailed</option>
+                            </select>
+                        </li>
+
+                    </ul>
+                </div>
+                <div class="col-2">
+                    <button onclick="GetMISScriptDetails()" class="btn DnB-RedLabel" style="margin-top:1.75rem;">View Report</button>
+                </div>
+            </div>
+
+            <div id="mainReport">
+                <div id="report_header_and_buttons" style="display:none;">
+                    @{
+
+                        ViewBag.ReportName = "Script Wise Client Wise Holding Report";
+                        ViewBag.ReportHeaderDiv = "SWCW_HoldingReport";
+                        ViewBag.GenDate = "False";
+
+                        Html.RenderPartial("_ReportHeader");
+
+                        ViewBag.PrimaryReport = "True";
+
+                        ViewBag.ElementPDFBtnID = "btnPDFSWCW_HoldingReport";
+                        ViewBag.ElementExcelBtnID = "btnExportSWCW_HoldingReport";
+                        ViewBag.ElementEmailBtnID = "btnEmailSWCW_HoldingReport";
+
+                        ViewBag.ElementBackBtnID = null;
+
+                        Html.RenderPartial("_NonPerfReportButtonsDiv");
+                    }
+                </div>
+
+                <div style="padding:2px;">
+                    <div class="row" style="padding:5px; display:none;" id="dataDiv">
+                        <div class="col-xs-8 col-sm-6">
+                            <div class="card d-block">
+                                <div class="text-center">
+                                    <h3>Quantities(Total)</h3>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 col-xs-12">
+                                        <p class="card-text" style="margin-left:1em;">
+                                            <b>Short term:</b> <span id="TotalSrt"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-6 col-xs-12">
+                                        <p class="card-text">
+                                            <b>Long term:</b> <span id="TotalLT"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 col-xs-12">
+                                        <p class="card-text" style="margin-left:1em;">
+                                            <b>Total:</b> <span id="TotalQty"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-6 col-xs-12">
+                                        <p class="card-text">
+                                            <b>DP:</b> <span id="TotalDP"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-8 col-sm-6">
+                            <div class="card d-block">
+                                <div class="text-center">
+                                    <h3>Valuations(Total)</h3>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <p class="card-text" style="margin-left:1em;">
+                                            <b>Holding Cost:</b> <span id="TotalHoldin"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <p class="card-text" style="margin-left:1em;">
+                                            <b>Current Value:</b> <span id="TotalCurVal"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divScriptwiseDetailsCondensed" style="display:none" @*class="scrolledTable"*@>
+                        <input type="text" id="inpPrintBranchId" hidden readonly>
+                        <input type="text" id="inpPrintRMId" hidden readonly>
+                        <input type="text" id="inpPrintBranchName" hidden readonly>
+                        <input type="text" id="inpPrintRMName" hidden readonly>
+                        <table class="table table-hover table-bordered nowrap" id="tableScriptwiseDetailsCondensed">
+                            <thead>
+                                <tr>
+                                    <th>Client Name</th>
+                                    <th>Account Code</th>
+                                    <th>Total Quantity</th>
+                                    <th>Short Term Qty</th>
+                                    <th>Long Term Qty</th>
+                                    <th>Purchase Cost/NAV</th>
+                                    <th>Holding Cost</th>
+                                    <th>CMP/Current NAV</th>
+                                    <th>Current Value</th>
+                                    <th>DP</th>
+                                    <th>Latest Buy</th>
+                                    <th>Latest Sell</th>
+                                    <th>Remarks</th>
+                                    <th>Branch Name</th>
+                                    <th>RM Name</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyScriptwiseDetailsCondensed">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="divScriptwiseDetailsDetailed" style="display:none" @*class="scrolledTable"*@>
+                        <table class="table table-hover table-bordered nowrap" id="tableScriptwiseDetailsDetailed">
+                            <thead>
+                                <tr>
+                                    <th>Client Name</th>
+                                    <th>Account Code</th>
+                                    <th>Total Quantity</th>
+                                    <th>Short Term Qty</th>
+                                    <th>Long Term Qty</th>
+                                    <th>Purchase Cost/NAV</th>
+                                    <th>Holding Cost</th>
+                                    <th>CMP/Current NAV</th>
+                                    <th>Current Value</th>
+                                    <th>Dividend/Interest</th>
+                                    <th>DP</th>
+                                    <th>Latest Buy</th>
+                                    <th>Latest Sell</th>
+                                    <th>Remarks</th>
+                                    <th>Short Term Gain/Loss</th>
+                                    <th>Long Term Gain/Loss</th>
+                                    <th>XIRR</th>
+                                    <th>CAGR</th>
+                                    <th>Branch Name</th>
+                                    <th>RM Name</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyScriptwiseDetailsDetailed">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="norecordsScriptwiseDetails" style="display:none;" class="alert alert-danger row justify-content-center mt-1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Add -->
+            <div class="modal fade" id="CliScripTradesModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
+                    <div class="modal-content p-1">
+                        <div class="modal-header">
+                            <h5 class="modal-title ml-auto" id="ModalTitle">Trade Details</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <!-- Modal Add Body Start -->
+                        <div class="modal-body" style="height:550px; min-width:650px; overflow-y:auto;">
+                            <div class="row mt-1 mb-1">
+                                <div class="col-6">
+                                    <p>
+                                        <b>Client Name: </b><span id="tradeCliName"></span>
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <p>
+                                        <b>Script Name: </b><span id="tradeScripName"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <table class="table table-redbordered table-hover" id="tblScriptDet">
+                                    <colgroup>
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>Transaction Date</th>
+                                            <th>Remarks</th>
+                                            <th>Buy</th>
+                                            <th>Sell</th>
+                                            <th>Rate</th>
+                                            <th>Balance Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyScriptDet">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Modal Add Body End -->
+                        <div class="modal-footer p-1">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Add-->
+
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+<!-- MultiSelect js -->
+<script src="~/js/bootstrap/js/bootstrap-multiselect.min.js"></script>
+
+<script src="~/Jquery/ScriptWiseHolding.js"></script>
+

@@ -1,0 +1,150 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+	string dtoq = TempData["myDeshbordData"].ToString();
+	TempData.Keep("myDeshbordData");
+	Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+	Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+	<link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+	<link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+	<link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+
+}
+
+
+<div class="wrapper">
+	<div class="content-wrapper">
+
+		@*Loader*@
+		<div id="waitInMINT" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+			<img src="~/images/loader.gif" width="64" height="64" />
+		</div>
+		@*Loader*@
+
+		<div style="background-color:white !important; padding:1rem;">
+
+			<div class="SubTotalRow row" id="header_div_MFReport">
+				<div class="offset-2"></div>
+				<div class="col-8 d-flex justify-content-center">
+					<p style="text-align:center">
+						<b id="lblReport_Name">MF Reports Download</b>
+					</p>
+				</div>
+			</div>
+
+			@* <div class="row justify-content-center"><h1>MF Report Download</h1></div> *@
+			<a hidden id="FpDwn" target='_blank' href="#"></a>
+			<div class="row justify-content-center">
+				<div class="col-4">
+					<label class="m-2">Client</label>
+					<select class="form-control" name="ddlClientList" id="ddlClientList" style="border: 1px solid #ced4da" disabled></select>
+				</div>
+				<div class="col-4">
+					<label class="m-2">Report</label>
+					<select class="form-control" name="ddlReportList" id="ddlReportList" style="border: 1px solid #ced4da"></select>
+				</div>
+			</div>
+
+			@* Portfolio Summary *@
+			<form>
+				<div class="form mt-4" id="divPortfolioSummary" style="display:none">
+					<div class="row justify-content-center">
+						<div class="mb-1 row justify-content-center col-3 p-2">
+							<label class="m-2" id="lblasOnDatePortSummary" for="inpAsOnDatePortSummary">As On Date</label>
+							<input type="date" class="form-control dateInput" style="width:fit-content;" id="inpAsOnDatePortSummary">
+						</div>
+					</div>
+					<div class="row justify-content-center">
+						<button id="btnSubmitPortfolioSummary" type="submit" class="btn btn-success mt-2">Generate Report</button>
+					</div>
+				</div>
+			</form>
+			@* Portfolio Summary *@
+
+			@* Portfolio Return *@
+			<div class="form mt-4" id="divPortfolioReturn" style="display:none">
+				<div class="row justify-content-center">
+					<div class="mb-1 col-3 row justify-content-center p-2">
+						<label class="m-2" id="lblasOnDatePortReturn" for="inpAsOnDatePortReturn">As On Date</label>
+						<input type="date" class="form-control dateInput" style="width:fit-content;" id="inpAsOnDatePortReturn">
+					</div>
+				</div>
+				<div class="row justify-content-center">
+					<button id="btnSubmitPortfolioReturn" type="submit" class="btn btn-success mt-2">Generate Report</button>
+				</div>
+			</div>
+			@* Portfolio Return *@
+
+			@* Realized Gain Detailed *@
+			<div class="form mt-4" id="divCapitalGainDetailed" style="display:none">
+				<div class="row justify-content-center">
+					<div class="mb-1 row justify-content-center col-3 p-2">
+						<label class="m-2" id="lblFinYearGainDetailed" for="inpFinYearGainDetailed">Fin Year</label>
+						<select id="inpFinYearGainDetailed" style="border: 1px solid #ced4da;
+														border-radius:.25rem; padding:.375rem .75rem; text-align:start">
+							@if (dashboard.dashboardFinYears != null)
+						{
+								@foreach (var key in dashboard.dashboardFinYears)
+							{
+								<option value="@key.ID">@key.year</option>
+							}
+						}
+						else
+						{
+							<option value="0">No Data</option>
+						}
+						</select>
+					</div>
+				</div>
+				<div class="row justify-content-center">
+					<button id="btnSubmitCapitalGainDetailed" type="submit" class="btn btn-success mt-2">Generate Report</button>
+				</div>
+			</div>
+			@* Realized Gain Detailed *@
+
+			@* Realized Gain Summary *@
+			<div class="form mt-4" id="divCapitalGainSummary" style="display:none">
+				<div class="row justify-content-center">
+					<div class="mb-1 row justify-content-center col-3 p-2">
+						<label class="m-2" id="lblFinYearGainSummary" for="inpFinYearGainSummary">Fin Year</label>
+						<select id="inpFinYearGainSummary" style="border: 1px solid #ced4da;
+														border-radius:.25rem; padding:.375rem .75rem; text-align:start">
+							@if (dashboard.dashboardFinYears != null)
+							{
+								@foreach (var key in dashboard.dashboardFinYears)
+								{
+									<option value="@key.ID">@key.year</option>
+								}
+							}
+							else
+							{
+								<option value="0">No Data</option>
+							}
+						</select>
+					</div>
+				</div>
+				<div class="row justify-content-center">
+					<button id="btnSubmitCapitalGainSummary" type="submit" class="btn btn-success mt-2">Generate Report</button>
+					
+				</div>
+			</div>
+			@* Realized Gain Summary  *@
+
+
+		</div>
+	</div>
+</div>
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+
+<script src="~/jquery/MF_report_download.js" asp-append-version="true"></script>

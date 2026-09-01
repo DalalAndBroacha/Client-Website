@@ -1,0 +1,150 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>3cd1227b-a32b-4b68-8c27-081e1078989c</UserSecretsId>
+    <OutputType>WinExe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Shared\iframe.cshtml" />
+    <Content Remove="Views\Shared\index.cshtml" />
+    <Content Remove="Views\Shared\index2.cshtml" />
+    <Content Remove="Views\Shared\index3.cshtml" />
+    <Content Remove="Views\Shared\starter.cshtml" />
+    <Content Remove="wwwroot\js\jquery\jquery.minnew.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="Views\Shared\iframe.cshtml" />
+    <None Include="Views\Shared\index.cshtml" />
+    <None Include="Views\Shared\index2.cshtml" />
+    <None Include="Views\Shared\index3.cshtml" />
+    <None Include="Views\Shared\starter.cshtml" />
+    <None Include="wwwroot\icon\font-awesome\fonts\fontawesome-webfont.svg" />
+    <None Include="wwwroot\icon\font-awesome\fonts\fontawesome-webfont.woff2" />
+    <None Include="wwwroot\icon\font-awesome\less\animated.less" />
+    <None Include="wwwroot\icon\font-awesome\less\bordered-pulled.less" />
+    <None Include="wwwroot\icon\font-awesome\less\core.less" />
+    <None Include="wwwroot\icon\font-awesome\less\fixed-width.less" />
+    <None Include="wwwroot\icon\font-awesome\less\font-awesome.less" />
+    <None Include="wwwroot\icon\font-awesome\less\icons.less" />
+    <None Include="wwwroot\icon\font-awesome\less\larger.less" />
+    <None Include="wwwroot\icon\font-awesome\less\list.less" />
+    <None Include="wwwroot\icon\font-awesome\less\mixins.less" />
+    <None Include="wwwroot\icon\font-awesome\less\path.less" />
+    <None Include="wwwroot\icon\font-awesome\less\rotated-flipped.less" />
+    <None Include="wwwroot\icon\font-awesome\less\screen-reader.less" />
+    <None Include="wwwroot\icon\font-awesome\less\stacked.less" />
+    <None Include="wwwroot\icon\font-awesome\less\variables.less" />
+    <None Include="wwwroot\icon\font-awesome\scss\font-awesome.css.map" />
+    <None Include="wwwroot\icon\font-awesome\scss\font-awesome.scss" />
+    <None Include="wwwroot\icon\font-awesome\scss\_animated.scss" />
+    <None Include="wwwroot\icon\font-awesome\scss\_bordered-pulled.scss" />
+    <None Include="wwwroot\icon\font-awesome\scss\_core.scss" />
+    <None Include="wwwroot\icon\font-awesome\scss\_fixed-width.scss" />
+    <None Include="wwwroot\icon\font-awesome\scss\_icons.scss" />
+    <None Include="wwwroot\icon\font-awesome\scss\_larger.scss" />
+    <None Include="wwwroot\icon\font-awesome\scss\_list.scss" />
+    <None Include="wwwroot\icon\font-awesome\scss\_mixins.scss" />
+    <None Include="wwwroot\icon\font-awesome\scss\_path.scss" />
+    <None Include="wwwroot\icon\font-awesome\scss\_rotated-flipped.scss" />
+    <None Include="wwwroot\icon\font-awesome\scss\_screen-reader.scss" />
+    <None Include="wwwroot\icon\font-awesome\scss\_stacked.scss" />
+    <None Include="wwwroot\icon\font-awesome\scss\_variables.scss" />
+    <None Include="wwwroot\icon\icofont\fonts\icofont.svg" />
+    <None Include="wwwroot\icon\themify-icons\fonts\themify.svg" />
+    <None Include="wwwroot\images\tooltip\shape1.svg" />
+    <None Include="wwwroot\images\tooltip\tooltip1.svg" />
+    <None Include="wwwroot\Jquery\changePassword.js" />
+    <None Include="wwwroot\Jquery\PMS\UpdateAIF.js" />
+    <None Include="wwwroot\js\bootstrap-growl.min.js" />
+    <None Include="wwwroot\js\bootstrap\js\bootstrap.min.js" />
+    <None Include="wwwroot\js\chart.js\Chart.js" />
+    <None Include="wwwroot\js\common-pages.js" />
+    <None Include="wwwroot\js\jquery-slimscroll\jquery.slimscroll.js" />
+    <None Include="wwwroot\js\jquery-ui\jquery-ui.min.js" />
+    <None Include="wwwroot\js\jquery.mCustomScrollbar.concat.min.js" />
+    <None Include="wwwroot\js\jquery.mousewheel.min.js" />
+    <None Include="wwwroot\js\jquery\jquery.minnew.js" />
+    <None Include="wwwroot\js\jquery\jquery.min.js" />
+    <None Include="wwwroot\js\modernizr\css-scrollbars.js" />
+    <None Include="wwwroot\js\modernizr\modernizr.js" />
+    <None Include="wwwroot\js\morris-custom-chart.js" />
+    <None Include="wwwroot\js\morris.js\morris.js" />
+    <None Include="wwwroot\js\pcoded.min.js" />
+    <None Include="wwwroot\js\popper.js\popper.min.js" />
+    <None Include="wwwroot\js\raphael\raphael.min.js" />
+    <None Include="wwwroot\js\script.js" />
+    <None Include="wwwroot\js\script.min.js" />
+    <None Include="wwwroot\js\SmoothScroll.js" />
+    <None Include="wwwroot\js\vertical-layout.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.95.4" />
+    <PackageReference Include="EPPlus" Version="5.6.4" />
+    <PackageReference Include="ExcelDataReader" Version="3.8.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.8.0" />
+    <PackageReference Include="Grpc.Core" Version="2.38.0" />
+    <PackageReference Include="iTextSharp" Version="5.5.13.2" />
+    <PackageReference Include="itextsharp.xmlworker" Version="5.5.13.2" />
+    <PackageReference Include="Microsoft.AspNet.Providers.Core" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.32" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Net.Http" Version="2.2.29" />
+    <PackageReference Include="Microsoft.Report.Viewer" Version="11.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="MicrosoftOfficeCore" Version="15.0.0" />
+    <PackageReference Include="RecaptchaNet" Version="3.1.0" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
+    <PackageReference Include="Syncfusion.Pdf.Net.Core" Version="19.4.0.38" />
+    <PackageReference Include="System.Net.Http.Formatting.Extension" Version="5.2.3" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.7.*" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.7.*" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.7.*" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.7.*" />
+    <PackageReference Include="Wangkanai.Detection" Version="3.0.0" />
+    <PackageReference Include="Wangkanai.Detection.Browser" Version="2.0.1" />
+    <PackageReference Include="Wangkanai.Detection.Core" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="Pages\" />
+    <Folder Include="wwwroot\lib\bootstrap\" />
+    <Folder Include="wwwroot\lib\bootstrap\dist\css\" />
+    <Folder Include="wwwroot\lib\bootstrap\dist\js\" />
+    <Folder Include="wwwroot\lib\jquery-validation-unobtrusive\" />
+    <Folder Include="wwwroot\lib\jquery-validation\" />
+    <Folder Include="wwwroot\lib\jquery-validation\dist\" />
+    <Folder Include="wwwroot\lib\jquery\" />
+    <Folder Include="wwwroot\lib\jquery\dist\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ViewModel\ViewModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PTBlowFish">
+      <HintPath>..\..\..\d drive\References\PTBlowFish.dll</HintPath>
+    </Reference>
+    <Reference Include="PTUtility">
+      <HintPath>..\..\..\d drive\References\PTUtility.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Reports\GlobalReportMF.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

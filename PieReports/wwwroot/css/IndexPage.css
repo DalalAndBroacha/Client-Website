@@ -1,0 +1,102 @@
+﻿#TabsUL li {
+    margin-right: 2px;
+    border-right: 1px solid red;
+}
+
+#TabsUL li a {
+    color:black;
+}
+
+#TabsUL li:first-of-type {
+    border-left: 1px solid red;
+}
+
+
+.cst_UL_active_tab {
+    background-color: #FF9999;
+    font-weight: bold;
+}
+
+.cst_UL_tab {
+    background-color: #FCE0E0;
+}
+
+
+#UCCTabsUL li {
+    margin-right: auto;
+    /*background-color: #FCE0E0;*/
+}
+
+.btn-DnB {
+    color: white;
+    background-color: orangered;
+    border-color: orange;
+}
+
+.btn-DnB:hover {
+    color: white;
+    background-color: orangered;
+    border-color: #d39e00;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+
+#footerContent a:link {
+    color: orange !important;
+}
+
+#footerContent a:visited {
+    color: orange;
+}
+
+#footerContent a:hover {
+    color: orange;
+}
+
+#footerContent a:active {
+    color: orange;
+}
+
+/* Makes the animation pause on hover */
+.marq-text:hover {
+    animation-play-state: paused;
+}
+
+/* The animation */
+@keyframes marquee {
+    /*0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }*/
+
+    from {
+        margin-left: 100%;
+        width: 300%;
+    }
+
+    to {
+        margin-left: -100%;
+        width: 100%;
+    }
+}
+
+/* media query to enable animation for only those who want it */
+@media (prefers-reduced-motion: no-preference) {
+    .marq-text {
+        animation: marquee 35s linear infinite;
+    }
+}

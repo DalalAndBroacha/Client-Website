@@ -1,0 +1,84 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+
+    <link href="~/css/bootstrap/css/bootstrap-multiselect.min.css" rel="stylesheet" />
+    <link href="~/css/service modules/searchclient.css" rel="stylesheet" asp-append-version="true" />
+    
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        @{
+            ViewBag.ReportName = "Search Client";
+            ViewBag.ReportHeaderDiv = "ReportUpload";
+            ViewBag.GenDate = "False";
+        }
+        <partial name="_ReportHeader"></partial>
+
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+
+            <div class="row justify-content-center">
+            
+                <div class="input-group col-5">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text DnB-RedLabel" for="searchTerm">Search</label>
+                    </div>
+                    <input type="text" id="searchTerm" class="col-lg-8" maxlength="15" placeholder="Client / Family Name or PAN"/>
+
+                    <div id="txtMinCriteria" class="offset-2 col-7 text-secondary"><p>Enter minimmum 4 characters.</p></div>
+                </div>
+            
+                <div class="col-3">
+                    <button id="btnSubmitSearch" class="btn DnB-RedLabel" onclick="SearchTerm()" disabled>Submit</button>
+                </div>
+            </div>
+
+            <div id="snackbar"> 
+                <h6>Table Legend</h6>
+                <div class="row justify-content-between">
+                    <span class="table-success col-1" style="display:block; height:15px; width:15px; border:1px solid black"></span>
+                    <span class="col-11" style="font-size:11px;">You have access to these clients.</span>
+                </div>
+                <div class="row justify-content-between">
+                    <span class="table-danger col-1" style="display:block; height:15px; width:15px; border:1px solid black"></span>
+                    <span class="col-11" style="font-size:11px;">You don't have access to these clients.</span>
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <table id="tblDspClientData" class="table table-bordered w-100" style="display:none;">
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>
+
+<!-- MultiSelect js -->
+<script src="~/js/bootstrap/js/bootstrap-multiselect.min.js"></script>
+
+<script src="~/Jquery/Services/SearchClient.js" asp-append-version="true"></script>

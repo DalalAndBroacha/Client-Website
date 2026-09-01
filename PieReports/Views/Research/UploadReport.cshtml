@@ -1,0 +1,330 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@model ViewModel.Shared.Upload_Research_Report
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+    <link href="~/css/bootstrap/css/bootstrap-multiselect.min.css" rel="stylesheet" />
+    @* <link href="~/css/Reports/GlobalReport.css" rel="stylesheet" asp-append-version="true" /> *@
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div id="GlobalwaitIn" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="Loading..."/>
+        </div>
+        @{
+            ViewBag.ReportName = "Report Upload";
+            ViewBag.ReportHeaderDiv = "ReportUpload";
+            ViewBag.GenDate = "False";
+        }
+        <partial name="_ReportHeader"></partial>
+        <div id="main_div" style="display:none; position:unset; background-color:white !important; padding:1rem;">
+            <h3>Add Report</h3>
+            <form method="post" id="formAdd" enctype="multipart/form-data" asp-controller="Research" asp-action="uploadData" autocomplete="off">
+
+                <div class="row mb-2">
+                    <div class="input-group mb-1 col-6">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text DnB-RedLabel">Report Title</label>
+                        </div>
+                        <input type="text" asp-for="RepoTitle" id="RepoTitle" class="form-control" maxlength="200" />
+                        <span asp-validation-for="RepoTitle" class="text-danger"></span>
+                    </div>
+
+                    <div class="input-group mb-1 ml-3 col-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text DnB-RedLabel">Category</label>
+                        </div>
+                        <select class="form-control" asp-for="category" style="border: 1px solid #ced4da; height:38px;" id="ddlCatList">
+
+                            @foreach (var key in Model.cat_data)
+                            {
+                                @* <option value="{'category_name':'@key.category_name','stock_related_flag':'@key.stock_related_flag'}">@key.category_name</option> *@
+                                <option value="@("{\"category_name\":\"" + @key.category_name +"\",\"stock_related_flag\":\"" + @key.stock_related_flag + "\"}")">@key.category_name</option>
+                            }
+                            
+                        </select>
+                    </div>
+                </div>
+
+                <div id="stockRelated" class="row mb-2">
+                    <div class="col-md-10">
+                        <table class="table table-redbordered" id="table_inp">
+                            <colgroup>
+                                <col style="width: 50%;">
+                                <col style="width: 25%;">
+                                <col style="width: 25%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Script</th>
+                                    <th>Recommendation</th>
+                                    <th>Target Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <select id="ddlScript" asp-for="scrip_code">
+                                            <option value="0"></option>
+                                            @foreach (var key in Model.script_data)
+                                            {
+                                                <option value=@key.scrip_code>@key.SCRIP_NAME</option>
+                                            }
+                                        </select>
+                                    </td>
+
+                                    <td>
+                                        <select class="form-control" asp-for="Recomandation" style="border: 1px solid #ced4da; height:38px;" id="ddlRecoList">
+                                            @foreach (var key in Model.reco_data)
+                                            {
+                                                <option value=@key.reco_name>@key.reco_name</option>
+                                            }
+                                    </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="inptrgtPrice" value="0" asp-for=targetPrice class="form-control" />
+                                    </td>
+                                
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="row mb-1">
+                    <div class="input-group col-7">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text DnB-RedLabel" for="inpfile">Upload file</label>
+                        </div>
+                        <input type="file" asp-for="reportFile" id="inpfile" class="form-control" accept=".pdf" />
+                        <span asp-validation-for="reportFile" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-3 custom-control custom-checkbox ml-2">
+                        <input type="checkbox" asp-for="chkDspWeb" class="custom-control-input" id="chkDspWeb" checked="checked">
+                        <label class="custom-control-label" for="chkDspWeb">Display on Web</label>
+                    </div>
+
+                    @* <div class="form-group col-3">
+                        <label class="DnB-RedLabel" for="chkDspWeb">Display on Web</label>
+                        
+                        <input type="checkbox" asp-for="chkDspWeb" id="chkDspWeb" class="form-control" checked="checked" />
+
+                    </div> *@
+                </div>
+
+                <div class="form-group">
+                    <div class="row justify-content-center">
+                        <input type="hidden" id="flag_a" value="A" asp-for="flag" />
+                        <input type="hidden" id="rec_id" value="0" asp-for="rec_id" />
+                        <input id="btnUpload" type="submit" class="btn DnB-RedLabel" value="Upload" />
+                    </div>
+                </div>
+
+            </form>
+
+            <hr class="redHR" />
+
+            <div style="padding:0.5rem; overflow-y:scroll; overflow-x:auto; max-height:60vh;">
+                <table id="tblReportsData" class="table table-bordered w-100">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Report Title</th>
+                            <th>Category</th>
+                            <th>Recommendation</th>
+                            <th>Target</th>
+                            <th>URL</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var key in Model.reports_data)
+                        {
+                            <tr>
+                                <td data-sort='@key.Latest_reco_date.ToString("yyyyMMdd")'>@key.Latest_reco_date.ToString("dd-MM-yyyy")</td>
+                                <td><input type="hidden" name="dsp_id" value="@key.id" />@key.Report_Title</td>
+                                <td><input type="hidden" name="scrip_id" value="@key.Scrip_code" />@key.Category</td>
+                                <td class="paraTextAlignCenter"><input type="hidden" name="dsp_web_flag" value="@key.Display_on_web" />@key.Recommendation</td>
+                                <td class="paraTextAlignRight">@key.Price_target</td>
+                                <td class="paraTextAlignCenter"><a href="@key.URL" target="_blank">@key.URL</a></td>
+                                <td class="text-center" style="width:101px;">
+                                    <input type="text" value="@key.id" hidden />
+                                    @if (key.MobNotifyBtn == "Y")
+                                    {
+                                        <button class="btn Push_Notification" type="button" title="Push Mobile Notification">
+                                            <i class="fas fa-mobile-alt fa-lg White_Red_Icon"></i></button>
+                                    }
+                                    <button class="btn Edit_rec" type="button" title="Edit"><i class="fas fa-edit fa-lg White_Red_Icon"></i></button>
+                                    <button class="btn Del_rec" type="button" title="Delete"><i class="fas fa-trash-alt fa-lg White_Red_Icon"></i></button>
+                                    <i class=""></i>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <!-- Edit Modal -->
+         <div class="modal fade" id="edit_report" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="width:70%; height:60vh; margin: auto">
+                    <div class="modal-header">
+                        <h3>Update Report</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div> <!-- end modal header -->
+                    <div class="modal-body">
+
+                        <form method="post" id="formUpdate" enctype="multipart/form-data" asp-controller="Research" asp-action="uploadData" autocomplete="off">
+
+                            <div class="row mb-2">
+                                <div class="input-group mb-1 col-6">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text DnB-RedLabel">Report Title</label>
+                                    </div>
+                                    <input type="text" asp-for="RepoTitle" id="RepoTitleUpdate" class="form-control" maxlength="200" />
+                                    <span asp-validation-for="RepoTitle" class="text-danger"></span>
+                                </div>
+
+                                <div class="input-group mb-1 ml-3 col-4">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text DnB-RedLabel">Category</label>
+                                    </div>
+                                    <select class="form-control" asp-for="category" style="border: 1px solid #ced4da; height:38px;" id="ddlCatListUpdate">
+                                        @foreach (var key in Model.cat_data)
+                                        {
+                                            @* <option value=@key.category_name>@key.category_name</option> *@
+                                            <option value="@("{\"category_name\":\"" +  @key.category_name +"\",\"stock_related_flag\":\"" + @key.stock_related_flag + "\"}")">@key.category_name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="stockRelatedUpdate" class="row mb-2">
+                                <div class="col-md-10">
+                                    <table class="table table-redbordered" id="table_inp">
+                                        <colgroup>
+                                            <col style="width: 50%;">
+                                            <col style="width: 25%;">
+                                            <col style="width: 25%;">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>Script</th>
+                                                <th>Recommendation</th>
+                                                <th>Target Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <select id="ddlScriptUpdate" asp-for="scrip_code">
+                                                        <option value="0"></option>
+                                                        @foreach (var key in Model.script_data)
+                                                        {
+                                                            <option value=@key.scrip_code>@key.SCRIP_NAME</option>
+                                                        }
+                                                    </select>
+                                                </td>
+
+                                                <td>
+                                                    <select id="ddlRecoUpdate" class="form-control" asp-for="Recomandation" style="border: 1px solid #ced4da; height:38px;" id="ddlRecoListUpdate">
+                                                        @foreach (var key in Model.reco_data)
+                                                        {
+                                                            <option value=@key.reco_name>@key.reco_name</option>
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" id="inptrgtPriceUpdate" value="" asp-for="targetPrice" class="form-control" />
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="input-group col-7">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text DnB-RedLabel" for="inpfile">Upload file</label>
+                                    </div>
+                                    <input type="file" asp-for="updateReportFile" id="inpfileUpdate" class="form-control" accept=".pdf" />
+                                    <span asp-validation-for="updateReportFile" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-3 custom-control custom-checkbox ml-2">
+                                    <input type="checkbox" asp-for="chkDspWeb" class="custom-control-input" id="chkDspWebUpdate" checked="checked">
+                                    <label class="custom-control-label" for="chkDspWebUpdate">Display on Web</label>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row justify-content-center">
+                                    <input type="hidden" id="flag_up" value="U" asp-for="flag" />
+                                    <input type="hidden" id="rec_id_Update" asp-for="rec_id" />
+                                    <input type="hidden" id="fileURL_Update" asp-for="fileURL" />
+                                    <input id="btnUploadUpdate" type="submit" class="btn DnB-RedLabel" value="Update" />
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div> <!-- end modal footer -->
+                </div> <!-- end modal content-->
+            </div>
+        </div>
+        <!-- Edit Modal -->
+
+    </div>
+</div>
+
+@if (ViewBag.message != null)
+{
+    <script type="text/javascript">
+        alert( "@(ViewBag.AlertMessage)");
+    </script>
+}
+
+
+@* Client side validation *@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.js"></script>
+@* Client side validation *@
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>
+
+<!-- MultiSelect js -->
+<script src="~/js/bootstrap/js/bootstrap-multiselect.min.js"></script>
+
+<script src="~/Jquery/Research/UploadReport.js" asp-append-version="true"></script>
+

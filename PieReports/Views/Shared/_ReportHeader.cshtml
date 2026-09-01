@@ -1,0 +1,20 @@
+﻿@{ 
+    var headerId = "header_div_" + @ViewBag.ReportHeaderDiv;
+}
+
+<div class="SubTotalRow" style="text-align:center;" id=@headerId>
+    <b id="lblReport_Name">@ViewBag.ReportName</b>
+    @if (ViewBag.GenDate == "True")
+    {
+        if (ViewBag.GenPeriod == "True")
+        {
+            <b><b id="report_start_date"></b> to <b id="report_end_date"></b></b><br />
+            <span style="font-size:9px;">Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span>
+        }
+        else
+        {
+            <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b><br />
+            <span style="font-size:9px;">Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span>
+        }
+    }
+</div>

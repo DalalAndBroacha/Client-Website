@@ -1,0 +1,215 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@model List<ViewModel.ClientComms.psp_dsp_client_coms_dormant_account>
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+    <link href="~/css/datatableselect.min.css" rel="stylesheet" />
+    <link href="~/css/dormant.css" rel="stylesheet" asp-append-version="true" />
+    @* <link href="~/css/Reports/GlobalReport.css" rel="stylesheet" asp-append-version="true" /> *@
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        @{
+
+            ViewBag.ReportName = "Dormant Clients";
+            ViewBag.ReportHeaderDiv = "DormantClients";
+            ViewBag.GenDate = "False";
+
+            <partial name="_ReportHeader" />
+
+        }
+        <div id="GlobalwaitIn" style="width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+        <div id="main_div" style="position:unset; background-color:white !important; padding:1rem;">
+
+            @* <div class="d-flex row justify-content-center SubTotalRow">
+                <ul id="UL_nav_pills" class="nav nav-pills-tab">
+                    <li class="nav-item" id="NavPillDor"><a class="nav-link active" href="#divDormantCli" data-toggle="tab">Dormant</a></li>
+                    <li class="nav-item" id="NavPillBeDor"><a class="nav-link" href="#divBecomingDormant" data-toggle="tab">Becoming Dormant</a></li>
+                </ul>
+            </div> *@
+
+            <div id="divDorData" style="padding:0.5rem; max-height:80vh; display:none;">
+                <div class="row justify-content-center">
+                    @* <button id="btnBulkEmail" class="btn send_mail_bulk mr-2" type="button" title="Send Bulk E-mail & SMS">
+                            <i class="ml-1 fas fa-envelope fa-lg White_Red_Icon"></i>
+                            </button> *@
+                    <button id="btnBulkEmail" class="btn btn-sm DnB-RedLabel mb-2" title="Send E-mail & SMS to selected clients.">Send E-Mail</button>
+                </div>
+                <div style="padding:0.5rem; overflow-y:scroll; overflow-x:auto; max-height:70vh;">
+                    <table id="tblData" class="table table-bordered w-100">
+                        <thead>
+                            <tr>
+                                <th><button id="selectAllDor" class="btn btn-sm DnB-RedLabel">Select All</button></th>
+                                <th>Name</th>
+                                <th>Code</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Last Activity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var key in Model)
+                            {
+                                if (key.status == "Dormant")
+                                {
+                                    <tr>
+
+                                        <td></td> @* Required for Checkbox *@
+                                        <td class="paraTextAlignLeft align-middle">@key.trading_name</td>
+                                        <td class="paraTextAlignCenter align-middle">@key.trading_code</td>
+                                        <td class="paraTextAlignCenter align-middle">@key.client_category</td>
+                                        <td class="paraTextAlignCenter align-middle">
+                                            <p>
+                                                BSE : @key.bse_status<br>
+                                                NSE : @key.nse_status<br>
+                                            </p>
+                                        </td>
+                                        <td class="paraTextAlignCenter align-middle">
+                                            <p>
+                                                Trade : @key.dsp_last_traded_date<br>
+                                                Re-KYC : @key.dsp_last_ReKYC_date<br>
+                                                Agreement : @key.dsp_last_agreement_date<br>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal History -->
+        <div class="modal fade" id="historyModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
+                <div class="modal-content p-1">
+                    <div class="modal-header">
+                        <h5 class="modal-title ml-auto" id="HistoryModalTitle">History</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <!-- Modal History Body Start -->
+                    <div class="modal-body" style="height:350px; width:500px; overflow-y:auto;">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Sender</th>
+                                    <th>Communication Date</th>
+                                    <th>SMS Status</th>
+                                    <th>Email Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyHistoryData">
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Modal History Body End -->
+                    <div class="modal-footer p-1">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal History-->
+    </div>
+</div>
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+<script src="~/hyper/js/vendor/datatables.select.min.js"></script>
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>
+
+<script src="~/Jquery/Services/DormantAccount.js" asp-append-version="true"></script>
+
+
+
+@* ****To Be Dormant****
+    
+<div id="divTabContent" class="tab-content">
+
+    <div class="tab-pane active" id="divDormantCli">
+    </div>
+
+    <div class="tab-pane" id="divBecomingDormant">
+        <div id="divBeDorData" style="padding:0.5rem; max-height:80vh; display:none;">
+            <div class="row justify-content-center">
+                <button id="btnBeComDorBulkEmail" class="btn btn-sm DnB-RedLabel" title="Send E-mail & SMS to selected clients.">Send E-Mail</button>
+            </div>
+            <div style="padding:0.5rem; overflow-y:scroll; overflow-x:auto; max-height:50vh;">
+                <table id="tblDataBeDor" class="table table-bordered w-100">
+                    <thead>
+                        <tr>
+                            <th><button id="selectAllBeDor" class="btn btn-sm DnB-RedLabel">Select All</button></th>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Status</th>
+                            <th>Last Activity</th>
+                            <th>Last Communication</th>
+                            <th>History</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var key in Model)
+                        {
+                            if (key.status == "To be Dormnat")
+                            {
+                                <tr>
+                                    <td></td> @* Required for Checkbox *@ @*
+                                    <td class="paraTextAlignLeft align-middle">@key.trading_name</td>
+                                    <td class="paraTextAlignCenter align-middle">@key.trading_code</td>
+                                    <td class="paraTextAlignCenter align-middle">
+                                        <p>
+                                            BSE : @key.bse_status<br>
+                                            NSE : @key.nse_status<br>
+                                        </p>
+                                    </td>
+                                    <td class="paraTextAlignCenter align-middle">
+                                        <p>
+                                            Trade : @key.dsp_last_traded_date<br>
+                                            Re-KYC : @key.dsp_last_ReKYC_date<br>
+                                            Agreement : @key.dsp_last_agreement_date<br>
+                                        </p>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="row justify-content-center">
+                                            <p>
+                                                @key.last_communication
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="row justify-content-center">
+                                            <button class="btn" type="button" onclick="FetchHistoryData('@key.trading_code', '2')" title="History">
+                                                <i class="fas fa-history fa-lg White_Red_Icon"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> *@

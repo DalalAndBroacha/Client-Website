@@ -1,0 +1,119 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@model ViewModel.ClientComms.EquitySettlement
+
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+    <link href="~/css/bootstrap/css/bootstrap-multiselect.min.css" rel="stylesheet" />
+    @* <link href="~/css/Reports/GlobalReport.css" rel="stylesheet" asp-append-version="true" /> *@
+}
+
+
+<div class="content-wrapper" style="margin-top:37px;">
+
+    <div id="GlobalwaitIn" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+        <img src="~/images/loader.gif" width="64" height="64" alt="Loading..." />
+    </div>
+
+    @{
+        ViewBag.ReportName = "Equity Settlement";
+        ViewBag.ReportHeaderDiv = "EqSetUpload";
+        ViewBag.GenDate = "False";
+    }
+    <partial name="_ReportHeader"></partial>
+
+    <div id="main_div" style="position:unset; background-color:white !important; padding:0.5rem;">
+
+        <div class="row justify-content-center SubTotalRow mb-2">
+            <ul id="UL_nav_pills" class="nav nav-pills-tab">
+                <li class="nav-item" id="NavPillCreate"><a class="nav-link active" href="#divUpload" data-toggle="tab">Upload</a></li>
+                <li class="nav-item" id="NavPillRmMap"><a class="nav-link" href="#divLog" data-toggle="tab">Log</a></li>
+            </ul>
+        </div>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="divUpload">
+                <form method="post" id="formAdd" enctype="multipart/form-data"
+                    asp-controller="Pie" asp-action="uploadEqSetData" autocomplete="off">
+
+                <div class="row justify-content-center">
+
+                    <div class="input-group col-3 ml-2">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text DnB-RedLabel" for="uploadDate">Payment Date</label>
+                        </div>
+                        <input type="date" asp-for="uploadDate" id="uploadDate">
+                    </div>
+
+                    <div class="input-group col-4">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text DnB-RedLabel" for="reportFile">Upload file</label>
+                        </div>
+                        <input type="file" asp-for="reportFile" id="reportFile" class="form-control" accept=".xls" />
+                        <span asp-validation-for="reportFile" class="text-danger"></span>
+                    </div>        
+                    
+                </div>
+            
+                <div class="row justify-content-center">
+                    <input id="btnUpload" type="submit" class="btn DnB-RedLabel" value="Upload" />
+                </div>
+            </form>
+            </div>
+
+            <div class="tab-pane" id="divLog">
+                <div class="row justify-content-center">
+
+                    <div class="input-group col-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text DnB-RedLabel" for="inpFromDate">
+                                From Date
+                            </label>
+                            <input type="date" id="inpFromDate"/>
+                        </div>
+                    </div>
+
+
+                    <div class="input-group col-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text DnB-RedLabel" for="inpToDate">
+                                To Date
+                            </label>
+                            <input type="date" id="inpToDate" />
+                        </div>
+                    </div>
+
+                    <div class="col-3">
+                        <button class="btn DnB-RedLabel" id="btnDownloadXls">Download</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>
+
+<!-- MultiSelect js -->
+<script src="~/js/bootstrap/js/bootstrap-multiselect.min.js"></script>
+
+<script src="~/jquery/services/eqsettlement.js" asp-append-version="true"></script>

@@ -1,0 +1,13 @@
+﻿#tblsection button[aria-expanded=true] .fa-plus-square {
+    display: none;
+}
+
+#tblsection button[aria-expanded=false] .fa-minus-square {
+    display: none;
+}
+
+label {
+    background-color: #FCE0E0;
+    font-size: 14px;
+    height: 2rem
+}

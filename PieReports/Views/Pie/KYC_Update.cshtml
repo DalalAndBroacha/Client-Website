@@ -1,0 +1,218 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+    <link href="~/css/Service Modules/KYC_Update.css" rel="stylesheet" />
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        @{
+
+            ViewBag.ReportName = "Update KYC";
+            ViewBag.ReportHeaderDiv = "KYCupdate_HoldingReport";
+            ViewBag.GenDate = "False";
+
+            Html.RenderPartial("_ReportHeader");
+        }
+
+        <div class="p-1">
+            <div style="padding:5px;" class="card">
+                <div class="card-header">
+                    <div class="row" id="divDdlListsContent" style="display:none;">
+                        <div class="input-group mb-1 offset-2 col-md-6">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text DnB-RedLabel" for="ddlClientList">Clients</label>
+                            </div>
+                            <select id="ddlClientList">
+                            </select>
+                        </div>
+                        <div class="input-group mb-1 col-md-2">
+                            <button type="button" onclick="GetKYCDetails()" class="btn DnB-RedLabel">View Data</button>
+                        </div>
+                        <div class="input-group mb-1 col-md-2">
+                            <button type="button" onclick="GoToHistory()" class="btn DnB-RedLabel">Go to History</button>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center alert alert-danger" id="divNoEqClients" style="display:none;">
+                        <p>
+                            You do not have Equity account with us.
+                        </p>
+                    </div>
+
+                    @*Display Table*@
+                    <div id="div_dsp_table" class="mt-1">
+                        <div style="overflow-x: auto;">
+                            <table id="dsp_table" style="display: none;" class="table mb-0 table-bordered table-hover">
+                            </table>
+                            <div id="dsp_table_legend" style="display:none">
+                                <table>
+                                    <tr>
+                                        <td><span class="SubTotalRow mr-1" style="height:9px; width:15px; border:1px solid black"></span></td>
+                                        <td><span style="font-size:9px;">Updation Due</span></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div id="dsp_msg" style="display:none;" class="alert alert-success">
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <button id="btnEditRecs" type="button" style="display:none;" class="btn DnB-RedLabel">Edit Records</button>
+                            <div id="OTP_section" style="display:none;" class="row">
+                                <input type="text" id="txtVerifyOTP" maxlength="6" onkeypress="return onlyNumberKey(event)" placeholder="Enter OTP" autocomplete="off" class="form-control mb-1 offset-1 col-5">
+                                <button id="btnSubmitVerifyOTP" type="button" class="btn DnB-RedLabel mb-1 offset-1 col-4">Submit OTP</button>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div id="error_msg1" style="display:none;" class="alert alert-danger">
+                            </div>
+                        </div>
+                        <div id="resend_container_1" class="row justify-content-center mt-1">
+                            <div id="timer1" style="font-size: 12px; display: none;" class="alert alert-info">
+                                Haven't received OTP yet? <a id="Resend_Link1" class="alert-link" onclick="Resend_OTP('OTP1')" href="#">Resend OTP</a>
+                            </div>
+                        </div>
+                        <input type="text" id="verifyOTPtoken" readonly hidden>
+                    </div>
+                    @*Display Table*@
+
+                </div>
+            </div>
+
+            <div id="editable_row" style="display:none;">
+                <form>
+                    <div class="card">
+                        <div class="card-header">
+                            <center>
+                                <h3 style="text-decoration:underline;">Edit Details</h3>
+                            </center>
+                            <div id="edit_details_container">
+
+                                <div class="row">
+                                    <div class="col-2 d-flex justify-content-between">
+                                        <p style="font-size:14px; font-weight:bold;">Edit E-Mail?</p>
+                                        <input type="checkbox" id="IDchkEmail" name="chkEmail" data-toggle="toggle" data-size="sm" data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No">
+                                    </div>
+                                    <input type="email" id="txtNewEmail" class="form-control offset-1 col-4" placeholder="Enter New E-Mail">
+                                    <div class="input-group offset-1 col-3">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text DnB-RedLabel" for="ddlClientList">Relation</label>
+                                        </div>
+                                        <select id="ddlNewEmailRela" class="KYC_relationList">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-2 d-flex justify-content-between">
+                                        <p style="font-size:14px; font-weight:bold;">Edit Mobile?</p>
+                                        <input type="checkbox" id="IDchkMob" name="chkMob" data-toggle="toggle" data-size="sm" data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No">
+                                    </div>
+                                    <input type="text" maxlength="10" onkeypress="return onlyNumberKey(event)" id="txtNewMob" class="form-control offset-1 col-4" placeholder="Enter New Mobile">
+                                    <div class="input-group offset-1 col-3">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text DnB-RedLabel" for="ddlClientList">Relation</label>
+                                        </div>
+                                        <select id="ddlNewMobRela" class="KYC_relationList">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-2 d-flex justify-content-between">
+                                        <p style="font-size:14px; font-weight:bold;">Edit Annual Income?</p>
+                                        <input type="checkbox" id="IDchkIncomeRange" name="chkIncomeRange" data-toggle="toggle" data-size="sm" data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No">
+                                    </div>
+                                    <div class="input-group col-3 mb-1">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text DnB-RedLabel" for="ddlIncomeRangeList">Annual Income</label>
+                                        </div>
+                                        <select id="ddlIncomeRangeList">
+                                        </select>
+                                    </div>
+                                    <input type="text" id="txt_NW" maxlength="14" onkeypress="return onlyNumberKey(event)" class="offset-1 col-2 mb-1" placeholder="Networth">
+                                    <div class="col-4">
+                                        <label style="font-size:14px;">Networth Date</label>
+                                        <input type="date" id="NW_date">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="redHR" />
+
+                            <div id="decla_div">
+                                <div class="form-check ml-2 mb-3">
+                                    <input class="form-check-input" type="checkbox" value="1" name="declaCheks" id="declaOne">
+                                    <label class="form-check-label" for="declaOne">
+                                        I/we confirm/undertake that the investments/trading done in securities market
+                                        are from my/our own/borrowed sources of funds and I/we confirm that the funds
+                                        utilized for trading activity by me/us are in compliance with the rules,
+                                        regulations and guidelines stipulated under PMLA.
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2 mb-3">
+                                    <input class="form-check-input" type="checkbox" value="1" name="declaCheks" id="declaTwo">
+                                    <label class="form-check-label" for="declaTwo">
+                                        I further confirm that the value of assets mentioned above are my own sources
+                                        of income/byway of inheritance for my demat account.
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center">
+                                <div id="dsp_msg_final" style="display:none;" class="alert alert-success">
+                                </div>
+                            </div>
+
+                            <div id="finalSubmitOTP" class="d-flex justify-content-center">
+                                <button id="btnSubmitForm" type="button" class="btn DnB-RedLabel">Submit</button>
+                                <div id="OTP_section_Vali" style="display:none;" class="row">
+                                    <input id="txtValiOTP" maxlength="6" onkeypress="return onlyNumberKey(event)" placeholder="Enter OTP" autocomplete="off" class="form-control col-6">
+                                    <button id="btnSubmitValiOTP" type="button" class="btn DnB-RedLabel offset-1 col-4">Submit OTP</button>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center mt-1">
+                                <div id="error_msg2" style="display:none;" class="alert alert-danger">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center mt-1">
+
+                                <div id="timer2" style="font-size: 12px; display: none;" class="alert alert-info">
+                                    Haven't received OTP yet? <a id="Resend_Link2" class="alert-link" onclick="Resend_OTP('OTP2')" href="#">Resend OTP</a>
+                                </div>
+
+                            </div>
+                            <input type="text" id="ValidateOTPtoken" readonly hidden>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>
+
+<script src="~/Jquery/KYC/KYC_Update.js"></script>

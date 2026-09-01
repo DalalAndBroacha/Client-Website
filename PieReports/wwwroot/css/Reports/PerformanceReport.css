@@ -1,0 +1,21 @@
+﻿#htmltopdf button[aria-expanded=true] .fa-plus-square {
+    display: none;
+}
+
+#htmltopdf button[aria-expanded=false] .fa-minus-square {
+    display: none;
+}
+#tbl_FDDetails button[aria-expanded=true] .fa-plus-square {
+    display: none;
+}
+
+#tbl_FDDetails button[aria-expanded=false] .fa-minus-square {
+    display: none;
+}
+
+#ClientCategoryWiseData button[aria-expanded=true] .fa-plus-square {
+    display: none;
+}
+
+#ClientCategoryWiseData button[aria-expanded=false] .fa-minus-square {
+    display: none;

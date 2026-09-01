@@ -1,0 +1,157 @@
+﻿@model ViewModel.Reports.RPT;
+
+@using ViewModel.Login
+@using Newtonsoft.Json
+@{ string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard); }
+
+@section Styles {
+    <link href="~/css/SIPtable.css" rel="stylesheet" />
+}
+
+
+<div id="waitsipli" style="display:none;width:69px;height:89px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;"><img src="~/images/loader.gif" width="64" height="64" /><br>Loading..</div>
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        @{
+            ViewBag.ReportName = "SIP Summary Report";
+            ViewBag.DivReportHead = "SIP";
+            ViewBag.FlagAsOnDate = "True";
+            ViewBag.PrimaryReport = "True";
+
+            ViewBag.ElementFamilyNameID = "bfamilyName";
+            ViewBag.ElementFinYearID = "bFinYear";
+
+            ViewBag.ElementPDFBtnID = "btnExportPdf";
+            ViewBag.ElementExcelBtnID = "btnExport";
+            ViewBag.ElementPrintBtnID = "btnPrintMainPage";
+            ViewBag.ElementEmailBtnID = "btnEMailMainPerfSummary";
+            ViewBag.ElementPrintBtnOnClickEvent = "print('#PrintPerfo')";
+
+
+            ViewBag.ElementBackBtnID = null;
+
+            Html.RenderPartial("_ReportButtonsDiv");
+        }
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            @*<p style="margin-left:22px;">FinYear: <b id="bFinYear"></b>  <span style="float:right;"> Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span> </p>*@
+
+                            <div class="card-body main-table-card">
+
+                                <button type="button" class="btn btn-danger m-bottom10 mb-mbottom0" id="myModalSIP"><img src="~/images/Expiring.png" style="width:20px;margin-right: 10px;" />Expiring SIP</button><br />
+                                <div id="dataLoadSIPDetails">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+@*<div class="container">*@
+<div class="modal fade" id="myModal11" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered" style="min-width:90%;margin-left:50px;margin-top:50px;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title mb-mleft0" style="margin-left: 20px; margin-top: 10px;">Expiring SIP</h4><br />
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" style="overflow:auto;">
+                <p class="mb-mleft0" style="margin-left:22px;margin-top: 10px;">FinYear: <b id="pFinYear"></b>  <span style="float:right;margin-right: 35px;"> Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span> </p>
+                <ul class="navbar-nav ml-auto" style=" float:right;margin-top:-50px;">
+
+                    <li class="nav-item dropdown" id="liRemoveFavourite">
+                        <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
+                            <span><img src="~/images/ShareIcon1.png" class="img-responsive7" id="removefev" style="width:27px;" /></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+                            <div class="form-group-dashboard">
+
+                                <p id="btnsipExportExpire" name="btnsipExportExpire" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoExcel
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p id="btnExportPdfExpire" name="btnExportPdfExpire" data-toggle="modal" class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        ExporttoPdf
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group-dashboard">
+                                <p onclick="print('#myModal11')" data-toggle="modal" class="dropdown-item">
+                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                        Print
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            @*<div class="form-group-dashboard">
+                                    <p name="trading" data-toggle="modal" class="dropdown-item">
+                                        <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                            EmailExcel
+                                        </a>
+                                    </p>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="form-group-dashboard">
+                                    <p name="trading" data-toggle="modal" class="dropdown-item">
+                                        <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
+                                            EmailPdf
+                                        </a>
+                                    </p>
+                                </div>
+                                <div class="dropdown-divider"></div>*@
+                        </div>
+                    </li>
+                </ul>
+                @*<table class="table">
+                        <tr style="background-color:#ffb3b3;">
+                            <td style="width:40%;">
+                                <h4>Expiring SIP</h4>
+                            </td>
+
+                        </tr>
+                    </table>*@
+                <table class='table w-auto'>
+                    <thead>
+                        <tr style="background-color:#ffb3b3;">
+                            <th style="border: 1px solid #dddddd;"><p style='font-size:15px;font-weight: bold;'>Client</p><p style='font-size:12px;font-weight: bold;'>Family</p></th>
+                            <th style="border: 1px solid #dddddd;"><p style='font-size:15px;font-weight: bold;'>Mobile No</p><p style='font-size:12px;font-weight: bold;'>Email Id</p></th>
+                            <th style="border: 1px solid #dddddd;"><p style='font-size:15px;font-weight: bold;'>Scheme Name</p><p style='font-size:12px;font-weight: bold;'> Folio No</p></th>
+                            <th style="border: 1px solid #dddddd;"><p style='font-size:15px;font-weight: bold;'>End Date</p><p style='font-size:12px;font-weight: bold;'>Start Date</p></th>
+                            <th style="border: 1px solid #dddddd;"><p style='font-size:15px;font-weight: bold;'>Amount</p><p style='font-size:12px;font-weight: bold;'>Frequency</p></th>
+                            <th style="border: 1px solid #dddddd;"><p style='font-size:15px;font-weight: bold;'>Bank Name</p><p style='font-size:12px;font-weight: bold;'>Account No</p></th>
+                            <th style="border: 1px solid #dddddd;"><p style='font-size:15px;font-weight: bold;'>Expiring </p><p style='font-size:12px;font-weight: bold;'>in days</p></th>
+                        </tr>
+                    </thead>
+                    <tbody id="trsear">
+                    </tbody>
+                </table>
+                <div id="noReFound"></div>
+            </div>
+            @*<div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="background-color:#ffb3b3;">Close</button>
+                </div>*@
+        </div>
+    </div>
+</div>
+@*</div>*@
+
+<script src="~/Jquery/SIPtable.js"></script>

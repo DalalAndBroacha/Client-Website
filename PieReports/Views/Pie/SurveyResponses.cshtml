@@ -1,0 +1,137 @@
+﻿@using Newtonsoft.Json
+@using ViewModel.Login
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/css/Service Modules/SurveyResponse.css" rel="stylesheet" />
+}
+
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+
+            @{
+
+                ViewBag.ReportName = "Survey Response";
+                ViewBag.ReportHeaderDiv = "SurveyResponse";
+                ViewBag.GenDate = "False";
+
+                Html.RenderPartial("_ReportHeader");
+            }
+
+            <div id="divDdlListsContent" style="display:none;">
+                <div class="row mt-1" id="divDdlListsContent">
+                    <div class="input-group col-6 mb-1">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text DnB-RedLabel" for="ddlSurveyList">Survey List</label>
+                        </div>
+                        <select id="ddlSurveyList">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-group col-7">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text DnB-RedLabel" for="ddlFamilyList">Family List</label>
+                        </div>
+                        <select id="ddlSurveyFamilyList">
+                        </select>
+                    </div>
+                    <div id="surveySummary" class="input-group mb-1 col-5" style="display:none;">
+                        <div class="row col-12">
+                            <div class="col-4 paraTextAlignCenter blackBorderNonRight">Total Families</div>
+                            <div class="col-4 paraTextAlignCenter blackBorderNonRight">Survey Filled</div>
+                            <div class="col-4 paraTextAlignCenter blackBorderComplete">Survey Pending</div>
+                        </div>
+                        <div class="row col-12">
+                            <div class="col-4 paraTextAlignCenter blackBorderNonRight"><b id="totalFam"></b></div>
+                            <div class="col-4 paraTextAlignCenter blackBorderNonRight"><b id="surveyFilled"></b></div>
+                            <div class="col-4 paraTextAlignCenter blackBorderComplete"><b id="surveyPend"></b></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row justify-content-center">
+                    <button type="button" id="viewData" onclick="GetSurveyDetails()" class="btn DnB-RedLabel">View Data</button>
+                </div>
+            </div>
+
+            <div id="dsp_div" class="mt-3" style="display:none;">
+
+                <hr class="redHR" />
+
+                <div class="row mb-1">
+                    <div class="ml-1 input-group-prepend">
+                        <label class="input-group-text DnB-RedLabel" for="FamName">Family</label>
+                    </div>
+                    <input type="text" readonly id="FamName" class="col-5 mr-1">
+                    <div class="ml-1 input-group-prepend">
+                        <label class="input-group-text DnB-RedLabel" for="RMName">RM</label>
+                    </div>
+                    <input type="text" readonly id="RMName" class="col-5">
+                    
+                </div>
+
+                <div class="row mb-1">
+                    <div class="ml-1 input-group-prepend">
+                        <label class="input-group-text DnB-RedLabel" for="BranchName">Branch</label>
+                    </div>
+                    <input type="text" readonly id="BranchName" class="col-2 mr-1">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text DnB-RedLabel" for="FilledBy">Survey filled by</label>
+                    </div>
+                    <input type="text" readonly id="FilledBy" class="col-3 mr-1">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text DnB-RedLabel" for="FilledOn">Survey filled on</label>
+                    </div>
+                    <input type="text" readonly id="FilledOn" class="col-3">
+                </div>
+
+                <table id="tbl_response_dsp" class="table mt-1 table-bordered">
+                    <colgroup>
+                        <col class="blackBorderNonRight" style="width:70%">
+                        <col class="blackBorderComplete" style="width:30%">
+                    </colgroup>
+                    <thead>
+                        <tr class="SubTotalRow">
+                            <th>Question</th>
+                            <th>Response</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody_tbl_response_dsp">
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+
+
+
+<script src="~/Jquery/Services/SurveyResponses.js"></script>

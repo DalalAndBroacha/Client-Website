@@ -1,0 +1,25 @@
+﻿body a {
+    color: orangered;
+}
+body a:hover {
+    color: #ee3426;
+}
+body a:visited {
+    color: maroon;
+}
+#tblReportsData th{
+    vertical-align:middle;
+    text-align:center;
+    font-weight:bolder;
+}
+#tblReportsData td {
+    vertical-align: middle;
+}
+
+#tblReportsData td p {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+}
+

@@ -1,0 +1,174 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@* @model List<ViewModel.ClientComms.psp_dsp_client_coms_outstanding_debit_send_mail> *@
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+    <link href="~/css/datatableselect.min.css" rel="stylesheet" />
+    <link href="~/css/dormant.css" rel="stylesheet" asp-append-version="true" />
+    @* <link href="~/css/Reports/GlobalReport.css" rel="stylesheet" asp-append-version="true" /> *@
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+        @{
+            ViewBag.ReportName = "Outstanding Debit";
+            ViewBag.ReportHeaderDiv = "OutDebi";
+            ViewBag.GenDate = "False";
+
+            <partial name="_ReportHeader" />
+        }
+        <div id="GlobalwaitIn" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="Loading..." />
+        </div>
+
+        <div id="main_div" style="position:unset; background-color:white !important; padding:1rem;">
+
+            <div class="row justify-content-around">
+
+                <div class="input-group col-md-3 mb-0">
+                    <div class="input-group-prepend">
+                        <label for="inpDate" class="input-group-text DnB-RedLabel mb-2">End Date</label>
+                        <input class="form-control" type="date" id="inpDate">       
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <button onclick="ViewDebiData()" class="btn btn-sm DnB-RedLabel">View Report</button>
+                </div>
+
+                <div class="offset-1 col-md-2">
+                    <button id="btnBulkEmailOutDebi" class="btn btn-sm DnB-RedLabel mb-2"
+                            title="Send E-mail to selected clients." style="display:none;">
+                        Send E-Mail
+                    </button>
+                </div>
+            </div>
+            
+            <div id="divOutDebi" style="padding:0.5rem; max-height:90vh; display:none;">
+                <div style="padding:0.5rem; overflow-y:scroll; overflow-x:auto; max-height:70vh;">
+                    <table id="tblData" class="table table-bordered w-100">
+                         <thead>
+                            <tr>
+                                <th><button id="selectAllDor" class="btn btn-sm DnB-RedLabel">Select All</button></th>
+                                <th>Name</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyOutDebi">
+                          @*  @foreach (var key in Model)
+                            {
+                                <tr>
+                                    <td></td> Required for Checkbox 
+                                    <td class="paraTextAlignCenter align-middle">@key.client_name</td>
+                                    <td class="paraTextAlignCenter align-middle">@key.dsp_amount</td>
+                                    <td class="paraTextAlignCenter align-middle">@key.account_code</td>
+                                    <td class="text-center">
+                                        <div class="row justify-content-center">
+                                            <button class="btn" type="button" onclick="FetchHistoryData('@key.account_code', '3')" title="History">
+                                                <i class="fas fa-history fa-lg White_Red_Icon"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            } *@
+                        </tbody> 
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal History -->
+        <div class="modal fade" id="historyModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
+                <div class="modal-content p-1">
+                    <div class="modal-header">
+                        <h5 class="modal-title ml-auto" id="HistoryModalTitle">History</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <!-- Modal History Body Start -->
+                    <div class="modal-body" style="height:350px; width:500px; overflow-y:auto;">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Sender</th>
+                                    <th>Communication Date</th>
+                                    @* <th>SMS Status</th> *@
+                                    <th>Email Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyHistoryData">
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Modal History Body End -->
+                    <div class="modal-footer p-1">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal History-->
+
+    </div>
+</div>
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+<script src="~/hyper/js/vendor/datatables.select.min.js"></script>
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>
+
+<script src="~/Jquery/Services/OutstandigDebit.js" asp-append-version="true"></script>
+
+@* <table cellpadding="8">  
+    <tr>
+        <th style="text-align:left">Client Code</th>
+        <td>@@Client</td>
+    </tr>
+    <tr>
+        <th style="text-align:left">Outstanding Amount</th>
+        <td>@@Amount ₹</td>
+    </tr>
+    <tr>
+        <th>As On Date</th>
+        <td>@@AsOnDate</td>
+    </tr>
+</table>
+
+<table cellpadding="8">
+    <tr>
+        <td style="text-align:left">Bank details</td>
+        <td>: @HardCodeBankDetails</td>
+    </tr>
+    <tr>
+        <td style="text-align:left">UPI</td>
+        <td>: @HardCodeUPI</td>
+    </tr>
+</table>
+
+<table cellpadding="8">
+    <tr>
+        <td style="text-align:left">Email</td>
+        <td>: @HardCodeEmail</td>
+    </tr>
+    <tr>
+        <td style="text-align:left">Contact Number</td>
+        <td>: @HardCodeContact</td>
+    </tr>
+</table> *@

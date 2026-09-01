@@ -1,0 +1,273 @@
+﻿@model ViewModel.Reports.Global_Report.initGlobalReport;
+
+@using ViewModel.Login
+@using Newtonsoft.Json
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+    <link href="~/css/Reports/GlobalReport.css" rel="stylesheet" asp-append-version="true" />
+}
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div id="GlobalMFwaitIn" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" />
+        </div>
+
+        @if (Model.family_token != null)
+        {
+            <input id="txtFamToken" type="text" value="@Model.family_token" readonly hidden />
+            <input id="txtFamName" type="text" value="@Model.family_name" readonly hidden />
+            <input id="txtMainCli" type="text" value="@Model.main_client_id" readonly hidden />
+        }
+        else
+        {
+            <input id="txtFamToken" type="text" value="0" readonly hidden />
+            <input id="txtFamName" type="text" value="0" readonly hidden />
+            <input id="txtMainCli" type="text" value="0" readonly hidden />
+        }
+
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+
+            <input type="text" id="txtFamId" value="0" hidden readonly />
+
+            <div class="d-flex justify-content-center">
+                <div class="col-3">
+                    <label>Client</label>
+                    <select style="border: 1px solid #cccccc; height:38px;" class="form-control mb-1" id="ddlClientList">
+                    </select>
+                </div>
+                <div class="col-2 mt-2 row" id="date_pills">
+
+                    <div class="d-flex align-items-start flex-column col-md-4">
+
+                        <button id="pill_Q1" style="width:60px;" class="badge badge-pill badge-danger mb-1" onclick="setPickerDates(this.id)">Upto Q1</button>
+                        <button id="pill_Q2" style="width:60px;" class="badge badge-pill badge-danger mb-1" onclick="setPickerDates(this.id)">Upto Q2</button>
+                        <button id="pill_Q3" style="width:60px;" class="badge badge-pill badge-danger mb-1" onclick="setPickerDates(this.id)">Upto Q3</button>
+
+                        <input type="text" id="txt_Q1" hidden readonly />
+                        <input type="text" id="txt_Q2" hidden readonly />
+                        <input type="text" id="txt_Q3" hidden readonly />
+
+                    </div>
+                    <div class="ml-2 d-flex align-items-start flex-column col-md-5">
+
+                        <button id="pill_curr_fy" class="badge badge-pill badge-danger mb-1" onclick="setPickerDates(this.id)">Current FY</button>
+                        <button id="pill_prev_fy" class="badge badge-pill badge-danger mb-1" onclick="setPickerDates(this.id)">Previous FY</button>
+                        <button id="pill_cst_date" class="badge badge-pill badge-danger mb-1" onclick="setPickerDates(this.id)">Custom Dates</button>
+
+                        <input type="text" id="txt_prev_fy_start_date" hidden readonly />
+                        <input type="text" id="txt_prev_fy_end_date" hidden readonly />
+                        <input type="text" id="txt_curr_fy_start_date" hidden readonly />
+                        <input type="text" id="txt_curr_fy_end_date" hidden readonly />
+
+                    </div>
+
+                </div>
+                <div class="col-2">
+                    <label>Start Date</label>
+                    <input class="form-control" type="date" id="inpStartDate" disabled>
+                </div>
+                <div class="col-2">
+                    <label>End Date</label>
+                    <input class="form-control" type="date" id="inpEndDate" disabled>
+                </div>
+                <div class="col-2 mt-4">
+                    <button onclick="ViewGlobalReport()" class="btn btn-sm DnB-RedLabel">View Report</button>
+                </div>
+            </div>
+
+            <div id="divSections" class="col-11 mt-1 ml-4 row justify-content-center"
+                 style="border: 1px solid #ff0000 ; border-radius: 10px;">
+                <div class="ml-2 row sectionContent">
+                    <div>
+                        <input type="checkbox" id="chkHolding" name="dspSection" data-toggle="toggle" data-size="xs"
+                               data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="secondary" data-on="Holding"
+                               data-off="Holding" checked="checked">
+                    </div>
+
+                    @* <div class="ml-2" id="divHldType">
+                        <input type="checkbox" id="chkHldType" name="dspSection" data-toggle="toggle" data-size="xs"
+                               data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="success" data-on="Summary"
+                               data-off="Detailed" checked="checked">
+                    </div> *@
+                </div>
+
+                <div class="ml-2 sectionContent">
+                    <input type="checkbox" id="chkTrades" name="dspSection" data-toggle="toggle" data-size="xs"
+                           data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="secondary" data-on="Trades"
+                           data-off="Trades" checked="checked">
+                </div>
+                <div class="ml-2 sectionContent">
+                    <input type="checkbox" id="chkDivi" name="dspSection" data-toggle="toggle" data-size="xs"
+                           data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="secondary" data-on="Dividend"
+                           data-off="Dividend" checked="checked">
+                </div>
+                @*
+                <div class="ml-2 row sectionContent" style="border-right:1px solid red;">
+                    <div>
+                        <input type="checkbox" id="chkPnL" name="dspSection" data-toggle="toggle" data-size="xs"
+                               data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="secondary" data-on="Gain/Loss"
+                               data-off="Gain/Loss" checked="checked">
+                    </div>
+
+                    <div class="ml-2" id="divGF">
+                        <input type="checkbox" id="chkGF" name="dspSection" data-toggle="toggle" data-size="xs"
+                               data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="success" data-on="With Grandfathering"
+                               data-off="Without Grandfathering" checked="checked">
+                    </div>
+                    </div>
+                *@
+
+            </div>
+
+        </div>
+
+        <div id="main_div" style="display:none;">
+            @{
+                ViewBag.ReportName = "MF Global Report for the Period: ";
+                ViewBag.ReportHeaderDiv = "MFGlobalReport";
+                ViewBag.GenDate = "True";
+                ViewBag.GenPeriod = "True";
+
+                //Html.RenderPartial("_ReportHeader");
+
+                ViewBag.PrimaryReport = "True";
+                ViewBag.ElementPDFBtnID = "btnGlobalExportPdf";
+                ViewBag.ElementExcelBtnID = "btnGlobalExportExcel";
+                ViewBag.ElementEmailBtnID = "btnEMailMainGlobal";
+
+                ViewBag.ElementBackBtnID = null;
+
+                <partial name="_ReportHeaderCompact"></partial>
+                //Html.RenderPartial("_ReportHeaderCompact");
+                ViewData.Clear();
+            }
+            
+            <input type="text" id="txtHoldingFlag" hidden readonly />
+            <input type="text" id="txtHoldingtypeFlag" hidden readonly />
+            <input type="text" id="txtHoldTradesFlag" hidden readonly />
+            <input type="text" id="txtHoldDiviFlag" hidden readonly />
+            <input type="text" id="txtHoldPnLFlag" hidden readonly />
+            <input type="text" id="txtHoldGFFlag" hidden readonly />
+
+            <div class="d-flex row justify-content-center SubTotalRow">
+                <ul id="UL_nav_pills" class="nav nav-pills-tab">
+                    <li class="nav-item" id="Nav_Pill_Holding"><a class="nav-link" href="#div_Holding" data-toggle="tab">Holding</a></li>
+                    <li class="nav-item" id="Nav_Pill_Trades"><a class="nav-link" href="#div_Trades" data-toggle="tab">Trades</a></li>
+                    <li class="nav-item" id="Nav_Pill_Dividend"><a class="nav-link" href="#div_Dividend" data-toggle="tab">Dividend</a></li>
+                    @* <li class="nav-item" id="Nav_Pill_PnL"><a class="nav-link" href="#div_PnL" data-toggle="tab">Gain/Loss</a></li> *@
+                </ul>
+            </div>
+
+            <div id="divTabContent" class="tab-content">
+
+                <div class="tab-pane pr-2 pl-2 table-responsive" id="div_Holding" style="height:58vh;border-bottom: 2px solid lightgray;">
+                    <table id="mainTable_holding" class="table mt-2 table-hover w-100 table-redbordered">
+                        <thead>
+                            <tr>
+                                <th>Scrip Name</th>
+                                <th>Quantity</th>
+                                <th>Cost</th>
+                                <th>Total Cost</th>
+                                <th>Mkt Date</th>
+                                <th>Mkt Rate</th>
+                                <th>Mkt Value</th>
+                                <th>Holding %</th>
+                                <th>Profit/Loss</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyHolding">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane pr-2 pl-2 table-responsive" id="div_Trades" style="height:58vh;border-bottom: 2px solid lightgray;">
+                    <table id="mainTable_trades" class="table mt-2 table-hover w-100 table-redbordered">
+                        <thead>
+                            <tr>
+                                <th>Transaction Date</th>
+                                <th>Scrip Name</th>
+                                <th>Transaction Type</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyTrades">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane pr-2 pl-2 table-responsive" id="div_Dividend" style="height:58vh;border-bottom: 2px solid lightgray;">
+                    <table id="mainTable_dividend" class="table mt-2 table-hover w-100 table-redbordered">
+                        <thead>
+                            <tr>
+                                <th>Transaction Date</th>
+                                <th>Scrip Name</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyDividend">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                @* <div class="tab-pane pr-2 pl-2 table-responsive" id="div_PnL" style="height:58vh;border-bottom: 2px solid lightgray;">
+                    <table id="mainTable_PnL" class="table mt-2 table-hover w-100 table-redbordered">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Qty</th>
+                                <th colspan="3">Buy</th>
+                                <th colspan="3">Sell</th>
+                                <th rowspan="2">Fair Price</th>
+                                <th rowspan="2">Acq. Cost</th>
+                                <th colspan="4">Gain Loss without GF</th>
+                            </tr>
+                            <tr>
+                                <th>Date</th>
+                                <th>Rate</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Rate</th>
+                                <th>Amount</th>
+                                <th>Intraday</th>
+                                <th>Short Term</th>
+                                <th>Long Term</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyPnL">
+                        </tbody>
+                    </table>
+                </div> *@
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>
+
+<script src="~/Jquery/Reports/MF_Global_Report.js" asp-append-version="true"></script>

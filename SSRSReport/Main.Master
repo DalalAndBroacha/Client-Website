@@ -1,0 +1,97 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Main.master.cs" Inherits="SSRSReport.Main" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head runat="server">
+    <title>Dalal & Broacha</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=9" />
+    <meta http-equiv="Page-Enter" content="blendTrans(Duration=0)" />
+    <meta http-equiv="Page-Exit" content="blendTrans(Duration=0)" />
+    <link href="~/Styles/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Styles/jquery-ui-1.8.18.custom.css" rel="stylesheet" type="text/css" />
+    <link href="~/Styles/jQueryTable.css" rel="stylesheet" type="text/css" />
+    <link href="~/Styles/WebMessageBox.css" rel="stylesheet" type="text/css" />
+    <link href="~/Styles/Common.css" rel="stylesheet" type="text/css" />
+    <link href="~/Styles/jquery.jqplot.min.css" rel="stylesheet" type="text/css" />
+    <%--<link href="~/Styles/jquery.ui.datepicker.css" rel="stylesheet" type="text/css" />--%>
+    <script src="../../Scripts/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../../Scripts/jquery-migrate-1.1.1.min.js" type="text/javascript"></script>
+    <script src="../../Scripts/jquery-ui-1.8.24.custom.min.js" type="text/javascript"></script>
+    <script src="../../Scripts/jquery.dataTables.js" type="text/javascript"></script>
+    <script src="../../Scripts/Common.js" type="text/javascript"></script>
+    
+    <script language="javascript" type="text/javascript">
+        //for open new window 
+        function openNewWin(url) {
+            var x = window.open(url, 'mynewwin');
+            x.focus();
+        }
+    </script>
+    <%--<script src="../../Scripts/jquery.corner.js" type="text/javascript"></script></script>--%>
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+ 
+    <form runat="server">
+        <div class="page">
+            <div class="header">
+             <%--   <div>
+                    <div class="company-logo"></div>
+                    <div class="application-title">
+                        DALAL <span>&</span> BROACHA
+                        <br />
+                        <div class="application-sub-title">STOCK BROKING PVT. LTD.</div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div>
+                        <span class="user-icon"></span>
+                        Welcome,
+                        <asp:Label ID="lblUserName" runat="server" Text="System Administrator"></asp:Label>
+                    </div>
+                    <br />
+                    <div>
+                        <asp:Label ID="lblLastLogin" runat="server" Style="color: #000" Text=""></asp:Label>
+                    </div>
+                    <br />
+                    <div class="user-info-command">
+                        <span class="key-icon"></span>
+                        <asp:HyperLink ID="lnkChangePassword" CssClass="cngPassword" runat="server" NavigateUrl="~/Forms/Common/ChangePassword.aspx"
+                            Text="Change Password" ToolTip="Change Password"></asp:HyperLink>
+                    </div>
+                    <div class="user-info-command">
+                        <span class="logout-icon"></span>
+                        <asp:HyperLink ID="lnkLogout" runat="server" CssClass="logout" NavigateUrl="~/Forms/Common/Logout.aspx"
+                            Text="Logout" ToolTip="Logout"></asp:HyperLink>
+                    </div>
+                </div>--%>
+            </div>
+            <div class="hideSkiplink">
+                <asp:Menu ID="NavigationMenu" runat="server" CssClass="menu" EnableViewState="false"
+                    IncludeStyleBlock="false" Orientation="Horizontal" OnMenuItemClick="NavigationMenu_MenuItemClick">
+                </asp:Menu>
+            </div>
+            <div class="main">
+
+                <div id="dvTitle">
+                    <table width="100%">
+                        <tr>
+                            <td>
+                               <span class="moduleSubTitle">
+                            <asp:Label ID="lblModuleSubTitle" runat="server" Text=""></asp:Label>
+                        </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <asp:ContentPlaceHolder ID="MainContent" runat="server">
+                </asp:ContentPlaceHolder>
+            </div>
+        </div>
+      
+        
+
+    </form>
+</body>
+</html>

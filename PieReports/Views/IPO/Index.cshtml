@@ -1,0 +1,228 @@
+﻿@using ViewModel.Login
+@using Newtonsoft.Json
+@model List<ViewModel.IPO.OpenIPOIssues>
+@{
+    string dtoq = TempData["myDeshbordData"].ToString();
+    TempData.Keep("myDeshbordData");
+    Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
+    Html.RenderPartial("~/Pages/_Layout.cshtml", dashboard);
+}
+
+@section Styles {
+
+    <link href="~/Hyper/css/vendor/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Hyper/css/vendor/responsive.bootstrap4.css" rel="stylesheet" />
+    <link href="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.css" rel="stylesheet" />
+    @* <link href="~/css/Reports/GlobalReport.css" rel="stylesheet" asp-append-version="true" /> *@
+}
+
+
+<div class="wrapper">
+    <div class="content-wrapper">
+
+        <div style="position:unset; background-color:white; padding:0.5rem;">
+
+            <h2 class="text-center" style="color:#ee3426">Live IPOs</h2>
+            <div id="divIpoTable" style="padding:0.5rem; max-height:60vh;">
+                <table id="tblIpoData" class="table table-bordered ml-1 mr-1 pr-2">
+                    <thead>
+                        <tr>
+                            <th>Script Name</th>
+                            <th>Category</th>
+                            <th>Type of issue</th>
+                            <th>Start date</th>
+                            <th>End date</th>
+                            <th>Price Range</th>
+                            <th>Minimum Order</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var key in Model)
+                        {
+                            <tr>
+                                <td><p class="text-center">@key.name</p></td>
+                                <td><p class="text-center">@key.category</p></td>
+                                <td><p class="text-center">@key.issuetype</p></td>
+                                <td><p class="text-center">@key.strOpenDateTime</p></td>
+                                <td><p class="text-center">@key.strCloseDateTime</p></td>
+                                <td><p class="text-center">@key.strFloorprice - @key.strCeilingprice</p></td>
+                                <td><p class="text-center">@key.strMinbidqty</p></td>
+                                <td><p class="text-center"><a href="#" class="link-info" onclick="dspIpoDetails('@key.isin', '@key.name')">Apply</a></p></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="divBiddingSection" style="display:none;">
+                <h2 id="txtIpoName" class="GrandTotalRow text-center"></h2>
+                <div class="row">
+                    <div class="d-flex align-items-start flex-column col-md-4">
+                        
+                        <table id="tblIpoData" class="table table-bordered ml-1 mr-1 pr-2">
+                            <tr class="SubTotalRow">
+                                <th colspan="2">
+                                    <p><strong>IPO Details</strong></p>
+                                </th>
+                                
+                            </tr>
+                            <tr>
+                                <th>
+                                    <p><strong>Symbol</strong></p>
+                                </th>
+                                <td>
+                                    <p class="text-center" id="pTxtSymbol"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <p><strong>ISIN</strong></p>
+                                </th>
+                                <td>
+                                    <p class="text-center" id="pTxtISIN"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <p><strong>Issue Open</strong></p>
+                                </th>
+                                <td>
+                                    <p class="text-center" id="pTxtOpenIssue"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <p><strong>Issue Close</strong></p>
+                                </th>
+                                <td>
+                                    <p class="text-center" id="pTxtCloseIssue"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <p><strong>Issue Price</strong></p>
+                                </th>
+                                <td>
+                                    <p class="text-center" id="pTxtIssuePrice"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <p><strong>Cutoff</strong></p>
+                                </th>
+                                <td>
+                                    <p class="text-center" id="pTxtCutOffPrice"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <p><strong>Tick size</strong></p>
+                                </th>
+                                <td>
+                                    <p class="text-center" id="pTxtTickSize"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <p><strong>Lot size</strong></p>
+                                </th>
+                                <td><p class="text-center" id="pTxtLotSize"></p></td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <p><strong>Minimum value</strong></p>
+                                </th>
+                                <td><p class="text-center" id="pTxtMinVal"></p></td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <p><strong>Maximum value</strong></p>
+                                </th>
+                                <td><p class="text-center" id="pTxtMaxVal">2,00,000.00</p></td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                    <div class="d-flex align-items-center flex-column col-md-7">
+
+                        <h5 class="SubTotalRow text-center">Bid Section</h5>
+
+                        <div class="d-flex justify-content-between mt-2">
+
+                            <div class="input-group-prepend">
+                                <label class="input-group-text DnB-RedLabel" for="ddlClientList">Clients</label>
+                            </div>
+                            <select id="ddlClientList">
+                            </select>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                                
+                            <input type="number" id="inpLot" class="form-control" placeholder="No. of Lots" style="max-width:110px;" onkeyup="CalcLots()" />
+
+                            <strong class="ml-2 mt-2">X</strong>
+
+                            <strong id="inplotSize" class="ml-2 mt-2"></strong>
+
+                            <strong class="ml-2 mt-2">=</strong>
+
+                            <input type="number" id="inpQty" class="form-control ml-2" placeholder="Quantity" style="max-width:110px;" readonly />
+
+                            <input type="checkbox" id="inpCutOff" class="ml-2"/>
+                            <strong class="ml-2 mt-2">Cutoff price</strong>
+                            <input type="number" id="inpPrice" class="form-control ml-2" placeholder="Price" style="max-width:110px;" />
+
+                            
+                            
+                        </div>
+
+                        <div class="mt-1 row">
+                            <input type="text" id="inpUPI" class="form-control col-md-6" style="width:450px;" maxlength="100" placeholder="Enter UPI ID"/>
+
+                            <p class="col-md-6 mt-2"><b>Amount to be blocked: </b><strong id="inpTotalAmt"></strong></p>
+                        </div>
+
+                        <div class="mt-2">
+                            <p class="alert alert-danger" style="background-color:#cd3b3b !important;">
+                                <input type="checkbox" id="chkDecla" class="mr-2"/> I hereby undertake that, I have read the Red Herring Prospectus and I am an eligible UPI bidder as per the applicable
+                                provisions of the SEBI (Issue of captial and Disclosure Requirement) Regulation,  2009.
+                            </p>
+                        </div>
+                        <div>
+                            <button id="btnSubmitBid" onclick="InitiateBid()" class="btn btn-sm DnB-RedLabel">Submit Bid</button>
+                        </div>
+
+                        
+
+
+                        <div id="divOTPSection" class="row justify-content-between mt-2" style="display:none;">
+
+                            <input type="text" id="inpOtp" onkeypress="return onlyNumberKey(event)"
+                                class="form-control col-md-6" maxlength="6" placeholder="Enter OTP" autocomplete="off"/>
+                            <div class="col-md-4">
+                                <button id="btnVerifyOtp" onclick="SubmitOtp()" class="btn btn-sm DnB-RedLabel mt-1">Submit OTP</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Datatables js -->
+<script src="~/Hyper/js/vendor/jquery.dataTables.min.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.bootstrap4.js"></script>
+<script src="~/Hyper/js/vendor/dataTables.responsive.min.js"></script>
+<script src="~/Hyper/js/vendor/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable Init js -->
+<script src="~/Hyper/js/demo/demo.datatable-init.js"></script>
+<script src="~/Apex/CheckBoxToggle-bootstrap4-toggle.min.js"></script>
+
+
+<script src="~/jquery/ipo/applyipo.js" asp-append-version="true"></script>
