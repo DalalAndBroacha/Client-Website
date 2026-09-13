@@ -15,29 +15,37 @@
     
     
 
-    $("#show_hide_password a").on('click', function (event) {
+    // WCAG 4.1.2 Name, Role, Value — the reveal control is a toggle button.
+    // Its pressed state and its accessible name must both track the actual
+    // state of the field, otherwise the button lies to screen reader users.
+    $("#show_hide_password button, #show_hide_password a").on('click', function (event) {
         event.preventDefault();
+        var $toggle = $(this);
         if ($('#show_hide_password input').attr("type") == "text") {
             $('#show_hide_password input').attr('type', 'password');
             $('#show_hide_password i').addClass("fa-eye-slash");
             $('#show_hide_password i').removeClass("fa-eye");
+            $toggle.attr('aria-pressed', 'false').attr('aria-label', 'Show password');
+            if (window.a11y) { window.a11y.announce('Password hidden.'); }
         } else if ($('#show_hide_password input').attr("type") == "password") {
             $('#show_hide_password input').attr('type', 'text');
             $('#show_hide_password i').removeClass("fa-eye-slash");
             $('#show_hide_password i').addClass("fa-eye");
+            $toggle.attr('aria-pressed', 'true').attr('aria-label', 'Hide password');
+            if (window.a11y) { window.a11y.announce('Password shown.'); }
         }
     });
 });
 
 
 //Tabs code
-$(function () {
-    $("#tabs").tabs();
-});
-
-$(function () {
-    $("#UCC_Tabs").tabs();
-});
+// WCAG 4.1.2 Name, Role, Value — jQuery UI Tabs was removed here.
+// It builds the tab pattern on the <li> and leaves a focusable <a href> inside
+// each one, so every tab shipped a nested interactive control that announced
+// as a link but did nothing on activation. It also stamped role="tablist" on
+// the UCC radio-button list, claiming a tablist with no tabs in it.
+// The tab widget is now the ARIA Authoring Practices pattern implemented on
+// real <button role="tab"> elements — see wireTabs() in js/accessibility.js.
 //Tabs code
 
 function Active_Tab(btn_val) {

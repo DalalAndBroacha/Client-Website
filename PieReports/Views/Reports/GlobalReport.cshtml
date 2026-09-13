@@ -3,6 +3,13 @@
 @using ViewModel.Login
 @using Newtonsoft.Json
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    var a11yPageTitle = "Global report";
+    ViewData["Title"] = a11yPageTitle;
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -18,10 +25,10 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 
-        <div id="GlobalwaitIn" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
-            <img src="~/images/loader.gif" width="64" height="64" />
+        <div id="GlobalwaitIn" class="a11y-loading-indicator" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="" />
         </div>
 
         @if (Model.family_token != null)
@@ -32,9 +39,9 @@
         }
         else
         {
-            <input id="txtFamToken" type="text" value="0" readonly hidden />
-            <input id="txtFamName" type="text" value="0" readonly hidden />
-            <input id="txtMainCli" type="text" value="0" readonly hidden />
+            <input type="text" value="0" readonly hidden />
+            <input type="text" value="0" readonly hidden />
+            <input type="text" value="0" readonly hidden />
         }
 
         <div style="position:unset; background-color:white; padding:0.5rem;">
@@ -43,7 +50,7 @@
 
             <div class="d-flex justify-content-center">
                 <div class="col-3">
-                    <label>Client</label>
+                    <label for="ddlClientList">Client</label>
                     <select style="border: 1px solid #cccccc; height:38px;" class="form-control mb-1" id="ddlClientList">
                     </select>
                 </div>
@@ -75,11 +82,11 @@
 
                 </div>
                 <div class="col-2">
-                    <label>Start Date</label>
+                    <label for="inpStartDate">Start Date</label>
                     <input class="form-control" type="date" id="inpStartDate" disabled>
                 </div>
                 <div class="col-2">
-                    <label>End Date</label>
+                    <label for="inpEndDate">End Date</label>
                     <input class="form-control" type="date" id="inpEndDate" disabled>
                 </div>
                 <div class="col-2 mt-4">
@@ -93,35 +100,35 @@
                     <div>
                         <input type="checkbox" id="chkHolding" name="dspSection" data-toggle="toggle" data-size="xs"
                                data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="secondary" data-on="Holding"
-                               data-off="Holding" checked="checked">
+                               data-off="Holding" checked="checked" aria-label="Include holdings">
                     </div>
 
                     <div class="ml-2" id="divHldType">
                         <input type="checkbox" id="chkHldType" name="dspSection" data-toggle="toggle" data-size="xs"
                                data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="success" data-on="Summary"
-                               data-off="Detailed" checked="checked">
+                               data-off="Detailed" checked="checked" aria-label="Holdings detail level: on for summary, off for detailed">
                     </div>
                 </div>
 
                 <div class="ml-2 sectionContent">
                     <input type="checkbox" id="chkTrades" name="dspSection" data-toggle="toggle" data-size="xs"
                            data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="secondary" data-on="Trades"
-                           data-off="Trades" checked="checked">
+                           data-off="Trades" checked="checked" aria-label="Include trades">
                 </div>
                 <div class="ml-2 sectionContent">
                     <input type="checkbox" id="chkLedger" name="dspSection" data-toggle="toggle" data-size="xs"
                            data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="secondary" data-on="Ledger"
-                           data-off="Ledger" checked="checked">
+                           data-off="Ledger" checked="checked" aria-label="Include the ledger">
                 </div>
                 <div class="ml-2 sectionContent">
                     <input type="checkbox" id="chkDivi" name="dspSection" data-toggle="toggle" data-size="xs"
                            data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="secondary" data-on="Dividend"
-                           data-off="Dividend" checked="checked">
+                           data-off="Dividend" checked="checked" aria-label="Include dividends">
                 </div>
                 <div class="ml-2 sectionContent">
                     <input type="checkbox" id="chkIntr" name="dspSection" data-toggle="toggle" data-size="xs"
                            data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="secondary" data-on="Interest"
-                           data-off="Interest" checked="checked">
+                           data-off="Interest" checked="checked" aria-label="Include interest">
                 </div>
 
 
@@ -129,13 +136,13 @@
                     <div>
                         <input type="checkbox" id="chkPnL" name="dspSection" data-toggle="toggle" data-size="xs"
                                data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="secondary" data-on="Gain/Loss"
-                               data-off="Gain/Loss" checked="checked">
+                               data-off="Gain/Loss" checked="checked" aria-label="Include gain and loss">
                     </div>
 
                     <div class="ml-2" id="divGF">
                         <input type="checkbox" id="chkGF" name="dspSection" data-toggle="toggle" data-size="xs"
                                data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="success" data-on="With Grandfathering"
-                               data-off="Without Grandfathering" checked="checked">
+                               data-off="Without Grandfathering" checked="checked" aria-label="Grandfathering: on to include it, off to exclude it">
                     </div>
                 </div>
 
@@ -160,6 +167,9 @@
                 <partial name="_ReportHeaderCompact"></partial>
                 
                 ViewData.Clear();
+                // WCAG 2.4.2 Page Titled — Clear() also removes ViewData["Title"],
+                // which Views/Shared/_Layout.cshtml renders into <title>.
+                ViewData["Title"] = a11yPageTitle;
             }
             <input type="text" id="txtHoldingFlag" hidden readonly />
             <input type="text" id="txtHoldingtypeFlag" hidden readonly />

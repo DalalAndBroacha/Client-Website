@@ -1,6 +1,13 @@
 ﻿@model ViewModel.Reports.Global_Report.initGlobalReport
 @using ViewModel.Login
 @using Newtonsoft.Json
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    var a11yPageTitle = "KYC log";
+    ViewData["Title"] = a11yPageTitle;
+}
+
 @{ string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -14,21 +21,21 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 
-        <div id="GlobalwaitIn" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
-            <img src="~/images/loader.gif" width="64" height="64" />
+        <div id="GlobalwaitIn" class="a11y-loading-indicator" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="" />
         </div>
 
         <div style="position:unset; background-color:white; padding:0.5rem;">
 
             <div class="d-flex justify-content-center">
                 <div class="col-2">
-                    <label>Start Date</label>
+                    <label for="inpStartDate">Start Date</label>
                     <input class="form-control" type="date" id="inpStartDate">
                 </div>
                 <div class="col-2">
-                    <label>End Date</label>
+                    <label for="inpEndDate">End Date</label>
                     <input class="form-control" type="date" id="inpEndDate" disabled>
                 </div>
                 <div class="offset-1 col-2 mt-4">
@@ -53,23 +60,26 @@
 
                     Html.RenderPartial("_ReportHeaderCompact");
                     ViewData.Clear();
+                // WCAG 2.4.2 Page Titled — Clear() also removes ViewData["Title"],
+                // which Views/Shared/_Layout.cshtml renders into <title>.
+                ViewData["Title"] = a11yPageTitle;
                 }
 
                 <table id="KYC_Log_Table" class="table mt-2 table-hover w-100 table-bordered">
                     <thead>
                         <tr>
-                            <th><b>Request Id</b></th>
-                            <th><b>Client Name</b></th>
-                            <th><b>Account Code</th>
-                            <th><b>Income update</b></th>
-                            <th><b>New Income value</b></th>
-                            <th><b>E-mail update</b></th>
-                            <th><b>New E-mail value</b></th>
-                            <th><b>Mobile Update</b></th>
-                            <th><b>New Mobile Value</b></th>
-                            <th><b>Request Date</b></th>
-                            <th><b>Request Completion Date</b></th>
-                            <th><b>Remarks</b></th>
+                            <th scope="col"><b>Request Id</b></th>
+                            <th scope="col"><b>Client Name</b></th>
+                            <th scope="col"><b>Account Code</th>
+                            <th scope="col"><b>Income update</b></th>
+                            <th scope="col"><b>New Income value</b></th>
+                            <th scope="col"><b>E-mail update</b></th>
+                            <th scope="col"><b>New E-mail value</b></th>
+                            <th scope="col"><b>Mobile Update</b></th>
+                            <th scope="col"><b>New Mobile Value</b></th>
+                            <th scope="col"><b>Request Date</b></th>
+                            <th scope="col"><b>Request Completion Date</b></th>
+                            <th scope="col"><b>Remarks</b></th>
                         </tr>
                     </thead>
                     <tbody id="tbodyKYC_Log">

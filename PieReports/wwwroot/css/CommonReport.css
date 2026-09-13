@@ -64,12 +64,18 @@
 }
 
 .select2-container--default .select2-dropdown .select2-search__field:focus, .select2-container--default .select2-search--inline .select2-search__field:focus {
-    outline: 0;
+    /* WCAG 2.4.7: outline:0 removed; :focus-visible supplies the ring. */
     border: 1px solid #ffb3b3;
 }
 
 li {
-    white-space: nowrap;
+    /* WCAG 1.4.10 Reflow / 1.4.12 Text Spacing: `white-space: nowrap` on every
+       list item stopped long report names in the sidebar from wrapping. That
+       forces two-dimensional scrolling at 320 CSS pixels and clips the text
+       as soon as a user applies their own letter or word spacing. Wrapping is
+       the accessible default. */
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 
 .form-group-dashboard {
@@ -296,7 +302,11 @@ p {
     /*border-bottom: 1px solid #ff0000 !important;*/
 }
 .nav-pills-tab .nav-link.active {
-        background: #ff0000 !important;
+        /* WCAG 1.4.3 Contrast (Minimum): #ff0000 behind white text is 3.99:1
+           and fails. --a11y-action-red (#da2929) is 4.85:1 with white, and
+           3.15:1 against the #ffc0cb inactive tab beside it, so the selected
+           state is also distinguishable per 1.4.11. */
+        background: var(--a11y-action-red, #da2929) !important;
         color: #fff !important;
 
 }

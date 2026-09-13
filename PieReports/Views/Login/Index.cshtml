@@ -3,19 +3,23 @@
 @model ViewModel.Login.UserLogin
 @using Recaptcha.Web.Mvc;
 @using Recaptcha.Web
-
-
-
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Sign in";
+}
 
 @section Styles {
     <link asp-append-version="true" href="~/css/IndexPage.css" rel="stylesheet" type="text/css" />
     <link href="https://s3.amazonaws.com/assets.freshdesk.com/widget/freshwidget.css" rel="stylesheet" type="text/css" />
     <link href="~/css/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    
+
 }
 
-
-<div class="theme-loader">
+@* WCAG 1.1.1 — the pre-loader is pure decoration. Hiding it from assistive
+   technology stops a screen reader announcing a wall of empty divs before the
+   sign-in form. *@
+<div class="theme-loader" aria-hidden="true">
     <div class="loader-track">
         <div class="preloader-wrapper">
             <div class="spinner-layer spinner-blue">
@@ -69,11 +73,15 @@
 </div>
 <!-- Pre-loader end -->
 
-<div id="Header_Logo">
+@* 1.3.1 Info and Relationships — banner landmark, and a functional image
+   whose alt names the organisation rather than describing the picture. *@
+<header id="Header_Logo">
     <div class="d-flex justify-content-center">
-        <img class="img-fluid" src="~/images/logo.svg" style="height:57px; margin-top:15px;" />
+        <img class="img-fluid" src="~/images/logo.svg"
+             alt="Dalal &amp; Broacha Stock Broking Pvt. Ltd."
+             style="height:57px; margin-top:15px;" />
     </div>
-</div>
+</header>
 
 
 
@@ -81,11 +89,15 @@
 {
     string myMessage = Configuration.GetValue<string>("notificationMessage");
 
-    <div id="divNotification" class="mt-2 bg-danger">
+    @* 2.2.2 Pause, Stop, Hide — accessibility.js adds a Pause control to this
+       region, because the text scrolls for longer than five seconds. *@
+    <div id="divNotification" class="mt-2 bg-danger" role="region" aria-label="Site notice">
         <p class="lead marq-text">@myMessage</p>
     </div>
 }
-<div class="login-block">
+
+@* 2.4.1 Bypass Blocks — the skip link in _Layout.cshtml targets this. *@
+<main id="main-content" tabindex="-1" class="login-block">
     <div class="row">
         <div class="col-sm-12">
             <!-- Authentication card start -->
@@ -94,55 +106,82 @@
 
                 <div class="auth-box card">
                     <div class="card-block">
-                        <div id="tabs">
+                        @* 2.4.6 Headings and Labels / 1.3.1 — every page needs
+                           exactly one h1 describing its purpose. Visually
+                           hidden here because the logo carries the branding. *@
+                        <h1 class="a11y-visually-hidden">Sign in to the Dalal &amp; Broacha client portal</h1>
+
+                        @* 3.3.1 Error Identification — the sign-in failure
+                           message is announced and is identified in text. It
+                           used to sit inside a <label> next to a checkbox that
+                           did nothing, which announced a phantom control. *@
+                        <div id="loginMessage" role="alert" aria-live="assertive" class="mb-2">
+                            @if (!string.IsNullOrWhiteSpace(Model.msg))
+                            {
+                                <p class="a11y-prose" style="color: #b3241a; font-weight: 600; margin-bottom: 0;">
+                                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                                    @Model.msg
+                                </p>
+                            }
+                        </div>
+
+                        <div id="tabs" data-a11y-tabs>
                             <div class="row m-b-20">
                                 <div class="col-sm-12">
                                     <div class="d-flex justify-content-center">
-                                        <ul class="nav" id="TabsUL">
-                                            <li class="nav-item"><a class="nav-link cst_UL_active_tab" id="Nav_LoginByIDPass" onclick="Active_Tab(1)" href="#LoginByIDPass">Login ID</a></li>
-                                            <li class="nav-item"><a class="nav-link cst_UL_tab" id="Nav_LoginByPAN" onclick="Active_Tab(2)" href="#LoginByPAN">PAN</a></li>
-                                            <li class="nav-item"><a class="nav-link cst_UL_tab" id="Nav_LoginByUCC" onclick="Active_Tab(3)" href="#LoginByUCC">UCC</a></li>
+                                        @* 4.1.2 Name, Role, Value — the ARIA Authoring Practices tab pattern.
+                                           This was jQuery UI Tabs, which puts role="tab" on the <li>
+                                           and leaves a focusable <a href> inside it: a nested
+                                           interactive control that announced as a link and did nothing.
+                                           Real <button role="tab"> elements have no such problem.
+                                           Behaviour is wired by wireTabs() in js/accessibility.js:
+                                           arrow keys, Home/End, roving tabindex and panel toggling. *@
+                                        <ul class="nav" id="TabsUL" role="tablist" aria-label="Choose how to sign in">
+                                            <li class="nav-item" role="presentation"><button type="button" class="nav-link cst_UL_active_tab" id="Nav_LoginByIDPass" role="tab" aria-selected="true" aria-controls="LoginByIDPass" tabindex="0" onclick="Active_Tab(1)">Login ID</button></li>
+                                            <li class="nav-item" role="presentation"><button type="button" class="nav-link cst_UL_tab" id="Nav_LoginByPAN" role="tab" aria-selected="false" aria-controls="LoginByPAN" tabindex="-1" onclick="Active_Tab(2)">PAN</button></li>
+                                            <li class="nav-item" role="presentation"><button type="button" class="nav-link cst_UL_tab" id="Nav_LoginByUCC" role="tab" aria-selected="false" aria-controls="LoginByUCC" tabindex="-1" onclick="Active_Tab(3)">UCC</button></li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                             <br />
-                            <div id="LoginByIDPass">
-                                @using (Html.BeginForm("AccountLogin", "Login", FormMethod.Post, new { autocomplete = "off" }))
+                            <div id="LoginByIDPass" role="tabpanel" aria-labelledby="Nav_LoginByIDPass" tabindex="0">
+                                @using (Html.BeginForm("AccountLogin", "Login", FormMethod.Post))
                                 {
                                     <div class="form-group form-primary">
-                                        <label for="txtEmail">Username</label>
-                                        @Html.TextBoxFor(m => m.Username, new { autocomplete = "off", @type = "text", @name = "txtEmail", @id = "txtEmail", @class = "form-control", @required = "", @tabindex = "1" })
+                                        <label for="txtEmail">Username <span class="a11y-required-marker" aria-hidden="true">*</span><span class="a11y-visually-hidden"> (required)</span></label>
+                                        @* 1.3.5 Identify Input Purpose — autocomplete="off"
+                                           on a personal-data field is a failure, and browsers
+                                           largely ignore it anyway. 2.4.3 Focus Order —
+                                           positive tabindex values removed; DOM order is
+                                           already the correct order. *@
+                                        @Html.TextBoxFor(m => m.Username, new { autocomplete = "username", @type = "text", @name = "txtEmail", @id = "txtEmail", @class = "form-control", @required = "", @aria_required = "true" })
 
-                                        @*<span class="form-bar"></span>
-                                            <label class="float-label">Username </label>*@
                                     </div>
                                     <div class="forgot-phone text-right f-right">
                                         <a href="/ClientPortal/Login/AccountRecovery" class="text-left f-w-600">Forgot Username?</a>
                                     </div><br />
-                                    <div class="form-group form-primary" id="show_hide_password">
+                                    <div class="form-group form-primary a11y-password-field" id="show_hide_password">
 
-                                        <label for="txtPassword">Password</label>
-                                        @Html.TextBoxFor(m => m.Password, new { autocomplete = "off", @type = "password", @name = "txtPassword", @id = "txtPassword", @class = "form-control", @required = "", @tabindex = "2" })
-                                        @*<span class="form-bar"></span>
-                                            <label class="float-label">Password</label>*@
-                                        <div class="input-group-addon" style="margin-left: 330px; margin-top: -34px;">
-                                            <a><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
-                                        </div>
+                                        <label for="txtPassword">Password <span class="a11y-required-marker" aria-hidden="true">*</span><span class="a11y-visually-hidden"> (required)</span></label>
+                                        @Html.TextBoxFor(m => m.Password, new { autocomplete = "current-password", @type = "password", @name = "txtPassword", @id = "txtPassword", @class = "form-control", @required = "", @aria_required = "true" })
+                                        @* 2.1.1 Keyboard / 4.1.2 Name, Role, Value — the
+                                           reveal control was a bare <a> with no href: not
+                                           focusable, no name, no state. It is now a toggle
+                                           button whose pressed state is exposed. *@
+                                        @* 1.4.10 Reflow — the reveal control was positioned with
+                                           `margin-left: 330px`, which pushed it 55px past the
+                                           viewport at 320 CSS px and forced horizontal scrolling.
+                                           It is now anchored to the right edge of the field, so it
+                                           follows the input at any width. *@
+                                        <button type="button" id="btnTogglePassword" class="btn btn-link a11y-password-toggle"
+                                                aria-pressed="false" aria-controls="txtPassword"
+                                                aria-label="Show password">
+                                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                                        </button>
                                     </div>
                                     <div class="forgot-phone text-right f-right">
                                         <a href="/ClientPortal/Login/ForgotPassword" class="text-left f-w-600">Forgot Password?</a>
-                                    </div>
-                                    <div class="row m-t-25 text-left">
-                                        <div class="col-12">
-                                            <div class="checkbox-fade fade-in-primary d-">
-                                                <label>
-                                                    <input type="checkbox" value="">
-                                                    <span style="color: #d81e1e">@Model.msg</span>
-                                                </label>
-                                            </div>
-                                            <br />
-                                        </div>
                                     </div>
                                     <div class="row justify-content-center">
 
@@ -157,9 +196,26 @@
                                             {
                                                 <div id="img_cont" class="input-group">
 
-                                                    <img id="img_captcha" title="Can't read? Click to generate another image." src=@Url.Action("GetCaptchaImage", "Pie", new { id = "321" }) /> @* 321 is a dummy value needed for actionmethod *@
+                                                    @* 1.1.1 Non-text Content — a CAPTCHA image needs
+                                                       an alt that says what it is, and a keyboard
+                                                       operable way to request a different one. The
+                                                       image itself was the only refresh control. *@
+                                                    <img id="img_captcha" alt="CAPTCHA: four characters you must type into the field beside this image"
+                                                         src=@Url.Action("GetCaptchaImage", "Pie", new { id = "321" }) /> @* 321 is a dummy value needed for actionmethod *@
 
-                                                    @Html.TextBoxFor(m => m.CaptchaCode, new { autocomplete = "off", @type = "text", @placeholder = "Please enter Captcha.", @maxlength = "4", @id = "txtCaptcha", @class = "ml-1 form-control", @tabindex = "3", })
+                                                    <button type="button" id="btnRefreshCaptcha" class="btn btn-link px-2"
+                                                            onclick="resetCaptchaImage(); return false;">
+                                                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                                                        <span class="a11y-visually-hidden">Show a different CAPTCHA image</span>
+                                                    </button>
+
+                                                    <label for="txtCaptcha" class="a11y-visually-hidden">
+                                                        Type the four characters shown in the image
+                                                    </label>
+                                                    @Html.TextBoxFor(m => m.CaptchaCode, new { autocomplete = "off", @type = "text", @maxlength = "4", @id = "txtCaptcha", @class = "ml-1 form-control", @aria_describedby = "captchaHint", @required = "", @aria_required = "true" })
+                                                    @* 3.3.2 Labels or Instructions — state the
+                                                       format constraint before submission. *@
+                                                    <p id="captchaHint" class="a11y-visually-hidden">Four characters, letters and digits.</p>
 
                                                 </div>
                                             }
@@ -169,32 +225,48 @@
                                         @*Live*@ @*<div class="g-recaptcha" data-sitekey="6Lce8MwjAAAAANAmzmCU6VnQU__uIsUXUKbpjjkL"></div>*@
                                     </div>
                                     <div class="d-flex justify-content-center">
-                                        <input style="width: 100%; border-radius: 3rem; background-color: #ee3426 !important; margin-top: 1rem; font-weight:bold; color:white;" class="btn btn-danger text-center" type="submit" value="Sign In" tabindex="4" />
+                                        @* 1.4.3 Contrast — #ee3426 with white text is 4.07:1
+                                           and fails. --a11y-brand-red is 4.65:1 and visually
+                                           indistinguishable. *@
+                                        <input style="width: 100%; border-radius: 3rem; background-color: var(--a11y-brand-red) !important; margin-top: 1rem; font-weight:bold; color:white;" class="btn btn-danger text-center" type="submit" value="Sign In" />
                                     </div>
                                     <div class="d-flex justify-content-center mt-2">
-                                        <a href="https://www.dalal-broacha.com/pdfs/CP_Docs/Client%20Portal%20Login%20Process.pdf" target="_blank">Need help Siging In?</a>
+                                        @* 2.4.4 Link Purpose — self-describing text, and the
+                                           new-tab behaviour is stated. *@
+                                        <a href="https://www.dalal-broacha.com/pdfs/CP_Docs/Client%20Portal%20Login%20Process.pdf"
+                                           target="_blank" rel="noopener noreferrer">Help with signing in (PDF)</a>
                                     </div>
                                 }
                             </div>
 
-                            <div id="LoginByPAN" class="tab-pane">
+                            <div id="LoginByPAN" class="tab-pane" role="tabpanel" aria-labelledby="Nav_LoginByPAN" tabindex="0" hidden>
 
                                 <div class="form-group form-primary">
                                     <div class="row">
                                         <div class="col-9">
 
-                                            <input type="text" class="form-control" autocomplete="off" placeholder="Please Enter Your PAN" id="txtPAN" tabindex="1" maxlength="10" oninput="this.value = this.value.toUpperCase()">
+                                            @* 3.3.2 — a persistent label, not a placeholder.
+                                               3.3.1 / 3.3.3 — the error names the field and
+                                               says what a valid value looks like. *@
+                                            <label for="txtPAN">PAN</label>
+                                            <input type="text" class="form-control" autocomplete="off" id="txtPAN"
+                                                   maxlength="10" aria-describedby="panHint lblInvalid"
+                                                   oninput="this.value = this.value.toUpperCase()">
                                             <span class="form-bar"></span>
-                                            <label id="lblInvalid" class="text-danger" style="font-size:10px;">Please Enter Valid PAN</label>
+                                            <p id="panHint" style="font-size:10px;">Ten characters, for example ABCDE1234F.</p>
+                                            <p id="lblInvalid" role="alert" class="text-danger" style="font-size:10px;">
+                                                Enter a valid PAN in the format ABCDE1234F.
+                                            </p>
                                         </div>
                                         <div class="col-3" style="margin-top:15px;">
-                                            <input class="btn-sm btn-warning" id="btnGetOTP" type="button" onclick="GetOTPMethod()" value="Get OTP" tabindex="2" />
+                                            <input class="btn-sm btn-warning" id="btnGetOTP" type="button" onclick="GetOTPMethod()" value="Get OTP" />
                                         </div>
                                     </div>
                                 </div>
-                                <label class="alert alert-success" id="otp_msg_PAN"></label>
+                                @* 4.1.3 Status Messages — announced without moving focus. *@
+                                <p class="alert alert-success" id="otp_msg_PAN" role="status" aria-live="polite"></p>
                                 <div id="Div_Multi_MobNo">
-                                    <div id="Div_Mobile_List">
+                                    <div id="Div_Mobile_List" role="group" aria-label="Choose a mobile number">
 
                                     </div>
                                     <div>
@@ -208,44 +280,66 @@
                                     <div class="row" id="Content_Verify_OTP_PAN">
                                         <div class="col-8">
                                             @*Hidden OTP Token Field*@
-                                            @Html.TextBoxFor(m => m.otp_token, new { autocomplete = "off", @type = "text", @name = "txtOTPTokenPAN", @id = "txtOTPTokenPAN", @style = "display: none;" })
+                                            @Html.HiddenFor(m => m.otp_token, new { @name = "txtOTPTokenPAN", @id = "txtOTPTokenPAN" })
 
-                                            @Html.TextBoxFor(m => m.otp, new { autocomplete = "off", @type = "text", @name = "OTP_from_PAN", @id = "OTP_from_PAN", @class = "input-group input-group-sm mb-2", @placeholder = "Please enter OTP", @tabindex = "3" })
+                                            <label for="OTP_from_PAN">One-time password</label>
+                                            @Html.TextBoxFor(m => m.otp, new { autocomplete = "one-time-code", @type = "text", @inputmode = "numeric", @name = "OTP_from_PAN", @id = "OTP_from_PAN", @class = "input-group input-group-sm mb-2" })
                                         </div>
-                                        <div class="col-3" id="OTP_Submit">
-                                            <input class="btn-sm btn-success" id="btn_verify_PAN_OTP" type="submit" value="Verify OTP" tabindex="4">
+                                        <div class="col-3" id="OTP_Submit_PAN">
+                                            <input class="btn-sm btn-success" id="btn_verify_PAN_OTP" type="submit" value="Verify OTP">
                                         </div>
                                     </div>
                                     <div id="div_resend_otp_timer_PAN" class="alert alert-primary">
                                         <div style="font-size:12px">
-                                            <div id="timer">
-                                                Haven't received OTP yet? <a id="Resend_Link" class="alert-link" onclick="Resend_OTP('PAN')" href="#">Resend OTP</a>
+                                            <div id="timer_PAN">
+                                                @* 2.1.1 / 4.1.2 — a control that fires script is
+                                                   a button, not a link to nowhere. *@
+                                                Haven't received OTP yet?
+                                                <button type="button" id="Resend_Link_PAN" class="btn btn-link alert-link p-0"
+                                                        onclick="Resend_OTP('PAN')">Resend OTP</button>
                                             </div>
                                         </div>
                                     </div>
                                 }
                             </div>
 
-                            <div id="LoginByUCC" class="tab-pane">
+                            <div id="LoginByUCC" class="tab-pane" role="tabpanel" aria-labelledby="Nav_LoginByUCC" tabindex="0" hidden>
 
                                 <div id="UCC_Tabs">
-                                    <ul class="nav radio-inline" id="UCCTabsUL" style="margin-bottom:15px;">
-                                        <li class="nav-item"><input type="radio" checked="checked" name="UCC_List" id="radioTradingCode" onclick="UCC_Tabs(1)" /><label>Trading Code</label></li>
-                                        <li class="nav-item"><input type="radio" name="UCC_List" id="radioFolio" onclick="UCC_Tabs(2)" /><label>Folio Number</label></li>
-                                        <li class="nav-item"><input type="radio" name="UCC_List" id="radioBOID" onclick="UCC_Tabs(3)" /><label>BOID</label></li>
-                                    </ul>
+                                    @* 1.3.1 Info and Relationships — a radio group needs a
+                                       fieldset and legend so the group name is announced with
+                                       each option, and every radio needs an associated label. *@
+                                    <fieldset>
+                                        <legend class="a11y-visually-hidden">Sign in using</legend>
+                                        <ul class="nav radio-inline" id="UCCTabsUL" style="margin-bottom:15px;">
+                                            <li class="nav-item">
+                                                <input type="radio" checked="checked" name="UCC_List" id="radioTradingCode" onclick="UCC_Tabs(1)" />
+                                                <label for="radioTradingCode">Trading Code</label>
+                                            </li>
+                                            <li class="nav-item">
+                                                <input type="radio" name="UCC_List" id="radioFolio" onclick="UCC_Tabs(2)" />
+                                                <label for="radioFolio">Folio Number</label>
+                                            </li>
+                                            <li class="nav-item">
+                                                <input type="radio" name="UCC_List" id="radioBOID" onclick="UCC_Tabs(3)" />
+                                                <label for="radioBOID">BOID</label>
+                                            </li>
+                                        </ul>
+                                    </fieldset>
                                     <div class="form-group form-primary" id="UCC_TabTradingCode">
 
                                         <div class="row">
                                             <div class="col-9">
 
-                                                <input type="number" class="form-control" autocomplete="on" placeholder="Please Enter Your Trading Code" id="txt_UCC_TradingCode" tabindex="1">
+                                                <label for="txt_UCC_TradingCode">Trading code</label>
+                                                <input type="number" class="form-control" autocomplete="off" inputmode="numeric"
+                                                       id="txt_UCC_TradingCode" aria-describedby="lblInvalidTC">
                                                 <span class="form-bar"></span>
-                                                <label id="lblInvalidTC" class="text-danger" style="font-size:10px;">Please Enter Trading Code.</label>
+                                                <p id="lblInvalidTC" role="alert" class="text-danger" style="font-size:10px;">Enter your trading code.</p>
 
                                             </div>
                                             <div class="col-3" style="margin-top:15px;">
-                                                <input class="btn-sm btn-warning" id="btnGetOTPTC" type="button" onclick="UCCGetOTPMethod('1')" value="Get OTP" tabindex="2" />
+                                                <input class="btn-sm btn-warning" id="btnGetOTPTC" type="button" onclick="UCCGetOTPMethod('1')" value="Get OTP" />
                                             </div>
                                         </div>
 
@@ -256,13 +350,15 @@
                                         <div class="row">
                                             <div class="col-9">
 
-                                                <input type="text" class="form-control" autocomplete="on" placeholder="Please Enter Your Folio Number" id="txt_UCC_Folio" tabindex="1" maxlength="15">
+                                                <label for="txt_UCC_Folio">Folio number</label>
+                                                <input type="text" class="form-control" autocomplete="off"
+                                                       id="txt_UCC_Folio" maxlength="15" aria-describedby="lblInvalidFolio">
                                                 <span class="form-bar"></span>
-                                                <label id="lblInvalidFolio" class="text-danger" style="font-size:10px;">Please Enter Folio number.</label>
+                                                <p id="lblInvalidFolio" role="alert" class="text-danger" style="font-size:10px;">Enter your folio number.</p>
 
                                             </div>
                                             <div class="col-3" style="margin-top:15px;">
-                                                <input class="btn-sm btn-warning" id="btnGetOTPFolio" type="button" onclick="UCCGetOTPMethod('4')" value="Get OTP" tabindex="2" />
+                                                <input class="btn-sm btn-warning" id="btnGetOTPFolio" type="button" onclick="UCCGetOTPMethod('4')" value="Get OTP" />
                                             </div>
                                         </div>
 
@@ -273,19 +369,21 @@
                                         <div class="row">
                                             <div class="col-9">
 
-                                                <input type="number" class="form-control" autocomplete="on" placeholder="Please Enter Your BOID" id="txt_UCC_BOID" tabindex="1">
+                                                <label for="txt_UCC_BOID">BOID</label>
+                                                <input type="number" class="form-control" autocomplete="off" inputmode="numeric"
+                                                       id="txt_UCC_BOID" aria-describedby="lblInvalidBOID">
                                                 <span class="form-bar"></span>
-                                                <label id="lblInvalidBOID" class="text-danger" style="font-size:10px;">Please Enter BOID.</label>
+                                                <p id="lblInvalidBOID" role="alert" class="text-danger" style="font-size:10px;">Enter your BOID.</p>
 
                                             </div>
                                             <div class="col-3" style="margin-top:15px;">
-                                                <input class="btn-sm btn-warning" id="btnGetOTPBOID" type="button" onclick="UCCGetOTPMethod('6')" value="Get OTP" tabindex="2" />
+                                                <input class="btn-sm btn-warning" id="btnGetOTPBOID" type="button" onclick="UCCGetOTPMethod('6')" value="Get OTP" />
                                             </div>
                                         </div>
 
                                     </div>
 
-                                    <label class="alert alert-success" id="otp_msg_UCC"></label>
+                                    <p class="alert alert-success" id="otp_msg_UCC" role="status" aria-live="polite"></p>
 
                                 </div>
 
@@ -295,19 +393,21 @@
                                         <div class="row">
                                             <div class="col-8">
                                                 @*Hidden OTP Token Field*@
-                                                @Html.TextBoxFor(m => m.otp_token, new { autocomplete = "off", @type = "text", @name = "txtOTPTokenUCC", @id = "txtOTPTokenUCC", @style = "display: none;" })
+                                                @Html.HiddenFor(m => m.otp_token, new { @name = "txtOTPTokenUCC", @id = "txtOTPTokenUCC" })
 
-                                                @Html.TextBoxFor(m => m.otp, new { autocomplete = "off", @type = "text", @name = "OTP_from_UCC", @id = "OTP_from_UCC", @class = "input-group input-group-sm mb-2", @placeholder = "Please enter OTP", @tabindex = "3" })
-                                                @*<input class="input-group input-group-sm mb-2" id="OTP_from_UCC" type="text" placeholder="Please enter OTP" tabindex="3">*@
+                                                <label for="OTP_from_UCC">One-time password</label>
+                                                @Html.TextBoxFor(m => m.otp, new { autocomplete = "one-time-code", @type = "text", @inputmode = "numeric", @name = "OTP_from_UCC", @id = "OTP_from_UCC", @class = "input-group input-group-sm mb-2" })
                                             </div>
-                                            <div class="col-3" id="OTP_Submit">
-                                                <input class="btn-sm btn-success" id="btn_verify_UCC_OTP" type="submit" value="Verify OTP" tabindex="4">
+                                            <div class="col-3" id="OTP_Submit_UCC">
+                                                <input class="btn-sm btn-success" id="btn_verify_UCC_OTP" type="submit" value="Verify OTP">
                                             </div>
                                         </div>
                                         <div id="div_resend_otp_timer_UCC" class="alert alert-primary">
                                             <div style="font-size:12px">
-                                                <div id="timer">
-                                                    Haven't received OTP yet? <a id="Resend_Link" class="alert-link" onclick="Resend_OTP('UCC')" href="#">Resend OTP</a>
+                                                <div id="timer_UCC">
+                                                    Haven't received OTP yet?
+                                                    <button type="button" id="Resend_Link_UCC" class="btn btn-link alert-link p-0"
+                                                            onclick="Resend_OTP('UCC')">Resend OTP</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -320,11 +420,17 @@
 
                         <div class="row m-t-25 text-left" id="MobApp_links">
                             <div class="col-12">
+                                @* 1.1.1 — functional images: the alt describes the
+                                   destination of the link, not the badge artwork. *@
                                 <div class="checkbox-fade fade-in-primary d-">
-                                    <a href="https://apps.apple.com/us/app/dalal-broacha/id1474594128" target="_blank"><img src="~/images/AppStore.png" class="img-responsive3" style="width:120px;" /></a>
+                                    <a href="https://apps.apple.com/us/app/dalal-broacha/id1474594128" target="_blank" rel="noopener noreferrer">
+                                        <img src="~/images/AppStore.png" alt="Download the Dalal &amp; Broacha app on the App Store" class="img-responsive3" style="width:120px;" />
+                                    </a>
                                 </div>
                                 <div class="forgot-phone text-right f-right">
-                                    <a href="https://play.google.com/store/apps/details?id=com.dalal.broacha.app&hl=en_IN&gl=US" target="_blank"> <img src="~/images/GooglePlay.png" class="img-responsive4" style="width:120px;" /></a>
+                                    <a href="https://play.google.com/store/apps/details?id=com.dalal.broacha.app&hl=en_IN&gl=US" target="_blank" rel="noopener noreferrer">
+                                        <img src="~/images/GooglePlay.png" alt="Get the Dalal &amp; Broacha app on Google Play" class="img-responsive4" style="width:120px;" />
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -333,30 +439,19 @@
             </div>
             <!-- end of form -->
         </div>
-        
+
         <!-- end of col-sm-12 -->
     </div>
-    @* Footer *@
-    <partial name="_IndexFooter">
-    @* <div class="mt-4 text-center" style="background-color: #fbe7e4">
-        <p id="footerContent" class="p-3">
-            SEBI Registration Nos. : BSE Cash / BSE Deri / NSE Cash / NSE Deri: INZ000210337 | CDSL: IN – DP – 421 – 2019 | PMS: INP000001975 | Research Analyst: INH000001246<br>
-            <a target="_blank" href="https://www.dalal-broacha.com/pdfs/D&B%20disclaimer.pdf">Disclaimer</a> | <a target="_blank" href="https://www.dalal-broacha.com/downloadable_forms.html">Downloadable Forms</a><br>
-            GO TO: <a target="_blank" href="https://www.nseindia.com/">NSE</a> | <a target="_blank" href="https://www.bseindia.com/">BSE</a> |
-            <a target="_blank" href="https://www.cdslindia.com/">CDSL</a> | <a target="_blank" href="https://smartodr.in/login">SMARTODR</a> |
-            <a target="_blank" href="https://www.dalal-broacha.com/External_Links.html">SCORES</a> <br />
-            
-            Dalal & Broacha Stock Broking Pvt. Ltd. © 2010, All Rights Reseved.<br/>
-            Regd. Office: 506, Maker Chambers V, 221, Nariman Point, Mumbai - 400021.
-        </p>
-    </div> *@
-    @* Footer *@
     <!-- end of container-fluid -->
-</div>
+</main>
+
+@* 1.3.1 — the SEBI registration and regulator links are a contentinfo
+   landmark, outside <main>. *@
+<footer>
+    <partial name="_IndexFooter" />
+</footer>
 
 
 
 <script asp-append-version="true" src="~/Jquery/login.js"></script>
 <script src="~/js/bootstrap/js/bootstrap.min.js"></script>
-
-

@@ -1,6 +1,13 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    var a11yPageTitle = "US taxation report";
+    ViewData["Title"] = a11yPageTitle;
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -16,7 +23,7 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 
         <div style="background-color:white !important; padding:5px;">
             <div class="row" id="divDdlListsContent">
@@ -62,6 +69,9 @@
             <partial name="_ReportHeaderCompact"></partial>
             @{
                 ViewData.Clear();
+                // WCAG 2.4.2 Page Titled — Clear() also removes ViewData["Title"],
+                // which Views/Shared/_Layout.cshtml renders into <title>.
+                ViewData["Title"] = a11yPageTitle;
             }
             <div class="d-flex justify-content-center SubTotalRow row"  >
                 <ul class=" nav nav-pills-tab" style="display: none" id="IRSUSDTab">
@@ -97,7 +107,7 @@
 
 
         <!-- Bank Interest Modal -->
-        <div class="modal fade" id="NRI_Bank_Interest" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" id="NRI_Bank_Interest" data-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" aria-modal="true" aria-label="NRI Bank Interest">
             <div class="modal-dialog">
                 <div class="modal-content" style="width:80%; height:80vh; margin: auto">
                     <div class="modal-header">
@@ -134,7 +144,7 @@
         <!-- Bank Interest Modal -->
 
         <!-- Dividend Interest Modal -->
-        <div class="modal fade" id="NRI_Divi_Int" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" id="NRI_Divi_Int" data-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" aria-modal="true" aria-label="NRI Divi Int">
             <div class="modal-dialog">
                 <div class="modal-content" style="width:80%; height:80vh; margin: auto">
                     <div class="modal-header">
@@ -170,7 +180,7 @@
         <!-- Dividend Interest Modal -->
 
         <!-- Taxwithheld Modal -->
-        <div class="modal fade" id="NRI_TaxWithHeld" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" id="NRI_TaxWithHeld" data-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" aria-modal="true" aria-label="NRI Tax With Held">
             <div class="modal-dialog">
                 <div class="modal-content" style="width:80%; height:80vh; margin: auto">
                     <div class="modal-header">

@@ -1,5 +1,12 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    var a11yPageTitle = "Equity client holding exceptions";
+    ViewData["Title"] = a11yPageTitle;
+}
+
 @{ string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -14,10 +21,10 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 
-        <div id="waitInSpinner" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
-            <img src="~/images/loader.gif" width="64" height="64" />
+        <div id="waitInSpinner" class="a11y-loading-indicator" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="" />
         </div>
 
         <div style="position:unset; background-color:white; padding:0.5rem;">
@@ -32,12 +39,12 @@
                 <div class="d-flex justify-content-center col-9">
                     <ul class="list-inline">
                         <li class="list-inline-item">
-                            <label>Branch</label>
+                            <label for="ddlBranch">Branch</label>
                             <select id="ddlBranch" class="select2">
                             </select>
                         </li>
                         <li class="list-inline-item">
-                            <label>RM</label>
+                            <label for="ddlRM">RM</label>
                             <select id="ddlRM" @*class="select2"*@>
                             </select>
                         </li>
@@ -63,6 +70,9 @@
 
                     Html.RenderPartial("_ReportHeaderCompact");
                     ViewData.Clear();
+                // WCAG 2.4.2 Page Titled — Clear() also removes ViewData["Title"],
+                // which Views/Shared/_Layout.cshtml renders into <title>.
+                ViewData["Title"] = a11yPageTitle;
                 }
                 <div id="divEqExcep" class="mt-2">
                 </div>

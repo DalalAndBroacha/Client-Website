@@ -2,6 +2,13 @@
 @using Newtonsoft.Json
 @model ViewModel.ClientComms.coms_exceptions_model
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    var a11yPageTitle = "Client communication exceptions";
+    ViewData["Title"] = a11yPageTitle;
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -19,7 +26,7 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
         @{
             ViewBag.ReportName = "Exceptions";
             ViewBag.ReportHeaderDiv = "CommsException";
@@ -35,16 +42,19 @@
             <partial name="_ReportHeaderCompact"></partial>
 
             ViewData.Clear();
+                // WCAG 2.4.2 Page Titled — Clear() also removes ViewData["Title"],
+                // which Views/Shared/_Layout.cshtml renders into <title>.
+                ViewData["Title"] = a11yPageTitle;
         }
 
         <div id="GlobalwaitIn" style="width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
-            <img src="~/images/loader.gif" width="64" height="64" />
+            <img src="~/images/loader.gif" width="64" height="64" alt="" />
         </div>
         <div id="main_div" style="position:unset; background-color:white !important; padding:1rem;">
             <div class="d-flex row justify-content-center mb-2">
                 <div class="input-group mb-1 ml-3 col-3">
                     <div class="input-group-prepend">
-                        <label class="input-group-text DnB-RedLabel">Category</label>
+                        <label class="input-group-text DnB-RedLabel" for="ddlExceptionList">Category</label>
                     </div>
                     <select class="form-control" style="border: 1px solid #ced4da; height:38px;" id="ddlExceptionList">
 
@@ -63,13 +73,13 @@
                         <table id="tblDataInvalid" class="table table-bordered w-100">
                             <thead>
                                 <tr>
-                                    <th>Code</th>
-                                    <th>Name</th>
-                                    <th>Status</th>
-                                    <th>Last Activity</th>
-                                    <th>E-Mail</th>
-                                    <th>Mobile</th>
-                                    <th>Exception</th>
+                                    <th scope="col">Code</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Last Activity</th>
+                                    <th scope="col">E-Mail</th>
+                                    <th scope="col">Mobile</th>
+                                    <th scope="col">Exception</th>
                                 </tr>
                             </thead>
                             <tbody>

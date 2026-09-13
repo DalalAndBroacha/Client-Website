@@ -420,6 +420,26 @@ namespace PieReports.Controllers
             return RedirectToAction("Index", "Login");
         }
  
+        /// <summary>
+        /// Keep-alive ping for the session-expiry warning dialog.
+        /// WCAG 2.2.1 Timing Adjustable requires the user to be able to
+        /// extend a time limit; the dialog in _Layout.cshtml calls this when
+        /// the user chooses "Stay signed in". Touching the session resets the
+        /// sliding idle timeout without navigating away from the page, so no
+        /// form data is lost.
+        /// </summary>
+        [HttpGet]
+        public IActionResult KeepAlive()
+        {
+            // Reading and rewriting a session value is what refreshes the
+            // sliding expiration on the session cookie.
+            HttpContext.Session.SetString("a11y_last_activity",
+                DateTime.UtcNow.ToString("O"));
+            TempData.Keep();
+
+            return Json(new { extended = true });
+        }
+
         public IActionResult LogOut(Dashboard dashboard)
         {
             if (HttpContext.Session.GetString("web_session_id") != null)

@@ -1,4 +1,10 @@
 ﻿@using Microsoft.Extensions.Configuration
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Research";
+}
+
 @* @using System.Globalization; *@
 @inject IConfiguration Configuration
 @model List<ViewModel.Shared.psp_dsp_equity_research_reports>
@@ -13,7 +19,8 @@
     
 }
 
-<div class="theme-loader">
+@* 1.1.1 — decorative pre-loader, hidden from assistive technology. *@
+<div class="theme-loader" aria-hidden="true">
     <div class="loader-track">
         <div class="preloader-wrapper">
             <div class="spinner-layer spinner-blue">
@@ -67,30 +74,40 @@
 </div>
 
 @* <body style="background-image:url('/ClientPortal/images/trialBack.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size:;"> *@
-<body style="font-family:Roboto, sans-serif;">
-    <div id="Header_Logo">
+@* 4.1.1 Parsing — this view opened a second <body> inside the layout's
+   body. Replaced with the landmarks the page actually needs. *@
+<div style="font-family:Roboto, sans-serif;">
+    <header id="Header_Logo">
         <div class="d-flex justify-content-center">
-            <img class="img-fluid" src="~/images/logo.svg" style="height:57px; margin-top:15px;" />
+            <img class="img-fluid" src="~/images/logo.svg" style="height:57px; margin-top:15px;" alt="Dalal &amp; Broacha Stock Broking Pvt. Ltd." />
         </div>
-    </div>
+    </header>
 
-    <hr class="redHR"/>
+    <hr class="redHR" />
 
-    <div class="container-fluid p-4 mt-1">
-        <h2 style="color:#ee3426">EQUITY RESEARCH REPORTS</h2>
-        <div style="padding:0.5rem; overflow-y:scroll; overflow-x:auto; max-height:60vh;">
+    <main id="main-content" tabindex="-1" class="container-fluid p-4 mt-1">
+        @* 2.4.6 Headings and Labels — the page name is the h1.
+           1.4.3 Contrast — #ee3426 is 4.07:1 on white and fails for
+           anything below 24px; --a11y-brand-red is 4.65:1. *@
+        <h1 class="h2" style="color:var(--a11y-brand-red)">Equity research reports</h1>
+        @* 1.4.10 Reflow — a scrolling data table is exempt from the
+           no-horizontal-scroll rule, but the scroll container has to be
+           reachable and operable by keyboard (2.1.1). *@
+        <div class="a11y-table-scroll" role="region" tabindex="0"
+             aria-label="Equity research reports, scrollable table"
+             style="padding:0.5rem; overflow-y:scroll; overflow-x:auto; max-height:60vh;">
             <table id="tblReportsData" class="table table-bordered ml-1 mr-1 pr-2">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Category</th>
-                        <th>Title</th>
-                        <th>Sector</th>
-                        <th>Recommendation</th>
-                        <th>Recommendation Price</th>
-                        <th>CMP</th>
-                        <th>Target</th>
-                        <th>Report</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Sector</th>
+                        <th scope="col">Recommendation</th>
+                        <th scope="col">Recommendation Price</th>
+                        <th scope="col">CMP</th>
+                        <th scope="col">Target</th>
+                        <th scope="col">Report</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -105,7 +122,7 @@
                             <td class="paraTextAlignRight">@key.Reco_price</td>
                             <td class="paraTextAlignRight">@key.CMP</td>
                             <td class="paraTextAlignRight">@key.Price_target</td>
-                            <td class="paraTextAlignCenter"><p><a href="@key.URL" target="_blank">View</a></p></td>
+                            <td class="paraTextAlignCenter"><p><a href="@key.URL" target="_blank" rel="noopener noreferrer">View<span class="a11y-visually-hidden"> the report: @key.Report_Title (opens in a new tab)</span></a></p></td>
                         </tr>
                     }
                     <tr>
@@ -117,18 +134,22 @@
                         <td class="paraTextAlignRight"></td>
                         <td class="paraTextAlignRight"></td>
                         <td class="paraTextAlignRight"></td>
-                        <td class="paraTextAlignCenter"><p><a href="https://www.dalal-broacha.com/Old_Research_Reports.html" target="_blank">View</a></p></td>
+                        <td class="paraTextAlignCenter"><p><a href="https://www.dalal-broacha.com/Old_Research_Reports.html" target="_blank" rel="noopener noreferrer">View<span class="a11y-visually-hidden"> the historical reports archive (opens in a new tab)</span></a></p></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
+    </main>
     <div class="row justify-content-center">
-        <p id="OldReportsPage" class="lead" style="background-color:#ffd2c1;">
+        @* 4.1.3 Status Messages — the script writes the paging summary here. *@
+        <p id="OldReportsPage" class="lead" role="status" aria-live="polite" style="background-color:#ffd2c1;">
         </p>
     </div>
-    <partial name="_IndexFooter">
-</body>
+    <footer>
+        <partial name="_IndexFooter" />
+    </footer>
+</div>
 
 <script src="~/js/bootstrap/js/bootstrap.min.js"></script>
 

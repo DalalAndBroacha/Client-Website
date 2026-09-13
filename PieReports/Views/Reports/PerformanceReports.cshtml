@@ -2,6 +2,12 @@
 
 @using ViewModel.Login
 @using Newtonsoft.Json
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Performance report";
+}
+
 @{ string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -14,10 +20,10 @@
 
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
         @*Loader*@
-        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
-            <img src="~/images/loader.gif" width="64" height="64" />
+        <div id="waitIn" class="a11y-loading-indicator" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="" />
         </div>
         @*Loader*@
 
@@ -75,22 +81,22 @@
                                             <table class="table table-head-fixed w-100 text-nowrap" style="position: unset;">
                                                 <thead>
                                                     <tr>
-                                                        <th class="TableHeaderRow"><p><b>Sub Category</b></p></th>
-                                                        <th class="TableHeaderRow "><p><b>Contribution</b></p></th>
-                                                        <th class="TableHeaderRow "><p><b>Holding Cost </b></p></th>
-                                                        <th class="TableHeaderRow "><p><b>Market Value</b></p></th>
-                                                        <th class="TableHeaderRow "><p style="width:max-content"><b>% Holding</b></p></th>
+                                                        <th class="TableHeaderRow" scope="col"><p><b>Sub Category</b></p></th>
+                                                        <th class="TableHeaderRow " scope="col"><p><b>Contribution</b></p></th>
+                                                        <th class="TableHeaderRow " scope="col"><p><b>Holding Cost </b></p></th>
+                                                        <th class="TableHeaderRow " scope="col"><p><b>Market Value</b></p></th>
+                                                        <th class="TableHeaderRow " scope="col"><p style="width:max-content"><b>% Holding</b></p></th>
 
-                                                        <th class="TableHeaderRow"><p><b>Unrealised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                                                        <th class="TableHeaderRow"><p><b>Unrealised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                                                        <th class="TableHeaderRow" scope="col"><p><b>Unrealised<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                                                        <th class="TableHeaderRow" scope="col"><p><b>Unrealised<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                                                        <th class="TableHeaderRow"><p><b>Realised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                                                        <th class="TableHeaderRow"><p><b>Realised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                                                        <th class="TableHeaderRow" scope="col"><p><b>Realised<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                                                        <th class="TableHeaderRow" scope="col"><p><b>Realised<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                                                        <th class="TableHeaderRow"><p><b>Total<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                                                        <th class="TableHeaderRow"><p><b>Total<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                                                        <th class="TableHeaderRow" scope="col"><p><b>Total<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                                                        <th class="TableHeaderRow" scope="col"><p><b>Total<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                                                        <th class="TableHeaderRow"><p><b>Dividend<br>/Interest</b></p></th>
+                                                        <th class="TableHeaderRow" scope="col"><p><b>Dividend<br>/Interest</b></p></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tbodyBindingPerformanceAll">
@@ -145,27 +151,27 @@
                     <thead>
 
                         <tr>
-                            <th class="TableHeaderRow"><p><b>Script Name</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Quantity</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Average</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Holding cost </b></p></th>
-                            <th class="TableHeaderRow"><p><b>Current Market Value</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Market Value</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Script Name</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Quantity</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Average</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Holding cost </b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Current Market Value</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Market Value</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>% Holding</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Dividend</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>% Holding</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Dividend</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Unrealised<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Unrealised<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Realised<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Realised<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Total<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Total<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                            <th class="TableHeaderRow"><p><b>ABS %</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>XIRR %</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>ABS %</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>XIRR %</b></p></th>
 
                         </tr>
                     </thead>
@@ -212,12 +218,12 @@
             <div class="SubTotalRow" style="padding:3px;">
                 <table>
                     <tr>
-                        <th><b>Client Name: </b></th>
-                        <th style="text-align:left;"><span id="DEScriptClientName"></span></th>
+                        <th scope="col"><b>Client Name: </b></th>
+                        <th style="text-align:left;" scope="col"><span id="DEScriptClientName"></span></th>
                     </tr>
                     <tr>
-                        <th><b>Script Name: </b></th>
-                        <th style="text-align:left;"><span id="DEScriptName"></span></th>
+                        <th scope="col"><b>Script Name: </b></th>
+                        <th style="text-align:left;" scope="col"><span id="DEScriptName"></span></th>
                     </tr>
                 </table>
             </div>
@@ -226,23 +232,23 @@
                 <table class='table table-hover table-head-fixed text-wrap' id="myTablePrintPoup12" style="border-collapse: collapse; position: unset;">
                     <thead>
                         <tr>
-                            <th class="TableHeaderRow"><p><b>Date</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Quantity</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Rate</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Market Value</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Dividend/<br />Interest</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Date</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Quantity</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Rate</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Market Value</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Dividend/<br />Interest</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Unrealised<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Unrealised<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Realised<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Realised<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Total<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Total<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                            <th class="TableHeaderRow"><p><b>ABS %</b></p></th>
-                            <th class="TableHeaderRow"><p><b>XXIR %</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>ABS %</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>XXIR %</b></p></th>
                         </tr>
                     </thead>
                     <tbody id="tbodyBindingrealisedPerformanceScript" style="background-color:#ffffff;">
@@ -261,8 +267,8 @@
 
             <input type="text" id="common_cat_holder" hidden />
             <input type="text" id="common_client_id_holder" hidden />
-            <input id="txtclient_id_perfo" name="txtclient_id_perfo" hidden />
-            <input id="txtsub_category_perfo" name="txtsub_category_perfo" hidden />
+            <input name="txtclient_id_perfo" hidden />
+            <input name="txtsub_category_perfo" hidden />
 
             @{
                 ViewBag.ReportName = "Bonds Holding As On : ";
@@ -299,18 +305,18 @@
                         <table class="table table-hover table-head-fixed" id="Performance_Bonds" style="border-collapse: collapse;">
                             <thead>
                                 <tr>
-                                    <th class="TableHeaderRow"><p><b>Security Name</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Rating</b></p></th>
-                                    <th class="TableHeaderRow"><p style="width:max-content"><b>Coupon %</b></p></th>
-                                    <th class="TableHeaderRow"><p><b> Interest Payment Date</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Call / Put / Maturity Date</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Date Of Purchase</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>CDSL Quantity</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Pie Quantity</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Face Value</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Total Face</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Purchase Price</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Purchase Value</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Security Name</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Rating</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Coupon %</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b> Interest Payment Date</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Call / Put / Maturity Date</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Date Of Purchase</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>CDSL Quantity</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Pie Quantity</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Face Value</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Total Face</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Purchase Price</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Purchase Value</b></p></th>
 
                                 </tr>
                             </thead>
@@ -322,12 +328,12 @@
                         <table class="table table-hover table-head-fixed" id="Performance_Bonds_Cash_Flow" style="border-collapse: collapse;">
                             <!--<thead id="theadBondsCashflow">-->
                                 @*<tr>
-                                    <th class="TableHeaderRow"><p><b>Security Name</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>%</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>IP Date</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Maturity Date</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Dividend</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Total</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Security Name</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>%</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>IP Date</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Maturity Date</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Dividend</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Total</b></p></th>
                                 </tr>*@
                             <!--</thead>
                             <tbody id="tbodyBindingrealisedPerformanceBondsCashflow">
@@ -376,27 +382,27 @@
                     <thead>
 
                         <tr>
-                            <th class="TableHeaderRow"><p><b>Script Name</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Quantity</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Average</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Holding cost </b></p></th>
-                            <th class="TableHeaderRow"><p><b>Current Market Value</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Market Value</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Script Name</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Quantity</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Average</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Holding cost </b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Current Market Value</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Market Value</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>% Holding</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Dividend</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>% Holding</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Dividend</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Unrealised<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Unrealised<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Realised<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Realised<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Total<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Total<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>ABS %</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>XIRR %</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>ABS %</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>XIRR %</b></p></th>
 
                         </tr>
                     </thead>
@@ -412,7 +418,7 @@
         <div id="myModalst_PerformanceOtherPMS" style="position: unset; background-color: white;">
 
             <input type="text" name="Source_OtherPMS" id="SourceOtherPMS" hidden />
-            <input type="text" name="popclient_idOtherPMS" id="popclient_idEquityPMS" hidden />
+            <input type="text" name="popclient_idOtherPMS" hidden />
             <input name="popsub_categoryOtherPMS" id="popsub_categoryOtherPMS" hidden />
             <input id="txtOtherPMSClient" name="txtclient_id_perfo" hidden />
             <input id="txtOtherPMSFamily" name="txtFamily_id_perfo" hidden />
@@ -446,15 +452,15 @@
                     <thead>
 
                         <tr>
-                            <th class="TableHeaderRow"><p><b>Script Name</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Quantity</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Unit cost </b></p></th>
-                            <th class="TableHeaderRow"><p><b>Total Cost</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Market Rate</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Market Value</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Market Date</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Hold %</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Profit/Loss</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Script Name</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Quantity</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Unit cost </b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Total Cost</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Market Rate</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Market Value</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Market Date</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Hold %</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Profit/Loss</b></p></th>
                         </tr>
                     </thead>
                     <tbody id="tbodyBindingPerformanceOtherPMS" style="background-color:#ffffff;">
@@ -554,23 +560,23 @@
                         <table class="table table-hover table-head-fixed text-wrap" id="Performance_Equity_Debt_MF" style="border-collapse: collapse;">
                             <thead>
                                 <tr>
-                                    <th class="TableHeaderRow"><p><b>Scheme Name</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Date of purchase </b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Holding Cost</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Units</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Average Cost</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Current NAV</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Market Value</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>% Holding</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Scheme Name</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Date of purchase </b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Holding Cost</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Units</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Average Cost</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Current NAV</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Market Value</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>% Holding</b></p></th>
 
-                                    <th class="TableHeaderRow"><p><b>Unrealised<br />Gain/</b><b style="color:red;">Loss</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Realised<br />Gain/</b><b style="color:red;">Loss</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Total<br />Gain/</b><b style="color:red;">Loss</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Unrealised<br />Gain/</b><b style="color: #b3241a;">Loss</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Realised<br />Gain/</b><b style="color: #b3241a;">Loss</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Total<br />Gain/</b><b style="color: #b3241a;">Loss</b></p></th>
 
-                                    <th class="TableHeaderRow"><p><b>Dividend</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Dividend</b></p></th>
 
-                                    <th class="TableHeaderRow"><p><b>ABS &nbsp;%</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>XIRR %</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>ABS &nbsp;%</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>XIRR %</b></p></th>
 
                                 </tr>
                             </thead>
@@ -585,15 +591,15 @@
                         <table class="table table-hover table-head-fixed" id="MFByAMC_Equity_Debt_MF" style="border-collapse: collapse;">
                             <thead>
                                 <tr>
-                                    <th class="TableHeaderRow"><p><b>AMC Name</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Purchase Cost</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Current Value</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Current Allocation %</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>ABS &nbsp;%</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>XIRR %</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Future Inflow</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Future Outflow</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Future Allocation %</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>AMC Name</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Purchase Cost</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Current Value</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Current Allocation %</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>ABS &nbsp;%</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>XIRR %</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Future Inflow</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Future Outflow</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Future Allocation %</b></p></th>
                                 </tr>
                             </thead>
                             <tbody id="tbodyBindingMFByAMC">
@@ -607,15 +613,15 @@
                         <table class="table table-hover table-head-fixed" id="MFByCat_Equity_Debt_MF" style="border-collapse: collapse;">
                             <thead>
                                 <tr>
-                                    <th class="TableHeaderRow"><p><b>Category Name</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Purchase Cost</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Current Value</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Current Allocation %</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>ABS &nbsp;%</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>XIRR %</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Future Inflow</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Future Outflow</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Future Allocation %</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Category Name</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Purchase Cost</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Current Value</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Current Allocation %</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>ABS &nbsp;%</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>XIRR %</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Future Inflow</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Future Outflow</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Future Allocation %</b></p></th>
                                 </tr>
                             </thead>
                             <tbody id="tbodyBindingMFByCat">
@@ -628,15 +634,15 @@
                         <table class="table table-hover table-head-fixed" id="MFByScheme_Equity_Debt_MF" style="border-collapse: collapse;">
                             <thead>
                                 <tr>
-                                    <th class="TableHeaderRow"><p><b>Scheme Name</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Purchase Cost</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Current Value</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Current Allocation %</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>ABS &nbsp;%</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>XIRR %</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Future Inflow</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Future Outflow</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Future Allocation %</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Scheme Name</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Purchase Cost</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Current Value</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Current Allocation %</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>ABS &nbsp;%</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>XIRR %</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Future Inflow</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Future Outflow</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Future Allocation %</b></p></th>
                                 </tr>
                             </thead>
                             <tbody id="tbodyBindingMFByScheme">
@@ -649,15 +655,15 @@
                         <table class="table table-hover table-head-fixed" id="MFSIP_Equity_Debt_MF" style="border-collapse: collapse;">
                             <thead>
                                 <tr>
-                                    <th class="TableHeaderRow"><p><b>Scheme Name</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Folio Number </b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Start Date</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>End Date</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Amount</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Frequency</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Total Installments</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Pending Installments</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Pending Amount</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Scheme Name</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Folio Number </b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Start Date</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>End Date</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Amount</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Frequency</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Total Installments</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Pending Installments</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Pending Amount</b></p></th>
                                 </tr>
                             </thead>
                             <tbody id="tbodyBindingMFSIP">
@@ -669,16 +675,16 @@
                         <table class="table table-hover table-head-fixed" id="MFSTP_Equity_Debt_MF" style="border-collapse: collapse;">
                             <thead>
                                 <tr>
-                                    <th class="TableHeaderRow"><p><b>Scheme Name</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Folio Number </b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Start Date</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>End Date</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Amount</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Frequency</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Target Scheme Name</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Total Installments</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Pending Installments</b></p></th>
-                                    <th class="TableHeaderRow"><p><b>Pending Amount</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Scheme Name</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Folio Number </b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Start Date</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>End Date</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Amount</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Frequency</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Target Scheme Name</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Total Installments</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Pending Installments</b></p></th>
+                                    <th class="TableHeaderRow" scope="col"><p><b>Pending Amount</b></p></th>
                                 </tr>
                             </thead>
                             <tbody id="tbodyBindingMFSTP">
@@ -722,12 +728,12 @@
                 <input type="text" id="txtEquiDebtMFSubCat" hidden />
                 <table>
                     <tr>
-                        <th><b>Client Name: </b></th>
-                        <th style="text-align:left;"><span id="EqDebtMFSchemeClientName"></span></th>
+                        <th scope="col"><b>Client Name: </b></th>
+                        <th style="text-align:left;" scope="col"><span id="EqDebtMFSchemeClientName"></span></th>
                     </tr>
                     <tr>
-                        <th><b>Scheme Name: </b></th>
-                        <th style="text-align:left;"><span id="EqDebtMFSchemeScriptName"></span></th>
+                        <th scope="col"><b>Scheme Name: </b></th>
+                        <th style="text-align:left;" scope="col"><span id="EqDebtMFSchemeScriptName"></span></th>
 
                     </tr>
                 </table>
@@ -737,23 +743,23 @@
                 <table class='table table-hover table-head-fixed text-wrap' id="myTablePrintPoup13" style="border-collapse: collapse;">
                     <thead>
                         <tr>
-                            <th class="TableHeaderRow"><p><b>Date</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Type</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Amount</b></p></th>
-                            <th class="TableHeaderRow"><p><b>NAV</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Units</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Balance<br />Units</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Days</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Current NAV</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Market Value</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Date</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Type</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Amount</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>NAV</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Units</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Balance<br />Units</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Days</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Current NAV</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Market Value</b></p></th>
 
-                            <th class="TableHeaderRow"><p><b>Unrealised<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Unrealised<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Unrealised<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Unrealised<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                            <th class="TableHeaderRow"><p><b>Dividend<br />Since Inception</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Dividend<br />Since Inception</b></p></th>
 
-                            <th class="TableHeaderRow"><p><b>ABS %</b></p></th>
-                            <th class="TableHeaderRow"><p><b>XXIR %</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>ABS %</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>XXIR %</b></p></th>
                         </tr>
                     </thead>
                     <tbody id="tbodyBindingMFSchemePerf" style="background-color:#ffffff;">
@@ -795,8 +801,8 @@
                 <table class="table" id="Performance_LiquiLoan_ClientDeatils" style="border-collapse: collapse; position: unset;">
                     <tbody>
                         <tr>
-                            <th class="tableDataWithRedBorders"><b>Net Principal Investment</b></th>
-                            <th class="tableDataWithRedBorders"><b>Portfolio Value</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>Net Principal Investment</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>Portfolio Value</b></th>
                         </tr>
                         <tr>
                             <td class="tableDataWithRedBorders paraTextAlignCenter"><span id="Net_prin_Investment"></span></td>
@@ -807,18 +813,18 @@
                 <table class="table table-hover" id="Liquiloan_Investments">
                     <thead>
                         <tr>
-                            <th class="tableDataWithRedBorders SubTotalRow" colspan="9"><b>Investments</b></th>
+                            <th class="tableDataWithRedBorders SubTotalRow" colspan="9" scope="col"><b>Investments</b></th>
                         <tr>
                         <tr>
-                            <th class="tableDataWithRedBorders"><b>Investment Date</b></th>
-                            <th class="tableDataWithRedBorders"><b>Scheme Details</b></th>
-                            <th class="tableDataWithRedBorders"><b>Amount</b></th>
-                            <th class="tableDataWithRedBorders"><b>XIRR</b></th>
-                            <th class="tableDataWithRedBorders"><b>Interest Repaid</b></th>
-                            <th class="tableDataWithRedBorders"><b>Principal Repaid</b></th>
-                            <th class="tableDataWithRedBorders"><b>Total Repaid</b></th>
-                            <th class="tableDataWithRedBorders"><b>Portfolio Value</b></th>
-                            <th class="tableDataWithRedBorders"><b>End Date</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>Investment Date</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>Scheme Details</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>Amount</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>XIRR</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>Interest Repaid</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>Principal Repaid</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>Total Repaid</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>Portfolio Value</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>End Date</b></th>
                         </tr>
                     </thead>
                     <tbody id="tbody_Liquiloan_Investments">
@@ -827,13 +833,13 @@
                 <table class="table table-hover" id="Liquiloan_CashFlow">
                     <thead>
                         <tr>
-                            <th class="tableDataWithRedBorders SubTotalRow" colspan="4"><b>Cash Flow</b></th>
+                            <th class="tableDataWithRedBorders SubTotalRow" colspan="4" scope="col"><b>Cash Flow</b></th>
                         <tr>
                         <tr>
-                            <th class="tableDataWithRedBorders"><b>Date</b></th>
-                            <th class="tableDataWithRedBorders"><b>Narration</b></th>
-                            <th class="tableDataWithRedBorders"><b>Type</b></th>
-                            <th class="tableDataWithRedBorders"><b>Amount</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>Date</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>Narration</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>Type</b></th>
+                            <th class="tableDataWithRedBorders" scope="col"><b>Amount</b></th>
                         </tr>
                     </thead>
                     <tbody id="tbody_Liquiloan_CashFlow">
@@ -872,27 +878,27 @@
                     <thead>
 
                         <tr>
-                            <th class="TableHeaderRow"><p><b>Script Name</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Quantity</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Average</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Holding cost </b></p></th>
-                            <th class="TableHeaderRow"><p><b>Current Market Value</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Market Value</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Script Name</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Quantity</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Average</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Holding cost </b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Current Market Value</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Market Value</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>% Holding</b></p></th>
-                            <th class="TableHeaderRow"><p><b>Dividend</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>% Holding</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>Dividend</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Unrealised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Unrealised<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Unrealised<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Realised<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Realised<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Realised<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Short Term<br />Profit /</b><b style="color:red;">(Loss)</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>Total<br />Long Term<br>Profit/</b><b style="color:red;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Total<br />Short Term<br />Profit /</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>Total<br />Long Term<br>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
 
-                            <th class="TableHeaderRow"><p><b>ABS %</b></p></th>
-                            <th class="TableHeaderRow"><p style="width:max-content"><b>XIRR %</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p><b>ABS %</b></p></th>
+                            <th class="TableHeaderRow" scope="col"><p style="width:max-content"><b>XIRR %</b></p></th>
 
                         </tr>
                     </thead>
@@ -906,45 +912,33 @@
     </div>
 </div>
 
-<div class="modal fade" id="myModalst_dividend">
+<div class="modal fade" id="myModalst_dividend" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="myModalst_dividend-title">
     <div class="modal-dialog mb-mtop70">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 style="margin-left: 20px; margin-top: 10px;">Performance Report --> Dividend Report</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 style="margin-left: 20px; margin-top: 10px;" id="myModalst_dividend-title">Performance Report --> Dividend Report</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close dialog"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body modal-panel-body" style="overflow:auto">
                 <p style="margin-left:22px;margin-top:10px;">FinYear: <b id="divFinYear"></b> &nbsp;&nbsp;&nbsp;&nbsp; Family: <b id="divFamily"></b><span style="float:right;margin-right:35px;">Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span></p>
                 <ul class="navbar-nav ml-auto" style="float: right; margin-top: -50px;">
 
                     <li class="nav-item dropdown" id="liRemoveFavourite">
-                        <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
-                            <span><img src="~/images/ShareIcon1.png" class="img-responsive7" id="removefev" style="width:27px;" /></span>
+                        <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="false" role="button">
+                            <span><img src="~/images/ShareIcon1.png" class="img-responsive7" id="removefev" style="width:27px;" alt="Share this report" /></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
                             <div class="form-group-dashboard">
 
-                                <p id="btnPerformanceDividendExportXxl" name="loginname" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
-                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
-                                        ExporttoExcel
-                                    </a>
-                                </p>
+                                <button type="button" id="btnPerformanceDividendExportXxl" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px; font-family: inherit; font-size: 15px;">Export to Excel</button>
                             </div>
                             <div class="dropdown-divider"></div>
                             <div class="form-group-dashboard">
-                                <p id="btnPerformanceDividendExportPdf" name="Changepassword" data-toggle="modal" class="dropdown-item">
-                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
-                                        ExporttoPdf
-                                    </a>
-                                </p>
+                                <button type="button" id="btnPerformanceDividendExportPdf" data-toggle="modal" class="dropdown-item" style="font-family: inherit; font-size: 15px;">Export to PDF</button>
                             </div>
                             <div class="dropdown-divider"></div>
                             <div class="form-group-dashboard">
-                                <p onclick="print('#myModalst_dividend')" name="trading" data-toggle="modal" class="dropdown-item">
-                                    <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
-                                        Print
-                                    </a>
-                                </p>
+                                <button type="button" onclick="print('#myModalst_dividend')" data-toggle="modal" class="dropdown-item" style="font-family: inherit; font-size: 15px;">Print this report</button>
                             </div>
                             <div class="dropdown-divider"></div>
                         </div>
@@ -952,12 +946,12 @@
                 </ul>
                 <table class='table popup-grid1' id="myTablePrintPoup1" style="border-collapse: collapse; table-layout: fixed;">
                     <tr style="border: 1px solid #dddddd;" class="header">
-                        @*<th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p><b>Family</b></p></th>*@
-                        <th class="divicol1" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Client</b></p></th>
-                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Date</b></p></th>
-                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>ISIN</b></p></th>
-                        <th class="divicol3" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Script</b></p></th>
-                        <th class="divicol4" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Amount</b></p></th>
+                        @*<th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p><b>Family</b></p></th>*@
+                        <th class="divicol1" style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading1"><b>Client</b></p></th>
+                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Date</b></p></th>
+                        <th class="divicol2" style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>ISIN</b></p></th>
+                        <th class="divicol3" style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading1"><b>Script</b></p></th>
+                        <th class="divicol4" style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Amount</b></p></th>
                     </tr>
                     <tbody id="tbodyBindingrealisedDividend">
                     </tbody>

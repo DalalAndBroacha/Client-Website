@@ -1,6 +1,12 @@
 ﻿@using Newtonsoft.Json
 @using ViewModel.Login
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Survey responses";
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -15,10 +21,10 @@
 
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 
-        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
-            <img src="~/images/loader.gif" width="64" height="64" />
+        <div id="waitIn" class="a11y-loading-indicator" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="" />
         </div>
 
         <div style="position:unset; background-color:white; padding:0.5rem;">
@@ -33,7 +39,7 @@
             }
 
             <div id="divDdlListsContent" style="display:none;">
-                <div class="row mt-1" id="divDdlListsContent">
+                <div class="row mt-1">
                     <div class="input-group col-6 mb-1">
                         <div class="input-group-prepend">
                             <label class="input-group-text DnB-RedLabel" for="ddlSurveyList">Survey List</label>
@@ -46,7 +52,7 @@
                 <div class="row">
                     <div class="input-group col-7">
                         <div class="input-group-prepend">
-                            <label class="input-group-text DnB-RedLabel" for="ddlFamilyList">Family List</label>
+                            <label class="input-group-text DnB-RedLabel"  for="ddlSurveyFamilyList">Family List</label>
                         </div>
                         <select id="ddlSurveyFamilyList">
                         </select>
@@ -109,8 +115,8 @@
                     </colgroup>
                     <thead>
                         <tr class="SubTotalRow">
-                            <th>Question</th>
-                            <th>Response</th>
+                            <th scope="col">Question</th>
+                            <th scope="col">Response</th>
                         </tr>
                     </thead>
                     <tbody id="tbody_tbl_response_dsp">

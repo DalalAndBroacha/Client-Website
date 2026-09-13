@@ -69,3 +69,67 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+
+/* ==========================================================================
+   WCAG 2.1 AA remediation
+   ========================================================================== */
+
+/* 2.4.1 Bypass Blocks — the skip link is the first focusable element in the
+   DOM and is positioned off-screen until focused. display:none and
+   visibility:hidden would remove it from the tab order entirely. */
+.a11y-skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100000;
+    padding: .75rem 1.25rem;
+    background: #ffffff;
+    color: #1a1a1a;
+    font-weight: 700;
+    text-decoration: underline;
+    border: 2px solid #0b4fa8;
+}
+
+.a11y-skip-link:focus {
+    left: 0;
+    top: 0;
+}
+
+/* 2.4.7 Focus Visible / 1.4.11 Non-text Contrast — a visible focus ring for
+   keyboard users, and no ring for mouse users. */
+:focus-visible {
+    outline: 3px solid #0b4fa8;
+    outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* The skip target must not paint its own ring when focus lands on it. */
+#main-content:focus {
+    outline: none;
+}
+
+/* 1.4.3 Contrast (Minimum) — #767676 is the lightest gray that reaches 4.5:1
+   on white. Browser default placeholder gray does not. */
+::placeholder {
+    color: #767676;
+    opacity: 1;
+}
+
+/* 2.2.2 Pause, Stop, Hide / 2.3.1 Three Flashes */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* 1.4.10 Reflow — nothing may exceed the viewport at 320 CSS pixels. */
+img, svg, video, canvas, iframe, table {
+    max-width: 100%;
+}

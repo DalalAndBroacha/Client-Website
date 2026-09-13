@@ -52,20 +52,24 @@ input[type=number] {
 }
 
 
+/* WCAG 1.4.3 Contrast (Minimum): `orange` (#ffa500) on the #fbe7e4 footer is
+   1.65:1 — the worst ratio in the portal. #8a4b00 is 5.72:1 on that surface
+   and 6.4:1 on white, and stays in the same colour family. All four link
+   states are covered, because the criterion applies to every state. */
 #footerContent a:link {
-    color: orange !important;
+    color: #8a4b00 !important;
 }
 
 #footerContent a:visited {
-    color: orange;
+    color: #8a4b00 !important;
 }
 
 #footerContent a:hover {
-    color: orange;
+    color: #663800 !important;
 }
 
 #footerContent a:active {
-    color: orange;
+    color: #663800 !important;
 }
 
 /* Makes the animation pause on hover */

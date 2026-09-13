@@ -1,6 +1,12 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "US taxation data entry";
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -16,10 +22,10 @@
 
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 
-        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
-            <img src="~/images/loader.gif" width="64" height="64" />
+        <div id="waitIn" class="a11y-loading-indicator" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="" />
         </div>
 
         @{
@@ -93,20 +99,22 @@
                     </colgroup>
                     <thead>
                         <tr>
-                            <th>Transaction Date</th>
-                            <th>Segment</th>
-                            <th>Type</th>
-                            <th>Narration</th>
-                            <th>Amount</th>
-                            <th>Action</th>
+                            <th scope="col">Transaction Date</th>
+                            <th scope="col">Segment</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Narration</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>
+                                <label for="inp_date" class="a11y-visually-hidden">Date</label>
                                 <input type="date" id="inp_date" class="form-control">
                             </td>
                             <td>
+                                <label for="ddlSegList" class="a11y-visually-hidden">Segment</label>
                                 <select class="form-control" style="border: 1px solid #ced4da; height:38px;" id="ddlSegList">
                                     <option value="1">Equity</option>
                                     <option value="2">Mutual Fund</option>
@@ -115,6 +123,7 @@
                                 </select>
                             </td>
                             <td>
+                                <label for="ddlTypeList" class="a11y-visually-hidden">Type</label>
                                 <select class="form-control" style="border: 1px solid #ced4da; height:38px;" id="ddlTypeList">
                                     <option value="1">STCG</option>
                                     <option value="2">LTCG</option>
@@ -124,12 +133,14 @@
                                     <option value="6">Highest Balance</option>
                                 </select>
                             </td>
-                            <td><input type="text" id="inp_narration" class="form-control"></td>
-                            <td><input type="number" id="inp_amount" class="form-control"></td>
+                            <td><label for="inp_narration" class="a11y-visually-hidden">Narration</label>
+                            <input type="text" id="inp_narration" class="form-control"></td>
+                            <td><label for="inp_amount" class="a11y-visually-hidden">Amount</label>
+                            <input type="number" id="inp_amount" class="form-control"></td>
                             <td class="text-center" style="width:121px;">
                                 <input type="text" id="inp_rec_id" value="0" hidden />
-                                <button class="btn" type="button" onclick="addModifyRecord()" title="Add"><i class="fas fa-plus-square fa-lg White_Red_Icon"></i></button>
-                                <button class="btn" type="button" onclick="ResetInputs()" title="Clear"><i class="fas fa-broom fa-lg White_Red_Icon"></i></button>
+                                <button class="btn" type="button" onclick="addModifyRecord()" title="Add" aria-label="Add this entry"><i class="fas fa-plus-square fa-lg White_Red_Icon" aria-hidden="true"></i></button>
+                                <button class="btn" type="button" onclick="ResetInputs()" title="Clear" aria-label="Clear the entry form"><i class="fas fa-broom fa-lg White_Red_Icon" aria-hidden="true"></i></button>
                             </td>
                         </tr>
                     </tbody>
@@ -141,12 +152,12 @@
             <table class="table table-bordered dt-responsive w-100" id="display_table">
                 <thead>
                     <tr>
-                        <th>Transaction Date</th>
-                        <th>Segment</th>
-                        <th>Type</th>
-                        <th>Narration</th>
-                        <th>Amount</th>
-                        <th>Action</th>
+                        <th scope="col">Transaction Date</th>
+                        <th scope="col">Segment</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Narration</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody id="tbodydsp_table">

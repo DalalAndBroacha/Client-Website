@@ -1,6 +1,14 @@
-﻿<div class="text-center">
-    <div class="display-4">
-        <h1 class="text-danger">404.</h1>
-    </div>
-    <p>Page not found.</p>
-</div>
+﻿@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Page not found";
+}
+
+@* 2.4.1 Bypass Blocks / 1.3.1 — even an error page needs a main landmark
+   and a heading that says what happened. 3.3.3-style guidance: tell the user
+   what to do next, not just that something is wrong. *@
+<main id="main-content" tabindex="-1" class="text-center">
+    <h1 class="text-danger display-4">Page not found (404)</h1>
+    <p>We could not find the page you asked for. It may have been moved, or the address may be mistyped.</p>
+    <p><a href="/ClientPortal/Pie/PieReport">Go to your dashboard</a> or <a href="/ClientPortal/Login/Index">sign in again</a>.</p>
+</main>

@@ -41,7 +41,12 @@ ul {
   list-style-type: none;
   margin-bottom: 0; }
 
-*:focus {
+/* WCAG 2.4.7 Focus Visible / 1.4.11 Non-text Contrast:
+   `*:focus { outline: none; }` removed the keyboard focus indicator from
+   every control in the portal. Mouse users keep a ring-free experience via
+   `:focus:not(:focus-visible)` in css/accessibility.css, which also supplies
+   the replacement indicator. Do not reinstate a blanket outline reset. */
+*:focus:not(:focus-visible) {
   outline: none; }
 
 a {
@@ -1109,8 +1114,8 @@ label.btn-upload {
 
 .accordion-msg:focus,
 .accordion-msg:hover {
-  text-decoration: none;
-  outline: none; }
+  text-decoration: none; }
+  /* WCAG 2.4.7: outline:none removed; :focus-visible supplies the ring. */
 
 .faq-accordion .accordion-desc {
   padding: 20px; }
@@ -2552,7 +2557,6 @@ table.matrics-table tr:first-child td {
   transition: all ease-in 0.3s; }
   .slick-prev:focus, .slick-prev:hover {
     color: transparent;
-    outline: none;
     background: rgba(0, 0, 0, 0.8); }
 
 .brighttheme-icon-sticker:after {
@@ -2569,7 +2573,6 @@ table.matrics-table tr:first-child td {
   transition: all ease-in 0.3s; }
   .slick-next:focus, .slick-next:hover {
     color: transparent;
-    outline: none;
     background: rgba(0, 0, 0, 0.8); }
 
 .counter-input .input-group {
@@ -2698,7 +2701,6 @@ table.matrics-table tr:first-child td {
   width: 100%; }
 
 .card .wizard > .steps .current a {
-  outline: none;
   border-radius: 5px; }
 
 .payment-card {
@@ -9259,7 +9261,7 @@ body.menu-bottom #collapse-menu {
     font-size: 1.25em; }
   .form-group .form-control-round {
     border-radius: 50px; }
-  .form-group .form-control-static:focus {
+  .form-group .form-control-static:focus:not(:focus-visible) {
     outline: none; }
 
 .form-control {
@@ -10393,10 +10395,9 @@ body.menu-bottom #collapse-menu {
     border-bottom: 1px solid #ccc;
 }
   .form-material .form-control:focus {
-    border-color: transparent;
-    outline: none;
-    -webkit-box-shadow: none;
-            box-shadow: none; }
+    /* WCAG 2.4.7: the ring is supplied by :focus-visible in
+       css/accessibility.css. Keep the border visible for 1.4.11. */
+    border-color: #767676; }
     .form-material .form-control:focus ~ .form-bar:after, .form-material .form-control:focus ~ .form-bar:before {
       width: 50%; }
     .form-material .form-control:focus ~ .float-label, .form-material .form-control:valid ~ .float-label {
@@ -11205,8 +11206,8 @@ label.txt-ellipsis {
 /**  =====================
       Data-table css start
 ==========================  **/
-table.table-bordered.dataTable tbody th:focus,
-table.table-bordered.dataTable tbody td:focus {
+table.table-bordered.dataTable tbody th:focus:not(:focus-visible),
+table.table-bordered.dataTable tbody td:focus:not(:focus-visible) {
   outline: none; }
 
 .card .card-block ul.pagination li {

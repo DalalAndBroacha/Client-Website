@@ -1,3 +1,7 @@
 ﻿@{
-    Layout = "_Layout";
+    // "_Layout" resolved to Pages/_Layout.cshtml, which is the post-login
+    // application shell fragment, not a document layout — a page rendered
+    // through it would emit no <html>, <head> or <title> at all (WCAG 3.1.1,
+    // 2.4.2, 4.1.1). Point at the real document layout instead.
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }

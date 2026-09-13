@@ -7,7 +7,11 @@
     <div class="offset-2"></div>
     <div class="col-8 d-flex justify-content-center">
         <p style="text-align:center">
-            <b id="lblReport_Name">@ViewBag.ReportName</b>
+            @* 1.3.1 Info and Relationships / 2.4.6 Headings and Labels — the report
+               name is the page heading. A native <h1> here would break out of the
+               inline run of date text and change the layout, so the heading role
+               and level are supplied explicitly instead. *@
+            <b id="lblReport_Name" role="heading" aria-level="1">@ViewBag.ReportName</b>
             @if (ViewBag.GenDate == "True")
             {
                 if (ViewBag.GenPeriod == "True")
@@ -29,8 +33,8 @@
         <div class="row justify-content-center mt-2">
             @if (ViewBag.PrimaryReport != "True")
             {
-                <button title="Back to previous Report" id=@ViewBag.ElementBackBtnID style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                    <i class="fas fa-arrow-left" style="color: white; padding:0; width:30px;"></i>
+                <button title="Back to previous Report" id=@ViewBag.ElementBackBtnID aria-label="Back to the previous report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                    <i class="fas fa-arrow-left" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                 </button>
             }
             <a class="nav-link dropdown-toggle" href="#" role="button" 
@@ -39,37 +43,37 @@
                 Export
             </a>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="#"><i class="far fa-file-pdf" style="color: darkred; padding:0;"></i>Export to PDF</a>
-                <a class="dropdown-item" href="#"><i class="far fa-file-excel" style="color: green; padding:0;"></i>Export to Excel</a>
-                <a class="dropdown-item" href="#"><i class="fas fa-envelope" style="color: dodgerblue; padding:0;"></i>Email</a>
-                <a class="dropdown-item" href="#"><i class="fab fa-whatsapp" style="color: forestgreen; padding:0;"></i>Whatsapp</a>
+                <a class="dropdown-item" href="#" role="button"><i class="far fa-file-pdf" style="color: darkred; padding:0;" aria-hidden="true"></i>Export to PDF</a>
+                <a class="dropdown-item" href="#" role="button"><i class="far fa-file-excel" style="color: green; padding:0;" aria-hidden="true"></i>Export to Excel</a>
+                <a class="dropdown-item" href="#" role="button"><i class="fas fa-envelope" style="color: dodgerblue; padding:0;" aria-hidden="true"></i>Email</a>
+                <a class="dropdown-item" href="#" role="button"><i class="fab fa-whatsapp" style="color: forestgreen; padding:0;" aria-hidden="true"></i>Whatsapp</a>
             </div>
            @*  <div>
                 <div>
-                    <i class="far fa-file-pdf"></i>Export to PDF
+                    <i class="far fa-file-pdf" aria-hidden="true"></i>Export to PDF
                 </div>
                 <div>
-                    <i class="far fa-file-excel"></i>Export to Excel
+                    <i class="far fa-file-excel" aria-hidden="true"></i>Export to Excel
                 </div>
                 <div>
-                    <i class="fas fa-envelope"></i>Email
+                    <i class="fas fa-envelope" aria-hidden="true"></i>Email
                 </div>
                 <div>
-                    <span><i class="fab fa-whatsapp" style="color: white; padding:0; width:30px;"></i></span>Whatsapp
+                    <span><i class="fab fa-whatsapp" aria-hidden="true" style="color: white; padding:0; width:30px;"></i></span>Whatsapp
                 </div>
 
             </div> *@
             @*
-            <button title="Print This Page" id=@ViewBag.ElementPrintBtnID onclick=@ViewBag.ElementPrintBtnOnClickEvent style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-            <i class="fas fa-print" style="color: white; padding:0; width:30px;"></i>
+            <button title="Print This Page" id=@ViewBag.ElementPrintBtnID onclick=@ViewBag.ElementPrintBtnOnClickEvent aria-label="Print this report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+            <i class="fas fa-print" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
             </button>*@
 
-           @*  <i class="fab fa-whatsapp-square" style="color: white; padding:0; width:30px;"></i>
+           @*  <i class="fab fa-whatsapp-square" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
 
-            <i class="fab fa-whatsapp"></i>
+            <i class="fab fa-whatsapp" aria-hidden="true"></i>
 
-            <button title="Export to PDF" id=@ViewBag.ElementPDFBtnID data-toggle="modal" data-target="@ViewBag.PdfBackdropID" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                <i class="fab fa-whatsapp" style="color: white; padding:0; width:30px;"></i>
+            <button title="Export to PDF" id=@ViewBag.ElementPDFBtnID data-toggle="modal" data-target="@ViewBag.PdfBackdropID" aria-label="Export this report to PDF" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                <i class="fab fa-whatsapp" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
             </button>
 
             @if (ViewBag.ElementPDFBtnID != null)
@@ -77,14 +81,14 @@
 
                 @if (ViewBag.PdfBackdropID != null)
                 {
-                    <button title="Export to PDF" id=@ViewBag.ElementPDFBtnID data-toggle="modal" data-target="@ViewBag.PdfBackdropID" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                        <i class="far fa-file-pdf" style="color: white; padding:0; width:30px;"></i>
+                    <button title="Export to PDF" id=@ViewBag.ElementPDFBtnID data-toggle="modal" data-target="@ViewBag.PdfBackdropID" aria-label="Export this report to PDF" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                        <i class="far fa-file-pdf" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                     </button>
                 }
                 else
                 {
-                    <button title="Export to PDF" id=@ViewBag.ElementPDFBtnID style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                        <i class="far fa-file-pdf" style="color: white; padding:0; width:30px;"></i>
+                    <button title="Export to PDF" id=@ViewBag.ElementPDFBtnID aria-label="Export this report to PDF" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                        <i class="far fa-file-pdf" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                     </button>
                 }
             }
@@ -92,14 +96,14 @@
             {
                 @if (ViewBag.ExcelBackdropID != null)
                 {
-                    <button title="Export to Excel" id=@ViewBag.ElementExcelBtnID data-toggle="modal" data-target="@ViewBag.ExcelBackdropID" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                        <i class="far fa-file-excel" style="color: white; padding:0; width:30px;"></i>
+                    <button title="Export to Excel" id=@ViewBag.ElementExcelBtnID data-toggle="modal" data-target="@ViewBag.ExcelBackdropID" aria-label="Export this report to Excel" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                        <i class="far fa-file-excel" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                     </button>
                 }
                 else
                 {
-                    <button title="Export to Excel" id=@ViewBag.ElementExcelBtnID style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                        <i class="far fa-file-excel" style="color: white; padding:0; width:30px;"></i>
+                    <button title="Export to Excel" id=@ViewBag.ElementExcelBtnID aria-label="Export this report to Excel" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                        <i class="far fa-file-excel" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                     </button>
                 }
             }
@@ -108,14 +112,14 @@
             {
                 @if (ViewBag.EmailBackdropID != null)
                 {
-                    <button title="Email" id=@ViewBag.ElementEmailBtnID data-toggle="modal" data-target="@ViewBag.EmailBackdropID" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                        <i class="fas fa-envelope" style="color: white; padding:0; width:30px;"></i>
+                    <button title="Email" id=@ViewBag.ElementEmailBtnID data-toggle="modal" data-target="@ViewBag.EmailBackdropID" aria-label="Email this report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                        <i class="fas fa-envelope" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                     </button>
                 }
                 else
                 {
-                    <button title="Email" id=@ViewBag.ElementEmailBtnID style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                        <i class="fas fa-envelope" style="color: white; padding:0; width:30px;"></i>
+                    <button title="Email" id=@ViewBag.ElementEmailBtnID aria-label="Email this report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                        <i class="fas fa-envelope" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                     </button>
                 }
             } *@

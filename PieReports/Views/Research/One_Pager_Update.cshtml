@@ -1,6 +1,12 @@
 ﻿@* @model List<ViewModel.Reports.ResearchReport.psp_dsp_model_portfolio> *@
 @using ViewModel.Login
 @using Newtonsoft.Json
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Update one-pager";
+}
+
 @* @using ViewModel.Reports.ResearchReport *@
 
 @{
@@ -20,7 +26,11 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
+        @* 1.3.1 / 2.4.6 — the design shows no page name, so the page
+           heading is provided for assistive technology only and is kept
+           in step with the <title> set at the top of this view. *@
+        <h1 class="a11y-visually-hidden">@ViewData["Title"]</h1>
         <div style="position:unset; background-color:white; padding:0.5rem">
             @* 
              <form>
@@ -32,25 +42,25 @@
                         <input type='text' id='repo_name' class='form-control' ng-trim="true" style="height:2rem">
                     </div>
                     <div class="form-group col-sm-3 input-group">
-                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Title</label>
+                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_title">Title</label>
                         <input type='text' id='repo_title'class='form-control' ng-trim="true" style="height:2rem">
                     </div>
                     <div class="form-group col-sm-4 input-group">
-                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Sub Title</label>
+                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem"  for="repo_subtitle">Sub Title</label>
                         <input type='text' id='repo_subtitle'class='form-control' ng-trim="true" style="height:2rem">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-sm-4 input-group">
-                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:60%;height:2rem" for="repo_name">Recommandation Price</label>
+                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:60%;height:2rem"  for="repo_reco_price">Recommandation Price</label>
                         <input type='number' id='repo_reco_price' class='form-control' ng-trim="true" style="height:2rem">
                     </div>
                     <div class="form-group col-sm-3 input-group">
-                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Target Price</label>
+                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem"  for="repo_target_price">Target Price</label>
                         <input type='number' id='repo_target_price' class='form-control' ng-trim="true" style="height:2rem">
                     </div>
                     <div class="form-group col-sm-4 input-group">
-                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Analyst Name</label>
+                        <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem"  for="repo_analyst">Analyst Name</label>
                         <input type='text' id='repo_analyst' class='form-control' ng-trim="true" style="height:2rem">
                     </div>
                 </div>
@@ -64,8 +74,8 @@
                         </colgroup>
                         <thead>
                             <tr>
-                                <th style="background-color:#FCE0E0">Section</th>
-                                <th style="background-color:#FCE0E0"><button type="button" title="Add" id="btnaddsection" onclick="addsection()">+</button>
+                                <th style="background-color:#FCE0E0" scope="col">Section</th>
+                                <th style="background-color:#FCE0E0" scope="col"><button type="button" title="Add" id="btnaddsection" onclick="addsection()">+</button>
   
                                 </th>
                             </tr>
@@ -75,7 +85,7 @@
                                     <td> <input type='text' name="section" id='section' onchange="createdropdown(this)" class='form-control sectionbox' ng-trim="true" style="width: 100%">
 
                                     </td>
-                                    <td><button id="btndelsection" name="btndelsection" class="btn Del_rec" type="button" title="Delete" onclick="btn_secdelete(this)"><i class="fas fa-trash-alt fa-lg White_Red_Icon"></i></button></td>
+                                    <td><button id="btndelsection" name="btndelsection" class="btn Del_rec" type="button" title="Delete" onclick="btn_secdelete(this)"><i class="fas fa-trash-alt fa-lg White_Red_Icon" aria-hidden="true"></i></button></td>
                                 </tr>
                         </tbody>
                     </table>
@@ -87,13 +97,13 @@
                         <table class="table table-redbordered w-100" id="tblsubsection">
                             <thead>
                                 <tr> 
-                                    <th colspan="3" style="background-color:#FCE0E0;width: 95%;">Sub Section</th>
-                                    <th style="background-color:#FCE0E0;width: 5%;"><button type="button" title="Add" onclick="addsubsection()">+</button></th>
+                                    <th colspan="3" style="background-color:#FCE0E0;width: 95%;" scope="col">Sub Section</th>
+                                    <th style="background-color:#FCE0E0;width: 5%;" scope="col"><button type="button" title="Add" onclick="addsubsection()">+</button></th>
                                 </tr>
                                 <tr>
-                                    <th style="background-color:#FCE0E0;width: 20%;">Section</th>
-                                    <th style="background-color:#FCE0E0;width: 20%;">Title</th>
-                                    <th colspan="2" style="background-color:#FCE0E0;width: 60%;">Detail</th>
+                                    <th style="background-color:#FCE0E0;width: 20%;" scope="col">Section</th>
+                                    <th style="background-color:#FCE0E0;width: 20%;" scope="col">Title</th>
+                                    <th colspan="2" style="background-color:#FCE0E0;width: 60%;" scope="col">Detail</th>
                                 </tr>
                             </thead>
                             <tbody id="tblsubsection">
@@ -101,7 +111,7 @@
                                     <td> <select class="form-control ddlSectionlist" name="ddlSectionlist" id="ddlSectionlist" style="width: 100%"></select></td>
                                     <td>  <input type='text' id='Subsectiontitle' class='form-control Subsectiontitle' name="Subsectiontitle" ng-trim="true" style="width: 100%"></td>
                                     <td>  <textarea class="form-control subsectiondetail" id="subsectiondetail" name="subsectiondetail" style="width: 100%"></textarea></td>
-                                    <td><button name="btndelsubsection" class="btn Del_rec" type="button" title="Delete" onclick="btn_subsecdelete(this)"><i class="fas fa-trash-alt fa-lg White_Red_Icon"></i></button></td>
+                                    <td><button name="btndelsubsection" class="btn Del_rec" type="button" title="Delete" onclick="btn_subsecdelete(this)"><i class="fas fa-trash-alt fa-lg White_Red_Icon" aria-hidden="true"></i></button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -120,25 +130,25 @@
                     <input type='text' id='repo_name' class='form-control' ng-trim="true" style="height:2rem">
                 </div>
                 <div class="form-group col-sm-3 input-group">
-                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Title</label>
+                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_title">Title</label>
                     <input type='text' id='repo_title' class='form-control' ng-trim="true" style="height:2rem">
                 </div>
                 <div class="form-group col-sm-4 input-group">
-                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Sub Title</label>
+                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem"  for="repo_subtitle">Sub Title</label>
                     <input type='text' id='repo_subtitle' class='form-control' ng-trim="true" style="height:2rem">
                 </div>
              </div>
             <div class="form-row">
                 <div class="form-group col-sm-4 input-group">
-                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:60%;height:2rem" for="repo_name">Recommandation Price</label>
+                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:60%;height:2rem"  for="repo_reco_price">Recommandation Price</label>
                     <input type='number' id='repo_reco_price' class='form-control' ng-trim="true" style="height:2rem">
                 </div>
                 <div class="form-group col-sm-3 input-group">
-                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Target Price</label>
+                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem"  for="repo_target_price">Target Price</label>
                     <input type='number' id='repo_target_price' class='form-control' ng-trim="true" style="height:2rem">
                 </div>
                 <div class="form-group col-sm-4 input-group">
-                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem" for="repo_name">Analyst Name</label>
+                    <label class="input-group-text input-group-prepend" style="background-color:#FCE0E0;font-size:14px;width:40%;height:2rem"  for="repo_analyst">Analyst Name</label>
                     <input type='text' id='repo_analyst' class='form-control' ng-trim="true" style="height:2rem">
                 </div>
             </div>
@@ -151,13 +161,14 @@
                     </colgroup>
                     <thead>
                         <tr>
-                            <th style="background-color:#FCE0E0">Section</th>
-                            <th style="background-color:#FCE0E0"></th>
+                            <th style="background-color:#FCE0E0" scope="col">Section</th>
+                            <th style="background-color:#FCE0E0" scope="col"></th>
                         </tr>
                     </thead>
                     <tbody id="tblsection">
                         <tr id="trow" style="height:2rem">
                             <td>
+                                <label for="section" class="a11y-visually-hidden">Section name</label>
                                 <input type='text' name="section" id='section' class='form-control' ng-trim="true" style="width: 100%">
                             </td>
                             <td>
@@ -173,7 +184,7 @@
             </div>
           </form>
 
-            <div id="dsp_subsection" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div id="dsp_subsection" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" aria-modal="true" aria-label="dsp subsection">
                 <div class="modal-dialog  modal-sm">
                     <div class="modal-content">
                         <div class='modal-header'>
@@ -196,7 +207,7 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-sm-9 ">
-                                        <label class="input-group-text input-group-prepend" style="width:30%;background-color: #FCE0E0;font-size: 14px;" for="Subsectiontitle">Sub Section Detail</label>
+                                        <label class="input-group-text input-group-prepend" style="width:30%;background-color: #FCE0E0;font-size: 14px;" for="Subsectiondetail">Sub Section Detail</label>
                                         <textarea type='text' id='Subsectiondetail' class='form-control' name="Subsectiontitle" rows="12" ng-trim="true" style="font-size: 14px;width:100%"></textarea>
                                     </div>
                                 </div>
