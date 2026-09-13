@@ -1,6 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
+@* 2.4.1 Bypass Blocks — skip-link target and main landmark. *@
+<main id="main-content" tabindex="-1">
+    <h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+    <p>Use this page to detail your site's privacy policy.</p>
+</main>

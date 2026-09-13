@@ -5,26 +5,26 @@
     <div style="width:100%" class="d-flex justify-content-end">
         @if (ViewBag.PrimaryReport != "True")
         {
-            <button title="Back to previous Report" id=@ViewBag.ElementBackBtnID style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                <i class="fas fa-arrow-left" style="color: white; padding:0; width:30px;"></i>
+            <button title="Back to previous Report" id=@ViewBag.ElementBackBtnID aria-label="Back to the previous report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                <i class="fas fa-arrow-left" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
             </button>
         }
         @*
-        <button title="Print This Page" id=@ViewBag.ElementPrintBtnID onclick=@ViewBag.ElementPrintBtnOnClickEvent style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-            <i class="fas fa-print" style="color: white; padding:0; width:30px;"></i>
+        <button title="Print This Page" id=@ViewBag.ElementPrintBtnID onclick=@ViewBag.ElementPrintBtnOnClickEvent aria-label="Print this report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+            <i class="fas fa-print" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
         </button>*@
         @if (ViewBag.ElementEmailBtnID != null)
         {
             @if (ViewBag.EmailBackdropID != null)
             {
-                <button title="Email" id=@ViewBag.ElementEmailBtnID data-toggle="modal" data-target="@ViewBag.EmailBackdropID" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                    <i class="fas fa-envelope" style="color: white; padding:0; width:30px;"></i>
+                <button title="Email" id=@ViewBag.ElementEmailBtnID data-toggle="modal" data-target="@ViewBag.EmailBackdropID" aria-label="Email this report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                    <i class="fas fa-envelope" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                 </button>
             }
             else
             {
-                <button title="Email" id=@ViewBag.ElementEmailBtnID style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                    <i class="fas fa-envelope" style="color: white; padding:0; width:30px;"></i>
+                <button title="Email" id=@ViewBag.ElementEmailBtnID aria-label="Email this report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                    <i class="fas fa-envelope" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                 </button>
             }
         }
@@ -32,14 +32,14 @@
         {
             @if (ViewBag.ExcelBackdropID != null)
             {
-                <button title="Export to Excel" id=@ViewBag.ElementExcelBtnID data-toggle="modal" data-target="@ViewBag.ExcelBackdropID" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                    <i class="far fa-file-excel" style="color: white; padding:0; width:30px;"></i>
+                <button title="Export to Excel" id=@ViewBag.ElementExcelBtnID data-toggle="modal" data-target="@ViewBag.ExcelBackdropID" aria-label="Export this report to Excel" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                    <i class="far fa-file-excel" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                 </button>
             }
             else
             {
-                <button title="Export to Excel" id=@ViewBag.ElementExcelBtnID style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                    <i class="far fa-file-excel" style="color: white; padding:0; width:30px;"></i>
+                <button title="Export to Excel" id=@ViewBag.ElementExcelBtnID aria-label="Export this report to Excel" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                    <i class="far fa-file-excel" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                 </button>
             }
         }
@@ -48,24 +48,24 @@
 
             @if (ViewBag.PdfBackdropID != null)
             {
-                <button title="Export to PDF" id=@ViewBag.ElementPDFBtnID data-toggle="modal" data-target="@ViewBag.PdfBackdropID" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                    <i class="far fa-file-pdf" style="color: white; padding:0; width:30px;"></i>
+                <button title="Export to PDF" id=@ViewBag.ElementPDFBtnID data-toggle="modal" data-target="@ViewBag.PdfBackdropID" aria-label="Export this report to PDF" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                    <i class="far fa-file-pdf" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                 </button>
             }
             else
             {
-                <button title="Export to PDF" id=@ViewBag.ElementPDFBtnID style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                    <i class="far fa-file-pdf" style="color: white; padding:0; width:30px;"></i>
+                <button title="Export to PDF" id=@ViewBag.ElementPDFBtnID aria-label="Export this report to PDF" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                    <i class="far fa-file-pdf" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                 </button>
             }
         }
         @*@if (ViewBag.PrimaryReport == "True")
         {
-            <button title="Add to favourite" onclick="PerformanceUpdateFev()" id="PerformanceAddtoFavourite" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                <i class="far fa-star" style="color: white; padding:0; width:30px;"></i>
+            <button title="Add to favourite" onclick="PerformanceUpdateFev()" id="PerformanceAddtoFavourite" aria-label="Add this report to favourites" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                <i class="far fa-star" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
             </button>
-            <button title="Add to favourite" onclick="PerformanceDeleteFev()" id="PerformanceRemoveFavourite" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                <span class="strikethrough_icon"><i class="far fa-star" style="color: white; padding:0; width:30px;"></i></span>
+            <button title="Add to favourite" onclick="PerformanceDeleteFev()" id="PerformanceRemoveFavourite" aria-label="Add this report to favourites" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                <span class="strikethrough_icon"><i class="far fa-star" aria-hidden="true" style="color: white; padding:0; width:30px;"></i></span>
             </button>
         }*@
 

@@ -1,6 +1,12 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Mutual fund report download";
+}
+
+@{
 	string dtoq = TempData["myDeshbordData"].ToString();
 	TempData.Keep("myDeshbordData");
 	Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -17,18 +23,18 @@
 
 
 <div class="wrapper">
-	<div class="content-wrapper">
+	<div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 		<div style="background-color:white !important; padding:1rem;">
 
 			<div class="row justify-content-center"><h1>MF Report Download</h1></div>
 			<form id="mfdatainp" method="post" asp-controller="PIE" asp-action="generateMfReport" asp-antiforgery="false">
 				<div class="row justify-content-center">
 					<div class="col-4">
-						<label class="m-2">Client</label>
+						<label class="m-2" for="ddlClientList">Client</label>
 						<select class="form-control" name="ddlClientList" id="ddlClientList" style="border: 1px solid #ced4da" disabled></select>
 					</div>
 					<div class="col-4">
-						<label class="m-2">Report</label>
+						<label class="m-2" for="ddlReportList">Report</label>
 						<select class="form-control" name="ddlReportList" id="ddlReportList" style="border: 1px solid #ced4da"></select>
 					</div>
 

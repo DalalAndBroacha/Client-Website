@@ -1,6 +1,12 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "KYC update";
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -16,7 +22,7 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
         @{
 
             ViewBag.ReportName = "Update KYC";
@@ -71,6 +77,7 @@
                         <div class="row justify-content-center">
                             <button id="btnEditRecs" type="button" style="display:none;" class="btn DnB-RedLabel">Edit Records</button>
                             <div id="OTP_section" style="display:none;" class="row">
+                                <label for="txtVerifyOTP" class="a11y-visually-hidden">One-time password</label>
                                 <input type="text" id="txtVerifyOTP" maxlength="6" onkeypress="return onlyNumberKey(event)" placeholder="Enter OTP" autocomplete="off" class="form-control mb-1 offset-1 col-5">
                                 <button id="btnSubmitVerifyOTP" type="button" class="btn DnB-RedLabel mb-1 offset-1 col-4">Submit OTP</button>
                             </div>
@@ -81,7 +88,7 @@
                         </div>
                         <div id="resend_container_1" class="row justify-content-center mt-1">
                             <div id="timer1" style="font-size: 12px; display: none;" class="alert alert-info">
-                                Haven't received OTP yet? <a id="Resend_Link1" class="alert-link" onclick="Resend_OTP('OTP1')" href="#">Resend OTP</a>
+                                Haven't received OTP yet? <a id="Resend_Link1" class="alert-link" onclick="Resend_OTP('OTP1')" href="#" role="button">Resend OTP</a>
                             </div>
                         </div>
                         <input type="text" id="verifyOTPtoken" readonly hidden>
@@ -103,12 +110,13 @@
                                 <div class="row">
                                     <div class="col-2 d-flex justify-content-between">
                                         <p style="font-size:14px; font-weight:bold;">Edit E-Mail?</p>
-                                        <input type="checkbox" id="IDchkEmail" name="chkEmail" data-toggle="toggle" data-size="sm" data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No">
+                                        <input type="checkbox" id="IDchkEmail" name="chkEmail" data-toggle="toggle" data-size="sm" data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No" aria-label="Update the email address">
                                     </div>
+                                    <label for="txtNewEmail" class="a11y-visually-hidden">New email address</label>
                                     <input type="email" id="txtNewEmail" class="form-control offset-1 col-4" placeholder="Enter New E-Mail">
                                     <div class="input-group offset-1 col-3">
                                         <div class="input-group-prepend">
-                                            <label class="input-group-text DnB-RedLabel" for="ddlClientList">Relation</label>
+                                            <label class="input-group-text DnB-RedLabel"  for="ddlNewEmailRela">Relation</label>
                                         </div>
                                         <select id="ddlNewEmailRela" class="KYC_relationList">
                                         </select>
@@ -118,12 +126,13 @@
                                 <div class="row">
                                     <div class="col-2 d-flex justify-content-between">
                                         <p style="font-size:14px; font-weight:bold;">Edit Mobile?</p>
-                                        <input type="checkbox" id="IDchkMob" name="chkMob" data-toggle="toggle" data-size="sm" data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No">
+                                        <input type="checkbox" id="IDchkMob" name="chkMob" data-toggle="toggle" data-size="sm" data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No" aria-label="Update the mobile number">
                                     </div>
+                                    <label for="txtNewMob" class="a11y-visually-hidden">New mobile number</label>
                                     <input type="text" maxlength="10" onkeypress="return onlyNumberKey(event)" id="txtNewMob" class="form-control offset-1 col-4" placeholder="Enter New Mobile">
                                     <div class="input-group offset-1 col-3">
                                         <div class="input-group-prepend">
-                                            <label class="input-group-text DnB-RedLabel" for="ddlClientList">Relation</label>
+                                            <label class="input-group-text DnB-RedLabel"  for="ddlNewMobRela">Relation</label>
                                         </div>
                                         <select id="ddlNewMobRela" class="KYC_relationList">
                                         </select>
@@ -133,7 +142,7 @@
                                 <div class="row">
                                     <div class="col-2 d-flex justify-content-between">
                                         <p style="font-size:14px; font-weight:bold;">Edit Annual Income?</p>
-                                        <input type="checkbox" id="IDchkIncomeRange" name="chkIncomeRange" data-toggle="toggle" data-size="sm" data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No">
+                                        <input type="checkbox" id="IDchkIncomeRange" name="chkIncomeRange" data-toggle="toggle" data-size="sm" data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No" aria-label="Update the income range">
                                     </div>
                                     <div class="input-group col-3 mb-1">
                                         <div class="input-group-prepend">
@@ -142,9 +151,10 @@
                                         <select id="ddlIncomeRangeList">
                                         </select>
                                     </div>
+                                    <label for="txt_NW" class="a11y-visually-hidden">Net worth</label>
                                     <input type="text" id="txt_NW" maxlength="14" onkeypress="return onlyNumberKey(event)" class="offset-1 col-2 mb-1" placeholder="Networth">
                                     <div class="col-4">
-                                        <label style="font-size:14px;">Networth Date</label>
+                                        <label style="font-size:14px;" for="NW_date">Networth Date</label>
                                         <input type="date" id="NW_date">
                                     </div>
                                 </div>
@@ -179,6 +189,7 @@
                             <div id="finalSubmitOTP" class="d-flex justify-content-center">
                                 <button id="btnSubmitForm" type="button" class="btn DnB-RedLabel">Submit</button>
                                 <div id="OTP_section_Vali" style="display:none;" class="row">
+                                    <label for="txtValiOTP" class="a11y-visually-hidden">One-time password</label>
                                     <input id="txtValiOTP" maxlength="6" onkeypress="return onlyNumberKey(event)" placeholder="Enter OTP" autocomplete="off" class="form-control col-6">
                                     <button id="btnSubmitValiOTP" type="button" class="btn DnB-RedLabel offset-1 col-4">Submit OTP</button>
                                 </div>
@@ -190,7 +201,7 @@
                             <div class="d-flex justify-content-center mt-1">
 
                                 <div id="timer2" style="font-size: 12px; display: none;" class="alert alert-info">
-                                    Haven't received OTP yet? <a id="Resend_Link2" class="alert-link" onclick="Resend_OTP('OTP2')" href="#">Resend OTP</a>
+                                    Haven't received OTP yet? <a id="Resend_Link2" class="alert-link" onclick="Resend_OTP('OTP2')" href="#" role="button">Resend OTP</a>
                                 </div>
 
                             </div>

@@ -1,5 +1,11 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Search clients";
+}
+
 
 @{
     string dtoq = TempData["myDeshbordData"].ToString();
@@ -19,7 +25,7 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 
         @{
             ViewBag.ReportName = "Search Client";

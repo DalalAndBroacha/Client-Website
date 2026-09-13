@@ -1,6 +1,12 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Equity client mapping list MIS";
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -18,7 +24,7 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
         @{
 
             ViewBag.ReportName = "Client Mapping List";
@@ -27,7 +33,7 @@
 
             <partial name="_ReportHeader" />
         }
-        <div id="GlobalwaitIn" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+        <div id="GlobalwaitIn" class="a11y-loading-indicator" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
             <img src="~/images/loader.gif" width="64" height="64" alt="Loading..." />
         </div>
 
@@ -68,12 +74,12 @@
                         <div class="col-2">
                             <div class="d-flex justify-content-end mt-1 mb-1">
 
-                                <button title="Export to Excel" id="btnExcel" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                                    <i class="far fa-file-excel" style="color: white; padding:0; width:30px;"></i>
+                                <button title="Export to Excel" id="btnExcel" aria-label="Export this report to Excel" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                                    <i class="far fa-file-excel" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                                 </button>
 
-                                <button title="Email" id="btnEmail" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                                    <i class="fas fa-envelope" style="color: white; padding:0; width:30px;"></i>
+                                <button title="Email" id="btnEmail" aria-label="Email this report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                                    <i class="fas fa-envelope" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                                 </button>
 
                             </div>
@@ -82,11 +88,11 @@
                     <table id="tblData" class="table table-bordered w-100">
                         <thead>
                             <tr>
-                                <th>Account Code</th>
-                                <th>Client</th>
-                                <th>Family Name</th>
-                                <th>RM</th>
-                                <th>Last Trade Date</th>
+                                <th scope="col">Account Code</th>
+                                <th scope="col">Client</th>
+                                <th scope="col">Family Name</th>
+                                <th scope="col">RM</th>
+                                <th scope="col">Last Trade Date</th>
                             </tr>
                         </thead>
                         <tbody id="tbodyData">

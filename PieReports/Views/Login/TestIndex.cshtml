@@ -1,7 +1,17 @@
 ﻿@model ViewModel.Login.Dashboard
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Sign in (test)";
+}
+
+@{
     //Layout = "~/Pages/_Layout.cshtml";
     Html.RenderPartial("~/Pages/_Layout.cshtml", Model);
 }
 
-
+@* 2.4.1 Bypass Blocks / 1.3.1 — the shell above supplies the header and
+   navigation; this page still needs a main landmark and a heading. *@
+<main id="main-content" tabindex="-1" class="content-wrapper">
+    <h1>@ViewData["Title"]</h1>
+</main>

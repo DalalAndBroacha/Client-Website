@@ -1,5 +1,11 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Scrip-wise client holding";
+}
+
 @{ string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -14,10 +20,10 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 
-        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
-            <img src="~/images/loader.gif" width="64" height="64" />
+        <div id="waitIn" class="a11y-loading-indicator" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="" />
         </div>
 
         <div style="position:unset; background-color:white; padding:0.5rem;">
@@ -27,7 +33,7 @@
                     <ul class="list-inline">
                         
                         <li class="list-inline-item">
-                            <label>Asset</label>
+                            <label for="ddlAsset">Asset</label>
                             <select id="ddlAsset" class="select2">
                                 <option value="1" selected>Equity</option>
                                 <option value="2">Bonds</option>
@@ -35,12 +41,12 @@
                             </select>
                         </li>
                         <li class="list-inline-item">
-                            <label>Script</label>
+                            <label for="ddlScript">Script</label>
                             <select id="ddlScript" class="select2">
                             </select>
                         </li>
                         <li class="list-inline-item">
-                            <label>Report Format</label>
+                            <label for="ddlRepoFormat">Report Format</label>
                             <select id="ddlRepoFormat" class="select2">
                                 <option value="1">Condensed</option>
                                 <option value="2">Detailed</option>
@@ -139,21 +145,21 @@
                         <table class="table table-hover table-bordered nowrap" id="tableScriptwiseDetailsCondensed">
                             <thead>
                                 <tr>
-                                    <th>Client Name</th>
-                                    <th>Account Code</th>
-                                    <th>Total Quantity</th>
-                                    <th>Short Term Qty</th>
-                                    <th>Long Term Qty</th>
-                                    <th>Purchase Cost/NAV</th>
-                                    <th>Holding Cost</th>
-                                    <th>CMP/Current NAV</th>
-                                    <th>Current Value</th>
-                                    <th>DP</th>
-                                    <th>Latest Buy</th>
-                                    <th>Latest Sell</th>
-                                    <th>Remarks</th>
-                                    <th>Branch Name</th>
-                                    <th>RM Name</th>
+                                    <th scope="col">Client Name</th>
+                                    <th scope="col">Account Code</th>
+                                    <th scope="col">Total Quantity</th>
+                                    <th scope="col">Short Term Qty</th>
+                                    <th scope="col">Long Term Qty</th>
+                                    <th scope="col">Purchase Cost/NAV</th>
+                                    <th scope="col">Holding Cost</th>
+                                    <th scope="col">CMP/Current NAV</th>
+                                    <th scope="col">Current Value</th>
+                                    <th scope="col">DP</th>
+                                    <th scope="col">Latest Buy</th>
+                                    <th scope="col">Latest Sell</th>
+                                    <th scope="col">Remarks</th>
+                                    <th scope="col">Branch Name</th>
+                                    <th scope="col">RM Name</th>
                                 </tr>
                             </thead>
                             <tbody id="tbodyScriptwiseDetailsCondensed">
@@ -164,26 +170,26 @@
                         <table class="table table-hover table-bordered nowrap" id="tableScriptwiseDetailsDetailed">
                             <thead>
                                 <tr>
-                                    <th>Client Name</th>
-                                    <th>Account Code</th>
-                                    <th>Total Quantity</th>
-                                    <th>Short Term Qty</th>
-                                    <th>Long Term Qty</th>
-                                    <th>Purchase Cost/NAV</th>
-                                    <th>Holding Cost</th>
-                                    <th>CMP/Current NAV</th>
-                                    <th>Current Value</th>
-                                    <th>Dividend/Interest</th>
-                                    <th>DP</th>
-                                    <th>Latest Buy</th>
-                                    <th>Latest Sell</th>
-                                    <th>Remarks</th>
-                                    <th>Short Term Gain/Loss</th>
-                                    <th>Long Term Gain/Loss</th>
-                                    <th>XIRR</th>
-                                    <th>CAGR</th>
-                                    <th>Branch Name</th>
-                                    <th>RM Name</th>
+                                    <th scope="col">Client Name</th>
+                                    <th scope="col">Account Code</th>
+                                    <th scope="col">Total Quantity</th>
+                                    <th scope="col">Short Term Qty</th>
+                                    <th scope="col">Long Term Qty</th>
+                                    <th scope="col">Purchase Cost/NAV</th>
+                                    <th scope="col">Holding Cost</th>
+                                    <th scope="col">CMP/Current NAV</th>
+                                    <th scope="col">Current Value</th>
+                                    <th scope="col">Dividend/Interest</th>
+                                    <th scope="col">DP</th>
+                                    <th scope="col">Latest Buy</th>
+                                    <th scope="col">Latest Sell</th>
+                                    <th scope="col">Remarks</th>
+                                    <th scope="col">Short Term Gain/Loss</th>
+                                    <th scope="col">Long Term Gain/Loss</th>
+                                    <th scope="col">XIRR</th>
+                                    <th scope="col">CAGR</th>
+                                    <th scope="col">Branch Name</th>
+                                    <th scope="col">RM Name</th>
                                 </tr>
                             </thead>
                             <tbody id="tbodyScriptwiseDetailsDetailed">
@@ -196,7 +202,7 @@
             </div>
 
             <!-- Modal Add -->
-            <div class="modal fade" id="CliScripTradesModal" tabindex="-1" role="dialog">
+            <div class="modal fade" id="CliScripTradesModal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="ModalTitle">
                 <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
                     <div class="modal-content p-1">
                         <div class="modal-header">
@@ -225,12 +231,12 @@
                                     </colgroup>
                                     <thead>
                                         <tr>
-                                            <th>Transaction Date</th>
-                                            <th>Remarks</th>
-                                            <th>Buy</th>
-                                            <th>Sell</th>
-                                            <th>Rate</th>
-                                            <th>Balance Quantity</th>
+                                            <th scope="col">Transaction Date</th>
+                                            <th scope="col">Remarks</th>
+                                            <th scope="col">Buy</th>
+                                            <th scope="col">Sell</th>
+                                            <th scope="col">Rate</th>
+                                            <th scope="col">Balance Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyScriptDet">

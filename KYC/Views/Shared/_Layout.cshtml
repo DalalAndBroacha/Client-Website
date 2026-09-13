@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
+    @* WCAG 2.4.1 Bypass Blocks — first focusable element in the DOM. *@
+    <a class="a11y-skip-link" href="#main-content">Skip to main content</a>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -30,7 +32,7 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main id="main-content" tabindex="-1" class="pb-3">
             @RenderBody()
         </main>
     </div>

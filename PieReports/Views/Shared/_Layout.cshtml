@@ -1,19 +1,41 @@
-﻿@using Microsoft.Extensions.Configuration
+@using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 
+@{
+    // WCAG 2.4.2 Page Titled — every page supplies its own title, most
+    // specific information first, because screen reader users hear the
+    // beginning of the title and tab strips truncate the end.
+    var pageTitle = ViewData["Title"] as string;
+    var documentTitle = string.IsNullOrWhiteSpace(pageTitle)
+        ? "Client Portal | Dalal & Broacha Stock Broking Pvt. Ltd."
+        : pageTitle + " | Client Portal | Dalal & Broacha Stock Broking Pvt. Ltd.";
+
+    // Post-login pages render ~/Pages/_Layout.cshtml, which sets this so the
+    // AdminLTE shell classes land on the real <body> instead of the nested one
+    // that partial used to emit. It travels through HttpContext.Items because
+    // Html.RenderPartial gives a partial its own copy of ViewData.
+    var bodyClass = Context.Items["BodyClass"] as string ?? "";
+
+    // 2.2.1 Timing Adjustable — must match Startup.cs AddSession IdleTimeout.
+    var sessionMinutes = Configuration.GetValue<int?>("SessionIdleTimeoutMinutes") ?? 30;
+}
+
 <!DOCTYPE html>
+<!-- WCAG 3.1.1 Language of Page -->
 <html lang="en">
 <head>
-    <title>Dalal & Broacha Stock Broking Pvt. Ltd. | Track your Investements</title>
+    <title>@documentTitle</title>
     <link rel="icon" type="image/x-icon" href="~/images/logo_short.png" /> <!-- Favicon icon -->
     <!-- Meta -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    @* WCAG 1.4.4 Resize Text — user-scalable=0 blocked pinch zoom. Never
+       suppress zoom; no maximum-scale, no user-scalable. *@
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="description" content="Client Portal" />
     <meta name="keywords" content="Dalal and Broacha,Client Portal" />
     <meta name="author" content="codedthemes" />
-    
+
     <!-- Google font-->
     @*<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">*@
     <!-- Required Fremwork -->
@@ -33,13 +55,22 @@
     <!-- Style.css -->
     <link href="~/css/jquery.mCustomScrollbar.css" rel="stylesheet" />
     <link href="~/css/export.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="~/css/style.css">
+    @* asp-append-version fingerprints the URL. Without it these files are
+       served with a stable URL and a warm browser cache keeps the
+       pre-remediation copy — which would reinstate the suppressed focus
+       outline (2.4.7) and the failing contrast values (1.4.3). The global
+       AppendVersionTagHelperInitializer does not help here: LinkTagHelper
+       only activates on links that already carry an asp- attribute. *@
+    <link rel="stylesheet" type="text/css" href="~/css/style.css" asp-append-version="true">
     <link rel="stylesheet" type="text/css" href="~/css/Allinone.css">
     <script type="text/javascript" src="~/js/jquery/jquery.min.js"></script>
     @* <script src="~/js/jquery/jquerylatest.min.js"></script> *@
-    <link href="~/css/IndexPage.css" rel="stylesheet" />
+    <link href="~/css/IndexPage.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/responsive.css" rel="stylesheet" />
-    
+
+    @* Accessibility layer. Also re-linked at the end of <body> so it stays
+       last in the cascade after @RenderSection("Styles"). *@
+    <link rel="stylesheet" type="text/css" href="~/css/accessibility.css" asp-append-version="true" />
 
     @* Use to pass App settings values to Javascript files as global variables*@
     @{
@@ -51,9 +82,38 @@
     }
     @* Use to pass App settings values to Javascript files as global variables*@
 </head>
-<body>
+<body class="@bodyClass">
+
+    @* WCAG 2.4.1 Bypass Blocks — first focusable element in the DOM,
+       off-screen until focused. *@
+    <a class="a11y-skip-link" href="#main-content">Skip to main content</a>
+
+    @* WCAG 4.1.3 Status Messages — the live regions must exist in the DOM,
+       empty, before any text is written into them. Screen readers announce
+       changes to an existing region, not the insertion of a populated one. *@
+    <div id="a11y-status" role="status" aria-live="polite" aria-atomic="true"></div>
+    <div id="a11y-alert" role="alert" aria-live="assertive" aria-atomic="true"></div>
 
     @RenderBody()
+
+    @* WCAG 2.2.1 Timing Adjustable — the session expires after
+       @sessionMinutes idle minutes. Warn a full minute out in a real dialog
+       that takes focus, and offer at least 10 extensions. *@
+    <div id="a11y-timeout-dialog" class="a11y-timeout-dialog" role="dialog" aria-modal="true"
+         aria-labelledby="a11y-timeout-title" aria-describedby="a11y-timeout-desc" aria-hidden="true">
+        <div class="a11y-timeout-dialog__panel">
+            <h2 id="a11y-timeout-title">Your session is about to expire</h2>
+            <p id="a11y-timeout-desc">
+                For your security you will be signed out in
+                <strong data-a11y-countdown>60 seconds</strong>.
+                Choose <strong>Stay signed in</strong> to continue working.
+            </p>
+            <div class="a11y-timeout-dialog__actions">
+                <button type="button" class="btn btn-danger" data-a11y-extend>Stay signed in</button>
+                <button type="button" class="btn btn-secondary" data-a11y-logout>Sign out now</button>
+            </div>
+        </div>
+    </div>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
 
@@ -98,5 +158,17 @@
 
     @RenderSection("Scripts", required: false)
     @RenderSection("Styles", required: false)
+
+    @* Accessibility layer, last in the cascade and last in the script order
+       so it can see everything the page and its plugins rendered. *@
+    <link rel="stylesheet" type="text/css" href="~/css/accessibility.css" asp-append-version="true" />
+    <script type="text/javascript">
+        window.a11ySessionConfig = {
+            timeoutMinutes: @sessionMinutes,
+            logoutUrl: '@Url.Action("LogOut", "Login")',
+            keepAliveUrl: '@Url.Action("KeepAlive", "Login")'
+        };
+    </script>
+    <script src="~/js/accessibility.js" asp-append-version="true"></script>
 </body>
 </html>

@@ -1,6 +1,12 @@
 ﻿@model ViewModel.Shared.familyMappingDisplay
 @using ViewModel.Login
 @using Newtonsoft.Json
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Family mapping";
+}
+
 @{ string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -17,7 +23,7 @@
 
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
         
         @{
 
@@ -61,10 +67,10 @@
                                 <table id="tblCurrFamDetails" class="table-redbordered mt-2 mb-2 w-100">
                                     <thead>
                                         <tr>
-                                            <th>Client Name</th>
-                                            <th>Family Name</th>
-                                            <th>Family Mobile</th>
-                                            <th>Family Email-Id</th>
+                                            <th scope="col">Client Name</th>
+                                            <th scope="col">Family Name</th>
+                                            <th scope="col">Family Mobile</th>
+                                            <th scope="col">Family Email-Id</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyCurrFamdetails">
@@ -141,7 +147,7 @@
                                         </div>
                                     </div>
                                     <div class="row justify-content-center mt-1">
-                                        <button id="btnCreateFam" type="submit" onclick="CreateFamily()" class="btn btn-success">Create Family</button>
+                                        <button type="submit" onclick="CreateFamily()" class="btn btn-success">Create Family</button>
                                     </div>
                                     <div id="divErrorList" class="row justify-content-center mt-1" style="display:none;">
                                         <div id="errorList" class="col-4 row justify-content-center alert alert-danger">
@@ -189,11 +195,11 @@
                                         <table id="tblChangeFamDetails" class="table-redbordered mt-2 mb-2 w-100">
                                             <thead>
                                                 <tr>
-                                                    <th colspan="2">Selected Family Details</th>
+                                                    <th colspan="2" scope="col">Selected Family Details</th>
                                                 </tr>
                                                 <tr>
-                                                    <th>Login Id</th>
-                                                    <th>Family Name</th>
+                                                    <th scope="col">Login Id</th>
+                                                    <th scope="col">Family Name</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tbodyChangeFamdetails">
@@ -279,8 +285,8 @@
                                     <table id="tblRMList" class="table-redbordered mt-2 mb-2 w-100">
                                         <thead>
                                             <tr>
-                                                <th>RM Name</th>
-                                                <th>Action</th>
+                                                <th scope="col">RM Name</th>
+                                                <th scope="col">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tbodyRmList">

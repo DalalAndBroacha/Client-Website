@@ -1,5 +1,12 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    var a11yPageTitle = "Brokerage MIS";
+    ViewData["Title"] = a11yPageTitle;
+}
+
 @{ string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -14,10 +21,10 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 
-        <div id="GlobalwaitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
-            <img src="~/images/loader.gif" width="64" height="64" />
+        <div id="GlobalwaitIn" class="a11y-loading-indicator" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="" />
         </div>
 
         <div style="position:unset; background-color:white; padding:0.5rem;">
@@ -54,6 +61,9 @@
 
                 Html.RenderPartial("_ReportHeaderComponent");
                 ViewData.Clear();
+                // WCAG 2.4.2 Page Titled — Clear() also removes ViewData["Title"],
+                // which Views/Shared/_Layout.cshtml renders into <title>.
+                ViewData["Title"] = a11yPageTitle;
             }
 
             <div id="div_data" style="display:none;">
@@ -72,23 +82,26 @@
 
                     Html.RenderPartial("_ReportHeaderComponent");
                     ViewData.Clear();
+                // WCAG 2.4.2 Page Titled — Clear() also removes ViewData["Title"],
+                // which Views/Shared/_Layout.cshtml renders into <title>.
+                ViewData["Title"] = a11yPageTitle;
                 } *@
 
                 <table class="table table-hover table-redbordered mt-2">
                     <thead>
                         <tr>
-                            <th rowspan="2" style="vertical-align:middle">Exchange</th>
-                            <th colspan="2">For the Day</th>
-                            <th colspan="2">For the Month</th>
-                            <th colspan="2">For the Year</th>
+                            <th rowspan="2" style="vertical-align:middle" scope="col">Exchange</th>
+                            <th colspan="2" scope="col">For the Day</th>
+                            <th colspan="2" scope="col">For the Month</th>
+                            <th colspan="2" scope="col">For the Year</th>
                         </tr>
                         <tr>
-                            <th>Volume</th>
-                            <th>Brokerage</th>
-                            <th>Volume</th>
-                            <th>Brokerage</th>
-                            <th>Volume</th>
-                            <th>Brokerage</th>
+                            <th scope="col">Volume</th>
+                            <th scope="col">Brokerage</th>
+                            <th scope="col">Volume</th>
+                            <th scope="col">Brokerage</th>
+                            <th scope="col">Volume</th>
+                            <th scope="col">Brokerage</th>
                         </tr>
                     </thead>
                     <tbody id="tbodyExchange">
@@ -98,18 +111,18 @@
                 <table class="table table-hover table-redbordered mt-2">
                     <thead>
                         <tr>
-                            <th rowspan="2" style="vertical-align:middle">Branch</th>
-                            <th colspan="2">For the Day</th>
-                            <th colspan="2">For the Month</th>
-                            <th colspan="2">For the Year</th>
+                            <th rowspan="2" style="vertical-align:middle" scope="col">Branch</th>
+                            <th colspan="2" scope="col">For the Day</th>
+                            <th colspan="2" scope="col">For the Month</th>
+                            <th colspan="2" scope="col">For the Year</th>
                         </tr>
                         <tr>
-                            <th>Volume</th>
-                            <th>Brokerage</th>
-                            <th>Volume</th>
-                            <th>Brokerage</th>
-                            <th>Volume</th>
-                            <th>Brokerage</th>
+                            <th scope="col">Volume</th>
+                            <th scope="col">Brokerage</th>
+                            <th scope="col">Volume</th>
+                            <th scope="col">Brokerage</th>
+                            <th scope="col">Volume</th>
+                            <th scope="col">Brokerage</th>
                         </tr>
                     </thead>
                     <tbody id="tbodyBranch">

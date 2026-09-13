@@ -2,6 +2,13 @@
 
 @using ViewModel.Login
 @using Newtonsoft.Json
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    var a11yPageTitle = "SIP report (test format)";
+    ViewData["Title"] = a11yPageTitle;
+}
+
 @{ string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -15,9 +22,9 @@
 
 
 <div class="wrapper">
-    <div class="content-wrapper">
-        <div id="waitInSIP" style="display:none;width:69px;height:89px;border:1px solid black;position:absolute;top:35%;left:57%;padding:2px;">
-            <img src="~/images/loader.gif" width="64" height="64" />
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
+        <div id="waitInSIP" class="a11y-loading-indicator" style="display:none;width:69px;height:89px;border:1px solid black;position:absolute;top:35%;left:57%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="" />
             <br>Loading..
         </div>
 
@@ -38,6 +45,9 @@
 
                 Html.RenderPartial("_ReportHeaderCompact");
                 ViewData.Clear();
+                // WCAG 2.4.2 Page Titled — Clear() also removes ViewData["Title"],
+                // which Views/Shared/_Layout.cshtml renders into <title>.
+                ViewData["Title"] = a11yPageTitle;
             }
 
             <input type="text" id="txtDetailsFlag" hidden>
@@ -46,7 +56,10 @@
             <div class="row" style="padding:5px;">
                 <div class="col-xs-8 col-sm-4">
                     <div class="card d-block">
-                        <div id="Card_All_SIP" class="card-body GrandTotalRow" onclick="ShowTableData('All')" style="cursor:pointer">
+                        @* 2.1.1 Keyboard / 4.1.2 Name, Role, Value — a <div onclick> is not
+                         focusable and announces no role. accessibility.js binds
+                         Enter and Space to anything carrying role="button". *@
+                        <div id="Card_All_SIP" class="card-body GrandTotalRow" onclick="ShowTableData('All')" style="cursor:pointer" role="button" tabindex="0" aria-label="Show all SIPs">
                             <div class="text-center">
                                 <h3>Total</h3>
                             </div>
@@ -62,7 +75,10 @@
 
                 <div class="col-xs-8 col-sm-4">
                     <div class="card d-block">
-                        <div id="Card_Recent_SIP" class="card-body" onclick="ShowTableData('Recent')" style="cursor:pointer">
+                        @* 2.1.1 Keyboard / 4.1.2 Name, Role, Value — a <div onclick> is not
+                         focusable and announces no role. accessibility.js binds
+                         Enter and Space to anything carrying role="button". *@
+                        <div id="Card_Recent_SIP" class="card-body" onclick="ShowTableData('Recent')" style="cursor:pointer" role="button" tabindex="0" aria-label="Show recent SIPs">
                             <div class="text-center">
                                 <h3>Recent</h3>
                             </div>
@@ -78,7 +94,10 @@
 
                 <div class="col-xs-8 col-sm-4">
                     <div class="card d-block">
-                        <div id="Card_Tert_SIP" class="card-body" onclick="ShowTableData('Terminating')" style="cursor:pointer">
+                        @* 2.1.1 Keyboard / 4.1.2 Name, Role, Value — a <div onclick> is not
+                         focusable and announces no role. accessibility.js binds
+                         Enter and Space to anything carrying role="button". *@
+                        <div id="Card_Tert_SIP" class="card-body" onclick="ShowTableData('Terminating')" style="cursor:pointer" role="button" tabindex="0" aria-label="Show terminating SIPs">
                             <div class="text-center">
                                 <h3>Terminanting</h3>
                             </div>
@@ -97,12 +116,12 @@
                 <table id="All_SIP" class="myCstDatatable table table-hover dt-responsive nowrap w-100">
                     <thead class="GrandTotalRow">
                         <tr>
-                            <th>Family Name</th>
-                            <th>Client Name</th>
-                            <th><p style="font-size:14px;">Scheme Name<p><p class="tableDataLowerCol">Folio Number</p></th>
-                            <th>Period</th>
-                            <th><p style="font-size:14px;">Amount<p><p class="tableDataLowerCol">Frequncy</p></th>
-                            <th><p style="font-size:14px;">Bank Name<p><p style="font-size:14px;">Account Number</p></th>
+                            <th scope="col">Family Name</th>
+                            <th scope="col">Client Name</th>
+                            <th scope="col"><p style="font-size:14px;">Scheme Name<p><p class="tableDataLowerCol">Folio Number</p></th>
+                            <th scope="col">Period</th>
+                            <th scope="col"><p style="font-size:14px;">Amount<p><p class="tableDataLowerCol">Frequncy</p></th>
+                            <th scope="col"><p style="font-size:14px;">Bank Name<p><p style="font-size:14px;">Account Number</p></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -113,12 +132,12 @@
                 <table id="Recent_SIP" class="myCstDatatable table table-hover dt-responsive nowrap w-100">
                     <thead class="GrandTotalRow">
                         <tr>
-                            <th>Family Name</th>
-                            <th>Client Name</th>
-                            <th><p style="font-size:14px;">Scheme Name<p><p class="tableDataLowerCol">Folio Number</p></th>
-                            <th>Period</th>
-                            <th><p style="font-size:14px;">Amount<p><p class="tableDataLowerCol">Frequncy</p></th>
-                            <th><p style="font-size:14px;">Bank Name<p><p style="font-size:14px;">Account Number</p></th>
+                            <th scope="col">Family Name</th>
+                            <th scope="col">Client Name</th>
+                            <th scope="col"><p style="font-size:14px;">Scheme Name<p><p class="tableDataLowerCol">Folio Number</p></th>
+                            <th scope="col">Period</th>
+                            <th scope="col"><p style="font-size:14px;">Amount<p><p class="tableDataLowerCol">Frequncy</p></th>
+                            <th scope="col"><p style="font-size:14px;">Bank Name<p><p style="font-size:14px;">Account Number</p></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -129,12 +148,12 @@
                 <table id="Terminating_SIP" class="myCstDatatable table table-hover dt-responsive nowrap w-100">
                     <thead class="GrandTotalRow">
                         <tr>
-                            <th>Family Name</th>
-                            <th>Client Name</th>
-                            <th><p style="font-size:14px;">Scheme Name<p><p class="tableDataLowerCol">Folio Number</p></th>
-                            <th>Period</th>
-                            <th><p style="font-size:14px;">Amount<p><p class="tableDataLowerCol">Frequncy</p></th>
-                            <th><p style="font-size:14px;">Bank Name<p><p style="font-size:14px;">Account Number</p></th>
+                            <th scope="col">Family Name</th>
+                            <th scope="col">Client Name</th>
+                            <th scope="col"><p style="font-size:14px;">Scheme Name<p><p class="tableDataLowerCol">Folio Number</p></th>
+                            <th scope="col">Period</th>
+                            <th scope="col"><p style="font-size:14px;">Amount<p><p class="tableDataLowerCol">Frequncy</p></th>
+                            <th scope="col"><p style="font-size:14px;">Bank Name<p><p style="font-size:14px;">Account Number</p></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -200,7 +219,7 @@
                             return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p>' + formatDate(src.End_Date) + '</p>';
                         }
                         else {
-                            return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p style="color:red;" title="Expiring shortly">' + formatDate(src.End_Date) + '</p>';
+                            return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p style="color: #b3241a;" title="Expiring shortly">' + formatDate(src.End_Date) + '</p>';
                         }
                     }
                 },
@@ -262,7 +281,7 @@
                             return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p>' + formatDate(src.End_Date) + '</p>';
                         }
                         else {
-                            return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p style="color:red;" title="Expiring shortly">' + formatDate(src.End_Date) + '</p>';
+                            return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p style="color: #b3241a;" title="Expiring shortly">' + formatDate(src.End_Date) + '</p>';
                         }
                     }
                 },
@@ -320,7 +339,7 @@
                             return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p>' + formatDate(src.End_Date) + '</p>';
                         }
                         else {
-                            return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p style="color:red;" title="Expiring shortly">' + formatDate(src.End_Date) + '</p>';
+                            return '<p>' + formatDate(src.Start_Date) + '</p>' + '<p style="color: #b3241a;" title="Expiring shortly">' + formatDate(src.End_Date) + '</p>';
                         }
                     }
                 },

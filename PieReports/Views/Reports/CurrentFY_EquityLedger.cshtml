@@ -1,6 +1,13 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    var a11yPageTitle = "Equity ledger, current financial year";
+    ViewData["Title"] = a11yPageTitle;
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -14,7 +21,7 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
         <div class="p-1">
             <div class="card">
                 <div class="card-header">
@@ -51,18 +58,21 @@
 
                             //Html.RenderPartial("_ReportHeaderCompact");
                             ViewData.Clear();
+                // WCAG 2.4.2 Page Titled — Clear() also removes ViewData["Title"],
+                // which Views/Shared/_Layout.cshtml renders into <title>.
+                ViewData["Title"] = a11yPageTitle;
                         }
                         <div class="mt-2">
                             <table class="table w-100 table-bordered table-hover" id="tableCurrFYEqLedger">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Exchange</th>
-                                        <th>Narration</th>
-                                        <th>Doc. No.</th>
-                                        <th>Debit</th>
-                                        <th>Credit</th>
-                                        <th>Balance</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Exchange</th>
+                                        <th scope="col">Narration</th>
+                                        <th scope="col">Doc. No.</th>
+                                        <th scope="col">Debit</th>
+                                        <th scope="col">Credit</th>
+                                        <th scope="col">Balance</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbodytableCurrFYEqLedger">

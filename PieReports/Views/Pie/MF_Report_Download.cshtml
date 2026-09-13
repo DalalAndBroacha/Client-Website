@@ -1,6 +1,12 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Mutual fund report download";
+}
+
+@{
 	string dtoq = TempData["myDeshbordData"].ToString();
 	TempData.Keep("myDeshbordData");
 	Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -17,11 +23,11 @@
 
 
 <div class="wrapper">
-	<div class="content-wrapper">
+	<div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 
 		@*Loader*@
-		<div id="waitInMINT" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
-			<img src="~/images/loader.gif" width="64" height="64" />
+		<div id="waitInMINT" class="a11y-loading-indicator" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+			<img src="~/images/loader.gif" width="64" height="64" alt="" />
 		</div>
 		@*Loader*@
 
@@ -31,20 +37,20 @@
 				<div class="offset-2"></div>
 				<div class="col-8 d-flex justify-content-center">
 					<p style="text-align:center">
-						<b id="lblReport_Name">MF Reports Download</b>
+						<b id="lblReport_Name" role="heading" aria-level="1">MF Reports Download</b>
 					</p>
 				</div>
 			</div>
 
 			@* <div class="row justify-content-center"><h1>MF Report Download</h1></div> *@
-			<a hidden id="FpDwn" target='_blank' href="#"></a>
+			<a hidden id="FpDwn" target='_blank' href="#" role="button"></a>
 			<div class="row justify-content-center">
 				<div class="col-4">
-					<label class="m-2">Client</label>
+					<label class="m-2" for="ddlClientList">Client</label>
 					<select class="form-control" name="ddlClientList" id="ddlClientList" style="border: 1px solid #ced4da" disabled></select>
 				</div>
 				<div class="col-4">
-					<label class="m-2">Report</label>
+					<label class="m-2" for="ddlReportList">Report</label>
 					<select class="form-control" name="ddlReportList" id="ddlReportList" style="border: 1px solid #ced4da"></select>
 				</div>
 			</div>

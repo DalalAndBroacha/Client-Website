@@ -1,6 +1,13 @@
 ﻿@using Newtonsoft.Json
 @using ViewModel.Login
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    var a11yPageTitle = "Survey data export";
+    ViewData["Title"] = a11yPageTitle;
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -16,10 +23,10 @@
 
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 
-        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
-            <img src="~/images/loader.gif" width="64" height="64" />
+        <div id="waitIn" class="a11y-loading-indicator" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="" />
         </div>
 
         @{
@@ -37,6 +44,9 @@
 
             Html.RenderPartial("_ReportHeaderCompact");
             ViewData.Clear();
+                // WCAG 2.4.2 Page Titled — Clear() also removes ViewData["Title"],
+                // which Views/Shared/_Layout.cshtml renders into <title>.
+                ViewData["Title"] = a11yPageTitle;
 
         }
 
@@ -55,7 +65,7 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="remarksModal" tabindex="-1" role="dialog" aria-labelledby="FamTitle" aria-hidden="true">
+        <div class="modal fade" id="remarksModal" tabindex="-1" role="dialog" aria-labelledby="FamTitle" aria-hidden="true" aria-modal="true">
             <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
                 <div class="modal-content">
                     <div class="modal-header">

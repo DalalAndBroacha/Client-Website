@@ -2,6 +2,12 @@
 
 @using ViewModel.Login
 @using Newtonsoft.Json
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Dividend and interest report";
+}
+
 @{ string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -31,10 +37,13 @@
         background-color: #dddddd;
     }
 </style>
-<div id="wait" style="display:none;width:69px;height:89px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;"><img src="~/images/loader.gif" width="64" height="64" /><br>Loading..</div>
-<div class="content-wrapper" id="DividendReport" @*style="margin-top: 74px;"*@>
+<div id="wait" class="a11y-loading-indicator" style="display:none;width:69px;height:89px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;"><img src="~/images/loader.gif" width="64" height="64" alt="" /><br>Loading..</div>
+<div class="content-wrapper" id="DividendReport" role="main" tabindex="-1" @*style="margin-top: 74px;"*@>
     <nav class="navbar navbar-expand mb-mtop0" style="margin-top:60px;">
-        <h3 class="main-title1 mb-mleft0" style="margin-left:27px;margin-top:7px;"> Dividend Report </h3>
+        @* 2.4.6 Headings and Labels — the page title was an <h3>, which
+           left the page with no top-level heading. Level is hierarchy,
+           not size; the class still controls the appearance. *@
+        <h1 class="main-title1 mb-mleft0" style="margin-left:27px;margin-top:7px;"> Dividend Report </h1>
         @*<button id="btndivindendExport" style="float: right;width: 35px; position: absolute; right: 175px;">
             <img alt="New" title="Excel" src="~/images/ExportExcel.png" style="width: 27px;background: white;">
         </button>
@@ -45,61 +54,41 @@
 
     <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown" id="DividendAddtoFavourite">
-            <a class="nav-link" onclick="DividendUpdateFev()" data-toggle="dropdown" href="#" aria-expanded="true">
-                <span><img src="~/images/AddtoFavourite.png" class="img-responsive7" style="width:27px;" /></span>
+            <a class="nav-link" onclick="DividendUpdateFev()" data-toggle="dropdown" href="#" aria-expanded="false" role="button">
+                <span><img src="~/images/AddtoFavourite.png" class="img-responsive7" style="width:27px;" alt="Add this report to favourites" /></span>
             </a>
 
         </li>
         <li class="nav-item dropdown" id="DividendRemoveFavourite">
-            <a class="nav-link" onclick="DividendDeleteFev()" data-toggle="dropdown" href="#" aria-expanded="true">
-                <span><img src="~/images/RemoveFavourite.png" id="removefev" style="width:27px;" /></span>
+            <a class="nav-link" onclick="DividendDeleteFev()" data-toggle="dropdown" href="#" aria-expanded="false" role="button">
+                <span><img src="~/images/RemoveFavourite.png" id="removefev" style="width:27px;" alt="Remove this report from favourites" /></span>
             </a>
 
         </li>
         <li class="nav-item dropdown" id="liRemoveFavourite">
-            <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
-                <span><img src="~/images/ShareIcon1.png"  class="img-responsive7" id="removefev" style="width:27px;" /></span>
+            <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="false" role="button">
+                <span><img src="~/images/ShareIcon1.png"  class="img-responsive7" style="width:27px;" alt="Share this report" /></span>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
                 <div class="form-group-dashboard">
 
-                    <p id="btndivindendExport" name="loginname" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
-                        <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
-                            ExporttoExcel
-                        </a>
-                    </p>
+                    <button type="button" id="btndivindendExport" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px; font-family: inherit; font-size: 15px;">Export to Excel</button>
                 </div>
                 <div class="dropdown-divider"></div>
                 <div class="form-group-dashboard">
-                    <p id="btnExportDividentPdf" name="Changepassword" data-toggle="modal" class="dropdown-item">
-                        <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
-                            ExporttoPdf
-                        </a>
-                    </p>
+                    <button type="button" id="btnExportDividentPdf" data-toggle="modal" class="dropdown-item" style="font-family: inherit; font-size: 15px;">Export to PDF</button>
                 </div>
                 <div class="dropdown-divider"></div>
                 <div class="form-group-dashboard">
-                    <p onclick="print('#DividendReport')" name="trading" data-toggle="modal" class="dropdown-item">
-                        <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
-                            Print
-                        </a>
-                    </p>
+                    <button type="button" onclick="print('#DividendReport')" data-toggle="modal" class="dropdown-item" style="font-family: inherit; font-size: 15px;">Print this report</button>
                 </div>
                 <div class="dropdown-divider"></div>
                 @*<div class="form-group-dashboard">
-                    <p name="trading" data-toggle="modal" class="dropdown-item">
-                        <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
-                            EmailExcel
-                        </a>
-                    </p>
+                    <button type="button" data-toggle="modal" class="dropdown-item" style="font-family: inherit; font-size: 15px;">EmailExcel</button>
                 </div>
                 <div class="dropdown-divider"></div>
                 <div class="form-group-dashboard">
-                    <p name="trading" data-toggle="modal" class="dropdown-item">
-                        <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
-                            EmailPdf
-                        </a>
-                    </p>
+                    <button type="button" data-toggle="modal" class="dropdown-item" style="font-family: inherit; font-size: 15px;">EmailPdf</button>
                 </div>
                 <div class="dropdown-divider"></div>*@
             </div>
@@ -116,7 +105,7 @@
                         <div class="card-body main-table-card">
                             <div id="example-table">
                             </div>
-                            <button type="button" class="btn btn-danger" id="myModal1"><img src="~/images/Search.png" style="width:20px;margin-right: 10px;" />Search Scrip</button><br />
+                            <button type="button" class="btn btn-danger" id="myModal1"><img src="~/images/Search.png" style="width:20px;margin-right: 10px;" alt="" />Search Scrip</button><br />
                             <div id="dataLoadVettingDetails">
 
                             </div>
@@ -129,7 +118,7 @@
 </div>
 
 <div class="container" id="ExpiryDividend">
-    <div class="modal fade" id="myModal11" role="dialog">
+    <div class="modal fade" id="myModal11" role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="myModal11-title">
         <div class="modal-dialog">
             <!-- Modal content-->
             <div class="modal-content modalcontent_panel" style="width: 1020px;right:250px;">
@@ -137,57 +126,37 @@
             <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for Scrip names.." title="Type in a name">
         </div>*@
                 <div class="modal-header">
-                    <h4 class="modal-title mb-mleft0" style="margin-left: 20px; margin-top: 10px;">Dividend Report</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title mb-mleft0" style="margin-left: 20px; margin-top: 10px;" id="myModal11-title">Dividend Report</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close dialog"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
                     <p class="mb-mleft0" style="margin-left:22px;"><span class="flex1">FinYear: <b id="pFinYear"></b></span> <span class="flex1" style="float:right;margin-right:35px;"> Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span></p>
                     <ul class="navbar-nav ml-auto" style=" float:right;margin-top:-35px;">
 
                         <li class="nav-item dropdown" id="liRemoveFavouritePopup">
-                            <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="true">
-                                <span><img src="~/images/ShareIcon1.png" class="img-responsive7" id="removefev" style="width:27px;" /></span>
+                            <a class="nav-link" onclick="" data-toggle="dropdown" href="#" aria-expanded="false" role="button">
+                                <span><img src="~/images/ShareIcon1.png" class="img-responsive7" style="width:27px;" alt="Share this report" /></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
                                 <div class="form-group-dashboard">
 
-                                    <p id="btndivindendPopupExport" name="loginname" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px;">
-                                        <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
-                                            ExporttoExcel
-                                        </a>
-                                    </p>
+                                    <button type="button" id="btndivindendPopupExport" class="dropdown-item" style="background-color:#ffb3b3;font-size:12px; font-family: inherit; font-size: 15px;">Export to Excel</button>
                                 </div>
                                 <div class="dropdown-divider"></div>
                                 <div class="form-group-dashboard">
-                                    <p id="btnExportDividentPopupPdf" name="Changepassword" data-toggle="modal"  class="dropdown-item">
-                                        <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
-                                            ExporttoPdf
-                                        </a>
-                                    </p>
+                                    <button type="button" id="btnExportDividentPopupPdf" data-toggle="modal"  class="dropdown-item" style="font-family: inherit; font-size: 15px;">Export to PDF</button>
                                 </div>
                                 <div class="dropdown-divider"></div>
                                 <div class="form-group-dashboard">
-                                    <p onclick="print('#ExpiryDividend')" name="trading" data-toggle="modal" class="dropdown-item">
-                                        <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
-                                            Print
-                                        </a>
-                                    </p>
+                                    <button type="button" onclick="print('#ExpiryDividend')" data-toggle="modal" class="dropdown-item" style="font-family: inherit; font-size: 15px;">Print this report</button>
                                 </div>
                                 <div class="dropdown-divider"></div>
                                 @*<div class="form-group-dashboard">
-                                    <p name="trading" data-toggle="modal" class="dropdown-item">
-                                        <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
-                                            EmailExcel
-                                        </a>
-                                    </p>
+                                    <button type="button" data-toggle="modal" class="dropdown-item" style="font-family: inherit; font-size: 15px;">EmailExcel</button>
                                 </div>
                                 <div class="dropdown-divider"></div>
                                 <div class="form-group-dashboard">
-                                    <p name="trading" data-toggle="modal" class="dropdown-item">
-                                        <a href="#" onclick="" style="font-family: inherit; font-size: 15px;">
-                                            EmailPdf
-                                        </a>
-                                    </p>
+                                    <button type="button" data-toggle="modal" class="dropdown-item" style="font-family: inherit; font-size: 15px;">EmailPdf</button>
                                 </div>
                                 <div class="dropdown-divider"></div>*@
                             </div>
@@ -199,18 +168,19 @@
                                 <h6>Search by Scrip Name</h6>
                             </td>
                             <td>
+                                <label for="myInput" class="a11y-visually-hidden">Search scrip</label>
                                 <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search Scrip" title="Type in a name">
                             </td>
                         </tr>
                     </table>
                     <table class='table table_panel' id="myTable" style="border-collapse: collapse; table-layout: fixed;">
                         <tr class="header">
-                            <th><p class="tableheading1"><b>Family</b></p></th>
-                            <th><p class="tableheading1"><b>Client</b></p></th>
-                            <th><p class="tableheading"><b>Date</b></p></th>
-                            <th><p class="tableheading"><b>ISIN</b></p></th>
-                            <th class="divicol3"><p class="tableheading1"><b>Scrip</b></p></th>
-                            <th><p class="tableheading2"><b>Amount</b></p></th>
+                            <th scope="col"><p class="tableheading1"><b>Family</b></p></th>
+                            <th scope="col"><p class="tableheading1"><b>Client</b></p></th>
+                            <th scope="col"><p class="tableheading"><b>Date</b></p></th>
+                            <th scope="col"><p class="tableheading"><b>ISIN</b></p></th>
+                            <th class="divicol3" scope="col"><p class="tableheading1"><b>Scrip</b></p></th>
+                            <th scope="col"><p class="tableheading2"><b>Amount</b></p></th>
                         </tr>
                         <tbody id="trsear">
                         </tbody>

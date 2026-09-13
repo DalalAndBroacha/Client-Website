@@ -1,5 +1,12 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    var a11yPageTitle = "Update your profile";
+    ViewData["Title"] = a11yPageTitle;
+}
+
 @{ string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -17,7 +24,7 @@
 
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
         <div style="position:unset; background-color:white; padding:0.5rem;">
             @{
                 ViewBag.ReportName = "Profile Update";
@@ -34,6 +41,9 @@
 
                 Html.RenderPartial("_ReportHeaderCompact");
                 ViewData.Clear();
+                // WCAG 2.4.2 Page Titled — Clear() also removes ViewData["Title"],
+                // which Views/Shared/_Layout.cshtml renders into <title>.
+                ViewData["Title"] = a11yPageTitle;
             }
             <div class="row justify-content-center mt-2">
                 <div class="card col-6" id="dsp_div" style="display:none;">
@@ -68,7 +78,7 @@
                                     <p style="font-size:14px; font-weight:bold;">Change Password?</p>
                                 </div>
                                 <div class="col-4">
-                                    <input type="checkbox" id="PassTog" name="PassTog" data-toggle="toggle" data-size="sm" data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No">
+                                    <input type="checkbox" id="PassTog" name="PassTog" data-toggle="toggle" data-size="sm" data-style="RedLabelround_tog" data-onstyle="success" data-offstyle="danger" data-on="Yes" data-off="No" aria-label="Change the password">
                                 </div>
                             </div>
                             <div class="form-row">

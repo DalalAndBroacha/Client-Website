@@ -1,6 +1,12 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Developer test page";
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -9,12 +15,19 @@
 
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
+        @* 1.3.1 / 2.4.6 — the design shows no page name, so the page
+           heading is provided for assistive technology only and is kept
+           in step with the <title> set at the top of this view. *@
+        <h1 class="a11y-visually-hidden">@ViewData["Title"]</h1>
         <div style="position:unset; background-color:white; padding:0.5rem;">
             <div class="d-flex justify-content-center">
                 <div class="col-9" id="textAreaContent">
+                    <label for="message1" class="a11y-visually-hidden">Message 1</label>
                     <textarea id="message1" name="message"></textarea>
+                    <label for="message2" class="a11y-visually-hidden">Message 2</label>
                     <textarea id="message2" name="message"></textarea>
+                    <label for="message3" class="a11y-visually-hidden">Message 3</label>
                     <textarea id="message3" name="message"></textarea>
                 </div>
                 <div class="col-2">

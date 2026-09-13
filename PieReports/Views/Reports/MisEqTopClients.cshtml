@@ -1,6 +1,12 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Top equity clients MIS";
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -18,7 +24,7 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
         @{
 
             ViewBag.ReportName = "Top Clients AUMwise";
@@ -27,7 +33,7 @@
 
             <partial name="_ReportHeader" />
         }
-        <div id="GlobalwaitIn" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+        <div id="GlobalwaitIn" class="a11y-loading-indicator" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
             <img src="~/images/loader.gif" width="64" height="64" alt="Loading..." />
         </div>
 
@@ -65,11 +71,12 @@
                         <input type="number" placeholder="From" id="inpFrom" min="0"
                                class="form-control inpPositiveNumber" style="max-width:110px;" />
 
+                        <label for="inpTo" class="a11y-visually-hidden">To</label>
                         <input type="number" placeholder="To" id="inpTo" min="0" 
                             class="ml-1 form-control inpPositiveNumber" style="max-width:110px;"/>
                         
                         <div class="ml-1 mt-2 row justify-content-center parentInfoElement">
-                            <i class="fas fa-question-circle fa-lg White_Red_Icon "></i>
+                            <i class="fas fa-question-circle fa-lg White_Red_Icon " aria-hidden="true"></i>
                             <p class="ml-1 mb-2 hiddenInfoElement">Incase you need complete data set both to zero.</p>
                         </div>
                     </div>
@@ -91,12 +98,12 @@
                         <div class="col-2">
                             <div class="d-flex justify-content-end mt-1 mb-1">
 
-                                <button title="Export to Excel" id="btnExcel" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                                    <i class="far fa-file-excel" style="color: white; padding:0; width:30px;"></i>
+                                <button title="Export to Excel" id="btnExcel" aria-label="Export this report to Excel" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                                    <i class="far fa-file-excel" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                                 </button>
 
-                                <button title="Email" id="btnEmail" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
-                                    <i class="fas fa-envelope" style="color: white; padding:0; width:30px;"></i>
+                                <button title="Email" id="btnEmail" aria-label="Email this report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                                    <i class="fas fa-envelope" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                                 </button>
 
                             </div>
@@ -105,12 +112,12 @@
                     <table id="tblData" class="table table-bordered w-100">
                         <thead>
                             <tr>
-                                <th>Client</th>
-                                <th>Account Code</th>
-                                <th>Holding Value</th>
-                                <th>Last Trade Date</th>
-                                <th>Branch</th>
-                                <th>RM</th>
+                                <th scope="col">Client</th>
+                                <th scope="col">Account Code</th>
+                                <th scope="col">Holding Value</th>
+                                <th scope="col">Last Trade Date</th>
+                                <th scope="col">Branch</th>
+                                <th scope="col">RM</th>
                             </tr>
                         </thead>
                         <tbody id="tbodyData">

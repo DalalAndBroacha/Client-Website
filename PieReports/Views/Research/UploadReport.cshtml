@@ -2,6 +2,12 @@
 @using Newtonsoft.Json
 @model ViewModel.Shared.Upload_Research_Report
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Upload research report";
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -18,9 +24,9 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 
-        <div id="GlobalwaitIn" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+        <div id="GlobalwaitIn" class="a11y-loading-indicator" style="display:none; width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
             <img src="~/images/loader.gif" width="64" height="64" alt="Loading..."/>
         </div>
         @{
@@ -36,7 +42,7 @@
                 <div class="row mb-2">
                     <div class="input-group mb-1 col-6">
                         <div class="input-group-prepend">
-                            <label class="input-group-text DnB-RedLabel">Report Title</label>
+                            <label class="input-group-text DnB-RedLabel" for="RepoTitle">Report Title</label>
                         </div>
                         <input type="text" asp-for="RepoTitle" id="RepoTitle" class="form-control" maxlength="200" />
                         <span asp-validation-for="RepoTitle" class="text-danger"></span>
@@ -44,7 +50,7 @@
 
                     <div class="input-group mb-1 ml-3 col-3">
                         <div class="input-group-prepend">
-                            <label class="input-group-text DnB-RedLabel">Category</label>
+                            <label class="input-group-text DnB-RedLabel" for="ddlCatList">Category</label>
                         </div>
                         <select class="form-control" asp-for="category" style="border: 1px solid #ced4da; height:38px;" id="ddlCatList">
 
@@ -68,14 +74,15 @@
                             </colgroup>
                             <thead>
                                 <tr>
-                                    <th>Script</th>
-                                    <th>Recommendation</th>
-                                    <th>Target Price</th>
+                                    <th scope="col">Script</th>
+                                    <th scope="col">Recommendation</th>
+                                    <th scope="col">Target Price</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>
+                                        <label for="ddlScript" class="a11y-visually-hidden">Scrip</label>
                                         <select id="ddlScript" asp-for="scrip_code">
                                             <option value="0"></option>
                                             @foreach (var key in Model.script_data)
@@ -86,6 +93,10 @@
                                     </td>
 
                                     <td>
+                                        @* 3.3.2 Labels or Instructions — the column header names
+                                           the field visually but does not name the control, so the
+                                           label is supplied and visually hidden. *@
+                                        <label for="ddlRecoList" class="a11y-visually-hidden">Recommendation</label>
                                         <select class="form-control" asp-for="Recomandation" style="border: 1px solid #ced4da; height:38px;" id="ddlRecoList">
                                             @foreach (var key in Model.reco_data)
                                             {
@@ -94,6 +105,7 @@
                                     </select>
                                     </td>
                                     <td>
+                                        <label for="inptrgtPrice" class="a11y-visually-hidden">Target price</label>
                                         <input type="number" id="inptrgtPrice" value="0" asp-for=targetPrice class="form-control" />
                                     </td>
                                 
@@ -141,13 +153,13 @@
                 <table id="tblReportsData" class="table table-bordered w-100">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Report Title</th>
-                            <th>Category</th>
-                            <th>Recommendation</th>
-                            <th>Target</th>
-                            <th>URL</th>
-                            <th>Action</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Report Title</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Recommendation</th>
+                            <th scope="col">Target</th>
+                            <th scope="col">URL</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -159,17 +171,17 @@
                                 <td><input type="hidden" name="scrip_id" value="@key.Scrip_code" />@key.Category</td>
                                 <td class="paraTextAlignCenter"><input type="hidden" name="dsp_web_flag" value="@key.Display_on_web" />@key.Recommendation</td>
                                 <td class="paraTextAlignRight">@key.Price_target</td>
-                                <td class="paraTextAlignCenter"><a href="@key.URL" target="_blank">@key.URL</a></td>
+                                <td class="paraTextAlignCenter"><a href="@key.URL" target="_blank" rel="noopener noreferrer">Open report<span class="a11y-visually-hidden">: @key.Report_Title (opens in a new tab)</span></a></td>
                                 <td class="text-center" style="width:101px;">
                                     <input type="text" value="@key.id" hidden />
                                     @if (key.MobNotifyBtn == "Y")
                                     {
-                                        <button class="btn Push_Notification" type="button" title="Push Mobile Notification">
-                                            <i class="fas fa-mobile-alt fa-lg White_Red_Icon"></i></button>
+                                        <button class="btn Push_Notification" type="button" title="Push Mobile Notification"
+                                                aria-label="Push a mobile notification for @key.Report_Title">
+                                            <i class="fas fa-mobile-alt fa-lg White_Red_Icon" aria-hidden="true"></i></button>
                                     }
-                                    <button class="btn Edit_rec" type="button" title="Edit"><i class="fas fa-edit fa-lg White_Red_Icon"></i></button>
-                                    <button class="btn Del_rec" type="button" title="Delete"><i class="fas fa-trash-alt fa-lg White_Red_Icon"></i></button>
-                                    <i class=""></i>
+                                    <button class="btn Edit_rec" type="button" title="Edit" aria-label="Edit @key.Report_Title"><i class="fas fa-edit fa-lg White_Red_Icon" aria-hidden="true"></i></button>
+                                    <button class="btn Del_rec" type="button" title="Delete" aria-label="Delete @key.Report_Title"><i class="fas fa-trash-alt fa-lg White_Red_Icon" aria-hidden="true"></i></button>
                                 </td>
                             </tr>
                         }
@@ -180,11 +192,11 @@
         </div>
 
         <!-- Edit Modal -->
-         <div class="modal fade" id="edit_report" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+         <div class="modal fade" id="edit_report" data-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="edit_report-title">
             <div class="modal-dialog">
                 <div class="modal-content" style="width:70%; height:60vh; margin: auto">
                     <div class="modal-header">
-                        <h3>Update Report</h3>
+                        <h3 id="edit_report-title">Update Report</h3>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -196,7 +208,7 @@
                             <div class="row mb-2">
                                 <div class="input-group mb-1 col-6">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text DnB-RedLabel">Report Title</label>
+                                        <label class="input-group-text DnB-RedLabel" for="RepoTitleUpdate">Report Title</label>
                                     </div>
                                     <input type="text" asp-for="RepoTitle" id="RepoTitleUpdate" class="form-control" maxlength="200" />
                                     <span asp-validation-for="RepoTitle" class="text-danger"></span>
@@ -204,7 +216,7 @@
 
                                 <div class="input-group mb-1 ml-3 col-4">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text DnB-RedLabel">Category</label>
+                                        <label class="input-group-text DnB-RedLabel" for="ddlCatListUpdate">Category</label>
                                     </div>
                                     <select class="form-control" asp-for="category" style="border: 1px solid #ced4da; height:38px;" id="ddlCatListUpdate">
                                         @foreach (var key in Model.cat_data)
@@ -218,7 +230,7 @@
 
                             <div id="stockRelatedUpdate" class="row mb-2">
                                 <div class="col-md-10">
-                                    <table class="table table-redbordered" id="table_inp">
+                                    <table class="table table-redbordered">
                                         <colgroup>
                                             <col style="width: 50%;">
                                             <col style="width: 25%;">
@@ -226,14 +238,15 @@
                                         </colgroup>
                                         <thead>
                                             <tr>
-                                                <th>Script</th>
-                                                <th>Recommendation</th>
-                                                <th>Target Price</th>
+                                                <th scope="col">Script</th>
+                                                <th scope="col">Recommendation</th>
+                                                <th scope="col">Target Price</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
                                                 <td>
+                                                    <label for="ddlScriptUpdate" class="a11y-visually-hidden">Scrip</label>
                                                     <select id="ddlScriptUpdate" asp-for="scrip_code">
                                                         <option value="0"></option>
                                                         @foreach (var key in Model.script_data)
@@ -244,7 +257,12 @@
                                                 </td>
 
                                                 <td>
-                                                    <select id="ddlRecoUpdate" class="form-control" asp-for="Recomandation" style="border: 1px solid #ced4da; height:38px;" id="ddlRecoListUpdate">
+                                                    <label for="ddlRecoUpdate" class="a11y-visually-hidden">Recommendation</label>
+                                                    @* 4.1.1 Parsing — this element carried two id attributes. The HTML
+                                                       parser keeps the first and discards the
+                                                       second, so id="ddlRecoListUpdate" never
+                                                       existed in the DOM. *@
+                                                    <select id="ddlRecoUpdate" class="form-control" asp-for="Recomandation" style="border: 1px solid #ced4da; height:38px;">
                                                         @foreach (var key in Model.reco_data)
                                                         {
                                                             <option value=@key.reco_name>@key.reco_name</option>
@@ -252,6 +270,7 @@
                                                     </select>
                                                 </td>
                                                 <td>
+                                                    <label for="inptrgtPriceUpdate" class="a11y-visually-hidden">Target price</label>
                                                     <input type="number" id="inptrgtPriceUpdate" value="" asp-for="targetPrice" class="form-control" />
                                                 </td>
 
@@ -264,7 +283,7 @@
                             <div class="row mb-1">
                                 <div class="input-group col-7">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text DnB-RedLabel" for="inpfile">Upload file</label>
+                                        <label class="input-group-text DnB-RedLabel"  for="inpfileUpdate">Upload file</label>
                                     </div>
                                     <input type="file" asp-for="updateReportFile" id="inpfileUpdate" class="form-control" accept=".pdf" />
                                     <span asp-validation-for="updateReportFile" class="text-danger"></span>

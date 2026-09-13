@@ -261,15 +261,22 @@ function ResetValis() {
 }
 
 
+// WCAG 4.1.2 Name, Role, Value — the reveal control is a toggle button, so
+// its pressed state and accessible name must track the field's actual state.
 $("#changePassNewPassEye").on('click', function (event) {
     event.preventDefault();
+    var $toggle = $(this);
     if ($('#txtChangeNewPassword').attr("type") == "text") {
         $('#txtChangeNewPassword').attr('type', 'password');
         $('#changePassNewPassEye i').addClass("fa-eye-slash");
         $('#changePassNewPassEye i').removeClass("fa-eye");
+        $toggle.attr('aria-pressed', 'false').attr('aria-label', 'Show password');
+        if (window.a11y) { window.a11y.announce('Password hidden.'); }
     } else if ($('#txtChangeNewPassword').attr("type") == "password") {
         $('#txtChangeNewPassword').attr('type', 'text');
         $('#changePassNewPassEye i').removeClass("fa-eye-slash");
         $('#changePassNewPassEye i').addClass("fa-eye");
+        $toggle.attr('aria-pressed', 'true').attr('aria-label', 'Hide password');
+        if (window.a11y) { window.a11y.announce('Password shown.'); }
     }
 });

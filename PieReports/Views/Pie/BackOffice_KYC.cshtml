@@ -1,6 +1,12 @@
 ﻿@using ViewModel.Login
 @using Newtonsoft.Json
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "Back-office KYC update";
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -16,7 +22,7 @@
 }
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
         @{
 
             ViewBag.ReportName = "Backoffice KYC Update";
@@ -41,14 +47,14 @@
                     </colgroup>
                     <thead>
                         <tr>
-                            <th>Request Id</th>
-                            <th>Request Date</th>
-                            <th>Client Name</th>
-                            <th>Account Code</th>
-                            <th>Old Values</th>
-                            <th>New Values</th>
-                            <th>Remarks</th>
-                            <th>Action</th>
+                            <th scope="col">Request Id</th>
+                            <th scope="col">Request Date</th>
+                            <th scope="col">Client Name</th>
+                            <th scope="col">Account Code</th>
+                            <th scope="col">Old Values</th>
+                            <th scope="col">New Values</th>
+                            <th scope="col">Remarks</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody id="tbodyReqTable">

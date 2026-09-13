@@ -2,6 +2,12 @@
 
 @using ViewModel.Login
 @using Newtonsoft.Json
+@{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    ViewData["Title"] = "XIRR summary";
+}
+
 @{ string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -16,10 +22,10 @@
 
 
 <div class="wrapper">
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
 
-        <div id="waitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
-            <img src="~/images/loader.gif" width="64" height="64" />
+        <div id="waitIn" class="a11y-loading-indicator" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="" />
         </div>
 
         <div style="position:unset; background-color:white; padding:0.5rem;">
@@ -31,11 +37,15 @@
 
                         @if (@ViewBag.Acc == "0")
                         {
+                            <label for="txtAccCode" class="a11y-visually-hidden">Account code</label>
                             <input type="text" id="txtAccCode" />
                         }
                         else
                         {
-                            <input type="text" id="txtAccCode" value="@ViewBag.Acc" />
+                            @* 3.3.2 Labels or Instructions — the read-only account
+                               code display had no accessible name at all. *@
+                            <label for="txtAccCodeDisplay" class="a11y-visually-hidden">Account code</label>
+                            <input type="text" id="txtAccCodeDisplay" readonly value="@ViewBag.Acc" />
                         }
 
                     </div>
@@ -74,9 +84,9 @@
                         <div class="col-md-12">
                             <table class='table table-bordered' id="myTableclientflow">
                                 <tr class="header" style="border: 1px solid #dddddd;">
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Family</b></p></th>
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Client (Code)</b></p></th>
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Acc Opening Date</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading1"><b>Family</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading1"><b>Client (Code)</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading1"><b>Acc Opening Date</b></p></th>
                                 </tr>
                                 <tbody id="tbodyBindingclientflow">
                                 </tbody>
@@ -88,8 +98,8 @@
                             <table class='table' id="myTableclientflow1" style="border-collapse: collapse;">
 
                                 <tr class="header" style="border: 1px solid #dddddd;">
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Portfolio Activity</b></p></th>
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading2"><b>Amount</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading1"><b>Portfolio Activity</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading2"><b>Amount</b></p></th>
 
                                 </tr>
                                 <tbody id="tbodyBindingclientflow1">
@@ -101,9 +111,9 @@
                             <table class='table' id="myTableclientflow2" style="border-collapse: collapse;">
 
                                 <tr class="header" style="border: 1px solid #dddddd;">
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading1"><b>Sector</b></p></th>
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading2"><b>Amount</b></p></th>
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading2"><b>Holding %</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading1"><b>Sector</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading2"><b>Amount</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading2"><b>Holding %</b></p></th>
 
                                 </tr>
                                 <tbody id="tbodyBindingclientflow2">
@@ -114,21 +124,21 @@
                     <div id="div_XIRR_PnL">
                         <table class='table' id="XIRR_PnL_table" style="border-collapse: collapse;">
                             <tr style="border: 1px solid #dddddd;">
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd; text-align:center; vertical-align:middle;" rowspan="2"><p><b>F.Y.</b></p></th>
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="4"><p class="tableheading"><b>Profit/</b><b style="color:red;">(Loss)</b></p></th>
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="1"> </th>
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="4"><p class="tableheading"><b>Performance (%)</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd; text-align:center; vertical-align:middle;" rowspan="2" scope="col"><p><b>F.Y.</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="4" scope="col"><p class="tableheading"><b>Profit/</b><b style="color: #b3241a;">(Loss)</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="1" scope="col"> </th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" colspan="4" scope="col"><p class="tableheading"><b>Performance (%)</b></p></th>
                             </tr>
                             <tr class="header" style="border: 1px solid #dddddd;">
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Intraday</b></p></th>
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Short Term</b></p></th>
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Long Term</b></p></th>
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Total</b></p></th>
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Dividend</b></p></th>
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>ABS</b></p></th>
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>XIRR</b></p></th>
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>NIFTY</b></p></th>
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>MIDCAP</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Intraday</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Short Term</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Long Term</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Total</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Dividend</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>ABS</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>XIRR</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>NIFTY</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>MIDCAP</b></p></th>
                             </tr>
                             <tbody id="tbodyBindingXIRRPnL">
                             </tbody>
@@ -139,7 +149,7 @@
             </div>
 
             <!-- Dividend Modal -->
-            <div class="modal fade" id="XIRR_dividend" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal fade" id="XIRR_dividend" data-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" aria-modal="true" aria-label="XIRR dividend">
                 <div class="modal-dialog">
                     <div class="modal-content" style="width:80%; height:80vh; margin: auto">
                         <div class="modal-header">
@@ -172,9 +182,9 @@
                             <table class='table table-redbordered' id="XirrDivi" style="border-collapse: collapse;">
                                 <thead class="stickyThead">
                                     <tr class="header" style="border: 1px solid #dddddd;">
-                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Date</b></p></th>
-                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Scrip Name</b></p></th>
-                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Amount</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Date</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Scrip Name</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Amount</b></p></th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbodyXirrDivi">
@@ -191,7 +201,7 @@
             <!-- Dividend Modal -->
 
             <!-- Gain Loss Modal -->
-            <div class="modal fade" id="XIRR_PNL" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal fade" id="XIRR_PNL" data-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" aria-modal="true" aria-label="XIRR PNL">
                 <div class="modal-dialog">
                     <div class="modal-content" style="width:80%; height:80vh; margin: auto">
                         <div class="modal-header">
@@ -226,23 +236,23 @@
                                 <table class='table table-redbordered' id="XirrPNL" style="border-collapse: collapse;">
                                     <thead class="stickyThead">
                                         <tr class="header">
-                                            <th><p class="tableheading"></th>
-                                            <th colspan="3"><p class="tableheading"><b>Buy</b></p></th>
-                                            <th colspan="3"><p class="tableheading"><b>Sell</b></p></th>
-                                            <th colspan="4"><p class="tableheading"><b>Gain / Loss</b></p></th>
+                                            <th scope="col"><p class="tableheading"></th>
+                                            <th colspan="3" scope="col"><p class="tableheading"><b>Buy</b></p></th>
+                                            <th colspan="3" scope="col"><p class="tableheading"><b>Sell</b></p></th>
+                                            <th colspan="4" scope="col"><p class="tableheading"><b>Gain / Loss</b></p></th>
                                         </tr>
                                         <tr class="header">
-                                            <th><p class="tableheading">Qty</th>
-                                            <th><p class="tableheading">Date</th>
-                                            <th><p class="tableheading">Rate</th>
-                                            <th><p class="tableheading">Amount</th>
-                                            <th><p class="tableheading">Date</th>
-                                            <th><p class="tableheading">Rate</th>
-                                            <th><p class="tableheading">Amount</th>
-                                            <th><p class="tableheading">Intraday</th>
-                                            <th><p class="tableheading">Short term</th>
-                                            <th><p class="tableheading">Long Term</th>
-                                            <th><p class="tableheading">Total</th>
+                                            <th scope="col"><p class="tableheading">Qty</th>
+                                            <th scope="col"><p class="tableheading">Date</th>
+                                            <th scope="col"><p class="tableheading">Rate</th>
+                                            <th scope="col"><p class="tableheading">Amount</th>
+                                            <th scope="col"><p class="tableheading">Date</th>
+                                            <th scope="col"><p class="tableheading">Rate</th>
+                                            <th scope="col"><p class="tableheading">Amount</th>
+                                            <th scope="col"><p class="tableheading">Intraday</th>
+                                            <th scope="col"><p class="tableheading">Short term</th>
+                                            <th scope="col"><p class="tableheading">Long Term</th>
+                                            <th scope="col"><p class="tableheading">Total</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyXirrPNL">
@@ -293,9 +303,9 @@
                             <table class='table dt-responsive' id="myTableclientDetailsOPBal" style="border-collapse: collapse;">
 
                                 <tr class="header" style="border: 1px solid #dddddd;">
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Account Code</b></p></th>
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Client Name</b></p></th>
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Family</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Account Code</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Client Name</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Family</b></p></th>
                                 </tr>
                                 <tbody id="tbodyclientDetailsOPBal">
                                 </tbody>
@@ -303,15 +313,15 @@
                             <table class="table table-hover dt-responsive w-100" id="XIRR_Opening_table" style="border-collapse: collapse;">
                                 <thead>
                                     <tr class="header" style="border: 1px solid #dddddd;">
-                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Script Name</b></p></th>
-                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>CDSL Quantity</b></p></th>
-                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Quantity</b></p></th>
-                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>CMP</b></p></th>
-                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Current Value</b></p></th>
-                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>% Holding</b></p></th>
-                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Latest Buy</b></p></th>
-                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Latest Sell</b></p></th>
-                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Remarks</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Script Name</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>CDSL Quantity</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Quantity</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>CMP</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Current Value</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>% Holding</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Latest Buy</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Latest Sell</b></p></th>
+                                        <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Remarks</b></p></th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbodyBindingXIRROpeningBal">
@@ -349,11 +359,11 @@
                             }
                             <table class='table' id="myTableclientDetailsClosing" style="border-collapse: collapse;">
                                 <tr class="header" style="border: 1px solid #dddddd;">
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Family</b></p></th>
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Client</b></p></th>
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Holding Cost</b></p></th>
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Current Valuation</b></p></th>
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Gain Loss</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Family</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Client</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Holding Cost</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Current Valuation</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Gain Loss</b></p></th>
                                 </tr>
                                 <tr>
                                     <td style='border: 1px solid #dddddd; text-align: center;'>
@@ -376,7 +386,7 @@
 
                             @*  <table class='table' id="myTableclientDetailsClosing" style="border-collapse: collapse;">
                                 <tr class="header" style="border: 1px solid #dddddd;">
-                                    <th colspan="3" style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Total</b></p></th>
+                                    <th colspan="3" style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Total</b></p></th>
                                 </tr>
 
                             </table> *@
@@ -385,23 +395,23 @@
                                 <table class="table table-hover w-100" id="XIRR_Closing_table" style="border-collapse: collapse;">
                                     <thead>
                                         <tr class="header" style="border: 1px solid #dddddd;">
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Script Name</b></p></th>
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>CDSL Quantity</b></p></th>
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Quantity</b></p></th>
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Purchase Cost</b></p></th>
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Holding Cost</b></p></th>
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>CMP</b></p></th>
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Current Value</b></p></th>
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>% Holding</b></p></th>
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Gain Loss</b></p></th>
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>ABS</b></p></th>
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>XIRR</b></p></th>
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Latest Buy</b></p></th>
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Latest Sell</b></p></th>
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Remarks</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Script Name</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>CDSL Quantity</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Quantity</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Purchase Cost</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Holding Cost</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>CMP</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Current Value</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>% Holding</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Gain Loss</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>ABS</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>XIRR</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Latest Buy</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Latest Sell</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Remarks</b></p></th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tbodyBindingXIRROpeningBal">
+                                    <tbody>
                                     </tbody>
                                 </table>
                             </div>
@@ -410,7 +420,7 @@
 
 
                         <!-- Modal -->
-                        <div class="modal fade" id="DivEMailXIRRClsBal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal fade" id="DivEMailXIRRClsBal" data-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="DivEMailXIRRClsBal-title">
                             <div class="modal-dialog">
                                 <div class="modal-content" style="width:55%; height:40vh; margin: auto">
                                     <div class="modal-header">
@@ -419,7 +429,7 @@
                                         </button>
                                     </div> <!-- end modal header -->
                                     <div class="modal-body">
-                                        <p><h4>Please select whether you want Industry wise classification:</h4></p>
+                                        <p><h4 id="DivEMailXIRRClsBal-title">Please select whether you want Industry wise classification:</h4></p>
                                         <input type="radio" id="Emailval1" name="ShowIndustryEmail" value="true">
                                         <label for="Emailval1">Yes</label><br>
                                         <input type="radio" id="Emailval2" name="ShowIndustryEmail" value="false" checked="checked">
@@ -433,7 +443,7 @@
                             </div>
                         </div>
 
-                        <div class="modal fade" id="DivPDFXIRRClsBal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal fade" id="DivPDFXIRRClsBal" data-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="DivPDFXIRRClsBal-title">
                             <div class="modal-dialog">
                                 <div class="modal-content" style="width:55%; height:40vh; margin: auto">
                                     <div class="modal-header">
@@ -442,7 +452,7 @@
                                         </button>
                                     </div> <!-- end modal header -->
                                     <div class="modal-body">
-                                        <p><h4>Please select whether you want Industry wise classification:</h4></p>
+                                        <p><h4 id="DivPDFXIRRClsBal-title">Please select whether you want Industry wise classification:</h4></p>
                                         <input type="radio" id="PDFval1" name="ShowIndustryPDF" value="true">
                                         <label for="PDFval1">Yes</label><br>
                                         <input type="radio" id="PDFval2" name="ShowIndustryPDF" value="false" checked="checked">
@@ -456,7 +466,7 @@
                             </div>
                         </div>
 
-                        <div class="modal fade" id="DivExcelXIRRClsBal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal fade" id="DivExcelXIRRClsBal" data-backdrop="static" tabindex="-1" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="DivExcelXIRRClsBal-title">
                             <div class="modal-dialog">
                                 <div class="modal-content" style="width:55%; height:40vh; margin:auto">
                                     <div class="modal-header">
@@ -465,7 +475,7 @@
                                         </button>
                                     </div> <!-- end modal header -->
                                     <div class="modal-body">
-                                        <p><h4>Please select whether you want Industry wise classification:</h4></p>
+                                        <p><h4 id="DivExcelXIRRClsBal-title">Please select whether you want Industry wise classification:</h4></p>
                                         <input type="radio" id="Xlsval1" name="ShowIndustryXls" value="true">
                                         <label for="Xlsval1">Yes</label><br>
                                         <input type="radio" id="Xlsval2" name="ShowIndustryXls" value="false" checked="checked">
@@ -509,9 +519,9 @@
                         <input type="hidden" id="inpClientCode" />
                         <table class='table' id="myTableclientDetailsflow" style="border-collapse: collapse;">
                             <tr class="header" style="border: 1px solid #dddddd;">
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Client Code</b></p></th>
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Client Name</b></p></th>
-                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Family</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Client Code</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Client Name</b></p></th>
+                                <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Family</b></p></th>
                             </tr>
                             <tbody id="tbodyclientDetailsInflowOutFlow">
                             </tbody>
@@ -522,9 +532,9 @@
                                 <table class="table table-hover dt-responsive w-100" id="XIRR_Inflow_table" style="border-collapse: collapse;">
                                     <thead>
                                         <tr class="header" style="border: 1px solid #dddddd;">
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="paraTextAlignCenter"><b>Date</b></p></th>
-                                            <th style="background-color: #ffb3b3;"><p class="paraTextAlignLeft"><b>Remarks</b></p></th>
-                                            <th style="background-color: #ffb3b3;"><p class="paraTextAlignRight pr-1"><b>Amount</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="paraTextAlignCenter"><b>Date</b></p></th>
+                                            <th style="background-color: #ffb3b3;" scope="col"><p class="paraTextAlignLeft"><b>Remarks</b></p></th>
+                                            <th style="background-color: #ffb3b3;" scope="col"><p class="paraTextAlignRight pr-1"><b>Amount</b></p></th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyBindingXIRRInflow">
@@ -537,9 +547,9 @@
                                 <table class="table table-hover dt-responsive w-100" id="XIRR_Outflow_table" style="border-collapse: collapse;">
                                     <thead>
                                         <tr class="header" style="border: 1px solid #dddddd;">
-                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="paraTextAlignCenter"><b>Date</b></p></th>
-                                            <th style="background-color: #ffb3b3;"><p class="paraTextAlignLeft"><b>Remarks</b></p></th>
-                                            <th style="background-color: #ffb3b3;"><p class="paraTextAlignRight pr-1"><b>Amount</b></p></th>
+                                            <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="paraTextAlignCenter"><b>Date</b></p></th>
+                                            <th style="background-color: #ffb3b3;" scope="col"><p class="paraTextAlignLeft"><b>Remarks</b></p></th>
+                                            <th style="background-color: #ffb3b3;" scope="col"><p class="paraTextAlignRight pr-1"><b>Amount</b></p></th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyBindingXIRROutflow">
@@ -582,9 +592,9 @@
                         <table class="table table-hover dt-responsive" id="XIRRWorking_table" style="border-collapse: collapse; width:100%;">
                             <thead>
                                 <tr class="header" style="border: 1px solid #dddddd;">
-                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;"><p class="tableheading"><b>Date</b></p></th>
-                                    <th style="background-color: #ffb3b3;"><p class="paraTextAlignLeft"><b>Remarks</b></p></th>
-                                    <th style="background-color: #ffb3b3;"><p class="paraTextAlignRight pr-1"><b>Amount</b></p></th>
+                                    <th style="background-color: #ffb3b3; border: 1px solid #dddddd;" scope="col"><p class="tableheading"><b>Date</b></p></th>
+                                    <th style="background-color: #ffb3b3;" scope="col"><p class="paraTextAlignLeft"><b>Remarks</b></p></th>
+                                    <th style="background-color: #ffb3b3;" scope="col"><p class="paraTextAlignRight pr-1"><b>Amount</b></p></th>
                                 </tr>
                             </thead>
                             <tbody id="tbodyBindingXIRRWorking">
@@ -597,7 +607,7 @@
             </div>
 
             <!-- Modal Curr_Val Quantity -->
-            <div class="modal fade" id="OpenTradesModal" tabindex="-1" role="dialog">
+            <div class="modal fade" id="OpenTradesModal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="ModalTitle">
                 <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
                     <div class="modal-content p-1">
                         <div class="modal-header">
@@ -631,15 +641,15 @@
                                     </colgroup>
                                     <thead>
                                         <tr>
-                                            <th rowspan="2">Transaction Date</th>
-                                            <th rowspan="2">Remarks</th>
-                                            <th rowspan="2">Buy</th>
-                                            <th rowspan="2">Rate</th>
-                                            <th colspan="2">Unrealised Gain/Loss</th>
+                                            <th rowspan="2" scope="col">Transaction Date</th>
+                                            <th rowspan="2" scope="col">Remarks</th>
+                                            <th rowspan="2" scope="col">Buy</th>
+                                            <th rowspan="2" scope="col">Rate</th>
+                                            <th colspan="2" scope="col">Unrealised Gain/Loss</th>
                                         </tr>
                                         <tr>
-                                            <th>Short Term</th>
-                                            <th>Long Term</th>
+                                            <th scope="col">Short Term</th>
+                                            <th scope="col">Long Term</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyOpenTradesDet">
@@ -657,11 +667,11 @@
             <!-- Modal Curr_Val Quantity -->
 
             <!-- Modal Curr_Val Scrip -->
-            <div class="modal fade" id="CliScripTradesModal" tabindex="-1" role="dialog">
+            <div class="modal fade" id="CliScripTradesModal" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="CliScripTradesModal-title">
                 <div class="modal-dialog modal-dialog-centered" role="document" style="width:fit-content;">
                     <div class="modal-content p-1">
                         <div class="modal-header">
-                            <h5 class="modal-title ml-auto" id="ModalTitle">Trade Details</h5>
+                            <h5 class="modal-title ml-auto" id="CliScripTradesModal-title">Trade Details</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -686,13 +696,13 @@
                                     </colgroup>
                                     <thead>
                                         <tr>
-                                            <th>Value Date</th>
-                                            <th>Transaction Date</th>
-                                            <th>Remarks</th>
-                                            <th>Buy</th>
-                                            <th>Sell</th>
-                                            <th>Rate</th>
-                                            <th>Balance Quantity</th>
+                                            <th scope="col">Value Date</th>
+                                            <th scope="col">Transaction Date</th>
+                                            <th scope="col">Remarks</th>
+                                            <th scope="col">Buy</th>
+                                            <th scope="col">Sell</th>
+                                            <th scope="col">Rate</th>
+                                            <th scope="col">Balance Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyScriptDet">
@@ -709,7 +719,7 @@
             </div>
             <!-- Modal Curr_Val Scrip -->
             <!-- trade Exception -->
-            <div id="exception_form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div id="exception_form" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" aria-modal="true" aria-label="exception form">
                 <div class="modal-dialog  modal-sm">
                     <div class="modal-content">
                         <div class='modal-header'>
@@ -723,8 +733,8 @@
                                         <thead>
 
                                             <tr>
-                                                <th class="TableHeaderRow"><p><b>Script Name</b></p></th>
-                                                <th class="TableHeaderRow"><p><b>Type</b></p></th>
+                                                <th class="TableHeaderRow" scope="col"><p><b>Script Name</b></p></th>
+                                                <th class="TableHeaderRow" scope="col"><p><b>Type</b></p></th>
                                             </tr>
                                         </thead>
                                         <tbody id="tbodyxirrtradeexception" style="background-color:#ffffff;">

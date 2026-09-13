@@ -2,6 +2,13 @@
 @using ViewModel.Login
 @using Newtonsoft.Json
 @{
+    // WCAG 2.4.2 Page Titled — unique and descriptive, most specific
+    // information first. Rendered by Views/Shared/_Layout.cshtml.
+    var a11yPageTitle = "Depository holding report";
+    ViewData["Title"] = a11yPageTitle;
+}
+
+@{
     string dtoq = TempData["myDeshbordData"].ToString();
     TempData.Keep("myDeshbordData");
     Dashboard dashboard = JsonConvert.DeserializeObject<Dashboard>(dtoq);
@@ -17,9 +24,9 @@
 
 
 <div class="wrapper">
-    <div class="content-wrapper">
-        <div id="GlobalwaitIn" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
-            <img src="~/images/loader.gif" width="64" height="64" />
+    <div class="content-wrapper" id="main-content" role="main" tabindex="-1">
+        <div id="GlobalwaitIn" class="a11y-loading-indicator" style="display:none;width:69px;height:69px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;">
+            <img src="~/images/loader.gif" width="64" height="64" alt="" />
         </div>
 
         <div style="position:unset; background-color:white; padding:0.5rem;">
@@ -35,6 +42,7 @@
                 <div class="input-group mb-1 col-3">
                     <div class="input-group-prepend">
                         <label class="input-group-text DnB-RedLabel">As On Date</label>
+                        <label for="as_on_date" class="a11y-visually-hidden">As on date</label>
                         <input type='date' id='as_on_date' class='form-control'>
                     </div>
                 </div>
@@ -63,6 +71,9 @@
                     //Html.RenderPartial("_NonPerfReportButtonsDiv");
                     Html.RenderPartial("_ReportHeaderCompact");
                     ViewData.Clear();
+                // WCAG 2.4.2 Page Titled — Clear() also removes ViewData["Title"],
+                // which Views/Shared/_Layout.cshtml renders into <title>.
+                ViewData["Title"] = a11yPageTitle;
                 }
                 <table id="tbl_depo_holding" class="table table-redbordered table-hover mt-2 w-100">
                 </table>
