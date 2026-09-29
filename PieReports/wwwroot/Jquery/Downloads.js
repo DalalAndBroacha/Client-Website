@@ -23,8 +23,12 @@
     fnDisableFamilyList();
 
     var time = 15
+    // WCAG 2.2.1 / 2.2.2 — the automatic reload can be stopped and resumed.
+    var autoRefresh = true;
 
     setInterval(function () {
+
+        if (!autoRefresh) { return; }
 
         time--;
 
@@ -37,6 +41,19 @@
 
 
     }, 1000);
+
+    $('#btnAutoRefresh').on('click', function () {
+        autoRefresh = !autoRefresh;
+        if (autoRefresh) {
+            time = 15;
+            $(this).text('Stop automatic refresh');
+            if (window.a11y) { window.a11y.announce('Automatic refresh resumed.'); }
+        } else {
+            $('#timer').text('Automatic refresh is off.');
+            $(this).text('Resume automatic refresh');
+            if (window.a11y) { window.a11y.announce('Automatic refresh stopped.'); }
+        }
+    });
 
 });
 

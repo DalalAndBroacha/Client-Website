@@ -86,10 +86,10 @@
     <hr class="redHR" />
 
     <main id="main-content" tabindex="-1" class="container-fluid p-4 mt-1">
-        @* 2.4.6 Headings and Labels — the page name is the h1.
-           1.4.3 Contrast — #ee3426 is 4.07:1 on white and fails for
-           anything below 24px; --a11y-brand-red is 4.65:1. *@
-        <h1 class="h2" style="color:var(--a11y-brand-red)">Equity research reports</h1>
+        @* 2.4.6 Headings and Labels — the page name is the h1, sized as the
+           h2 it was. 1.4.3 — #ee3426 is 4.07:1 on white, which passes for
+           text this large (2rem, needs 3:1), so the design colour stays. *@
+        <h1 class="h2" style="color:#ee3426">EQUITY RESEARCH REPORTS</h1>
         @* 1.4.10 Reflow — a scrolling data table is exempt from the
            no-horizontal-scroll rule, but the scroll container has to be
            reachable and operable by keyboard (2.1.1). *@

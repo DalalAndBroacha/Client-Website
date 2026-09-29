@@ -111,7 +111,9 @@ function ChangeUsernameDashboardModel() {
     $("#ChangeUsernameM").modal("show");
 } 
 function ReportIFrameLayout(obj,text) {
-    $(".modal-title").html(text);
+    // WCAG 4.1.2 — only this dialog's title. `$(".modal-title")` renamed every
+    // dialog on the page, and each dialog's accessible name is its title.
+    $("#myModalLayout .modal-title").html(text);
     var url = obj;
     $("#myModalLayout iframe").attr("src", url);
     $("#myModalLayout").modal("show");
@@ -244,7 +246,8 @@ function numberWithCommas(x) {
     
 }
 function ReportIFrame(obj, text) {
-    $(".modal-title").html(text);
+    // WCAG 4.1.2 — only this dialog's title (it is the dialog's accessible name).
+    $("#myModal .modal-title").html(text);
     var url = obj;
     $("#myModal iframe").attr("src", url);
     $("#myModal").modal("show");

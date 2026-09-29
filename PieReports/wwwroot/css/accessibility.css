@@ -18,13 +18,12 @@
        #de2e20 is 4.65:1 with white and visually indistinguishable. */
     --a11y-brand-red: #de2e20;
     --a11y-brand-red-dark: #b3241a; /* 6.9:1 with white — hover/active */
-    /* #da2929 (already used by .DnB-RedLabel) is 4.85:1 with white and
-       3.9:1 against the #fce0e0 report surface. Use it for action buttons. */
+    /* #da2929 (already used by .DnB-RedLabel) is 4.85:1 with white text,
+       for red fills that carry text (e.g. the selected report tab). */
     --a11y-action-red: #da2929;
     /* Borders / focus */
     --a11y-border-interactive: #767676; /* 3:1+ on white and on #fce0e0 */
     --a11y-focus-ring: #0b4fa8; /* 3:1+ on white, #fce0e0, #ffe6e6, #da2929 */
-    --a11y-focus-ring-inverse: #ffffff; /* for use on dark/red surfaces */
     --a11y-error: #b3241a; /* 6.9:1 on #fff */
     --a11y-success: #1b6b3a; /* 5.6:1 on #fff */
 }
@@ -40,7 +39,6 @@
     outline-offset: 2px !important;
     /* second ring so the indicator stays visible on dark and red surfaces */
     box-shadow: 0 0 0 5px rgba(255, 255, 255, .85) !important;
-    border-radius: 2px;
 }
 
 /* Browsers without :focus-visible still get a ring; mouse users do not. */
@@ -71,24 +69,25 @@ summary:focus-visible,
     outline-offset: 2px !important;
 }
 
-/* Focus ring inside the dark sidebar and on the red navbar needs the light
-   variant to clear 3:1 against its own background. */
-.main-sidebar :focus-visible,
-.main-header :focus-visible,
-[class*="sidebar-dark-"] :focus-visible,
-.navpanel :focus-visible {
-    outline-color: var(--a11y-focus-ring-inverse) !important;
-    box-shadow: 0 0 0 5px rgba(0, 0, 0, .55) !important;
+/* The header and sidebar carry AdminLTE's navbar-dark / sidebar-dark-primary
+   classes, but the portal paints both white, so they take the standard navy
+   ring above. A white "inverse" ring there measures 1:1 and is invisible. */
+
+/* The "Go back to sign in" links wrap an absolutely positioned
+   <p class="float-label">, so the <a> itself has no size and its ring is
+   drawn around nothing. Paint it on the text the user sees. */
+a:focus-visible > .float-label {
+    outline: 3px solid var(--a11y-focus-ring);
+    outline-offset: 2px;
 }
 
-/* 2.4.7 — a ring clipped by an ancestor's overflow is not "visible".
-   Give the common scroll containers room to paint it. */
-.content-wrapper,
-.card-body,
-.table-responsive,
-.dataTables_scrollBody,
-.modal-body {
-    scrollbar-gutter: stable;
+/* The main region is focused programmatically by the skip link and has
+   tabindex="-1" for that reason. It is not an interactive component, so it
+   should not paint a ring around the whole page when it receives focus. */
+main:focus,
+[role="main"]:focus {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* ==========================================================================
@@ -115,6 +114,7 @@ summary:focus-visible,
 .a11y-skip-link:focus {
     left: 0;
     top: 0;
+    color: var(--a11y-text-primary);
     outline: 3px solid var(--a11y-focus-ring);
     outline-offset: 2px;
 }
@@ -197,17 +197,14 @@ small,
 }
 
 /* Bootstrap's default link colour (#007bff) is 3.97:1 on white and fails.
-   #0b4fa8 is 7.0:1. Navigation links, buttons and dropdown items are excluded:
-   they sit on the red navbar and the dark sidebar, where they need the light
-   treatment those components already give them. */
-a:not(.btn):not(.nav-link):not(.dropdown-item):not(.close):not(.brand-link):not(.page-link):link,
-a:not(.btn):not(.nav-link):not(.dropdown-item):not(.close):not(.brand-link):not(.page-link):visited {
+   It only shows on the sign-in page, whose view links bootstrap.min.css a
+   second time after style.css ("Forgot Username?", "Forgot Password?", the
+   help link). Every other page keeps style.css's #37474f (9.6:1) or, after
+   sign-in, CommonReport.css's black, so they are left as designed.
+   #0b4fa8 is 7.0:1. Hover and focus are #0056b3 (7.0:1) from style.css. */
+#tabs a:not(.btn):not(.nav-link):link,
+#tabs a:not(.btn):not(.nav-link):visited {
     color: #0b4fa8;
-}
-
-a:not(.btn):not(.nav-link):not(.dropdown-item):not(.close):not(.brand-link):not(.page-link):hover,
-a:not(.btn):not(.nav-link):not(.dropdown-item):not(.close):not(.brand-link):not(.page-link):active {
-    color: #083a7d;
 }
 
 /* .btn-link renders as a link but is excluded from the rule above, and
@@ -296,6 +293,24 @@ a:not(.btn):not(.nav-link):not(.dropdown-item):not(.close):not(.brand-link):not(
     color: #212529 !important; /* 10.4:1 on #ffc107 — never white */
 }
 
+/* DataTables / Bootstrap pagination. #007bff is 3.98:1 on white, both as the
+   page-number colour and as the current page's fill behind white text. Same
+   substitute as .btn-primary. Disabled buttons keep Bootstrap's grey. */
+.page-link {
+    color: #1565c0;
+}
+
+.page-link:hover,
+.page-link:focus {
+    color: #0d4a91;
+}
+
+.page-item.active .page-link {
+    background-color: #1565c0;
+    border-color: #1565c0;
+    color: #ffffff;
+}
+
 /* Brand red used as a text colour or as a button fill with white text. */
 .btn-danger,
 .bg-danger {
@@ -312,23 +327,10 @@ a:not(.btn):not(.nav-link):not(.dropdown-item):not(.close):not(.brand-link):not(
     color: #ffffff !important;
 }
 
-/* Report toolbar buttons ship inline `background-color:#ff3333`, which is
-   2.9:1 against the #fce0e0 toolbar — below the 3:1 required by 1.4.11 for
-   the control boundary. #da2929 is 3.9:1 there and 4.85:1 with a white icon. */
-.a11y-report-btn,
-.SubTotalRow button[style*="#ff3333"],
-.SubTotalRow button[style*="#FF3333"] {
-    background-color: var(--a11y-action-red) !important;
-    border: 2px solid var(--a11y-action-red) !important;
-}
-
-/* Disabled controls are exempt from 1.4.3, but "looks disabled while still
-   operable" is not. Make genuinely disabled controls unambiguous. */
-:disabled,
-[aria-disabled="true"] {
-    cursor: not-allowed;
-    opacity: .6;
-}
+/* Report toolbar buttons (#ff3333, white icon) keep their design colours:
+   they are identified by the icon, which is 3.5:1 against the fill — the
+   3:1 that 1.4.11 asks of a graphical object. A button identified by its
+   icon needs no contrasting boundary of its own. */
 
 /* ==========================================================================
    1.4.11 Non-text Contrast — control boundaries and state indicators
@@ -346,14 +348,14 @@ select,
 textarea,
 .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--multiple {
-    border: 1px solid var(--a11y-border-interactive) !important;
+    border-color: var(--a11y-border-interactive) !important;
 }
 
-/* Checkbox and radio boundaries — the browser default is below 3:1 on
-   several engines when the control sits on a tinted surface. */
+/* Checkbox and radio — the native controls keep their own look (Chrome draws
+   the unchecked boundary in #767676, 4.5:1 on white); only the focus ring
+   is spaced off the control. */
 input[type="checkbox"],
 input[type="radio"] {
-    accent-color: var(--a11y-action-red);
     outline-offset: 2px;
 }
 
@@ -388,6 +390,48 @@ input[type="radio"] {
     cursor: default;
 }
 
+/* 2.4.7 / 1.4.11 — Bootstrap custom checkboxes and switches. The real input
+   is transparent; Bootstrap marks its focus with a 25%-opacity glow on the
+   drawn box, which is far below 3:1. The ring goes on the drawn box. */
+.custom-control-input:focus-visible ~ .custom-control-label::before {
+    outline: 3px solid var(--a11y-focus-ring) !important;
+    outline-offset: 2px !important;
+}
+
+/* 1.4.3 / 1.4.11 — select2 multi-select chips are pink (#ffc0cb) here, and
+   AdminLTE turns the chip's "×" white on hover: 1.5:1. The "×" is a button
+   (accessibility.js), so every state needs contrast; dark red is 5.3:1 on
+   the chip and still reads as a hover change from the black at rest. */
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover,
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:focus {
+    color: #9b1c14;
+}
+
+/* 2.1.1 / 4.1.2 — DataTables Select row checkboxes. accessibility.js puts a
+   focusable role="checkbox" over the CSS-drawn box in the first cell (the
+   cell is position:relative in the Select stylesheet). It covers the cell,
+   so the click target is unchanged and the focus ring frames the box. */
+.a11y-row-select {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    left: 2px;
+    cursor: pointer;
+}
+
+/* 2.1.1 / 4.1.2 — DataTables Responsive "+" (show hidden columns).
+   accessibility.js puts a focusable button over the "+", which Responsive
+   draws in the cell's 30px left padding (the cell is position:relative). */
+.a11y-dtr-toggle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 28px;
+    cursor: pointer;
+}
+
 /* 2.4.7 Focus Visible — the checkbox itself is transparent, so the ring has
    to be painted on the wrapper the user can actually see. */
 .toggle:focus-within {
@@ -400,7 +444,7 @@ input[type="radio"] {
    border itself is also perceivable at 3:1. */
 .is-invalid,
 [aria-invalid="true"] {
-    border: 2px solid var(--a11y-error) !important;
+    border-color: var(--a11y-error) !important;
 }
 
 /* ==========================================================================
@@ -437,77 +481,33 @@ main p a:not(.btn):not(.nav-link):not(.dropdown-item),
    The rule is "survive", not "implement": no fixed heights on text
    containers, no hidden overflow on prose, nothing wider than the viewport.
    ========================================================================== */
-img,
-svg,
-video,
-canvas,
-iframe,
-embed,
-object {
-    max-width: 100%;
-}
-
-img,
-svg {
-    height: auto;
-}
-
-/* Data tables are exempt from the no-horizontal-scroll rule, but the scroll
-   container must be reachable by keyboard — see .a11y-table-scroll below. */
-table {
-    max-width: 100%;
-}
-
-.a11y-table-scroll {
-    overflow-x: auto;
-    max-width: 100%;
-}
+/* Every rule in this section is written to leave the desktop layout exactly
+   as designed. Blanket overrides here (height:auto on every .btn, 44px targets,
+   white-space:normal on labels) broke the header, the report toolbars and the
+   toggle switches in an earlier revision, so fixes are scoped to the narrow
+   viewport in the media query below, or to the specific element that clips. */
 
 .a11y-table-scroll:focus-visible {
     outline: 3px solid var(--a11y-focus-ring);
     outline-offset: 2px;
 }
 
-/* Buttons, badges, cards and nav items must grow with the text, not clip it. */
-.btn,
-.badge,
-.nav-link,
-.dropdown-item,
-.card-title,
-.modal-title,
-label,
-.input-group-text {
-    min-height: auto;
-    height: auto !important;
-    overflow: visible;
-    white-space: normal;
-}
-
-/* 1.4.10 Reflow — the password reveal button was positioned with a fixed
-   `margin-left: 330px`, which pushed it past a 320px viewport. Anchoring it to
-   the field keeps it in place at every width. 2.5.5-style target comfort comes
-   from the 44px minimum. */
+/* 1.4.10 Reflow — the password reveal control was a .input-group-addon
+   pulled up over the field with `margin-left: 330px; margin-top: -34px`.
+   The button keeps that class, so it looks the same, and the same -34px
+   pull, so the form measures the same; margin-left:auto replaces the fixed
+   330px, which pushed it past a 320px viewport. */
 .a11y-password-field {
     position: relative;
 }
 
 .a11y-password-toggle {
-    position: absolute;
-    right: .25rem;
-    bottom: .25rem;
-    min-width: 44px;
-    min-height: 40px;
-    padding: 0 .5rem;
+    min-width: 28px; /* the original addon's width (its inner <a> added 4px) */
+    margin: -34px 0 0 auto;
+    border: 0;
+    cursor: pointer;
+    position: relative;
     z-index: 2;
-    color: var(--a11y-text-secondary);
-}
-
-/* Bootstrap's negative row gutters overflow when .row is not inside a
-   .container. Contain them so the page does not scroll sideways at 320px. */
-.login-block > .row,
-main > .row {
-    margin-left: 0;
-    margin-right: 0;
 }
 
 /* 1.4.10 Reflow — bootstrap4-toggle builds a switch whose inner group is
@@ -534,6 +534,19 @@ p {
    full-width parent) that force two-dimensional scrolling on a phone and at
    400% zoom. Inline styles can only be beaten with !important. */
 @media (max-width: 700px) {
+    img,
+    video,
+    canvas,
+    iframe,
+    embed,
+    object {
+        max-width: 100%;
+    }
+
+    img {
+        height: auto;
+    }
+
     .modal-dialog,
     .modal-lg,
     .modal-dialog.modal-lg,
@@ -611,6 +624,7 @@ p {
    accessibility.js wraps any unwrapped table in this container, which also
    gives keyboard users a way to reach the scrollbar (2.1.1). */
 .a11y-table-scroll {
+    width: 100%;
     overflow-x: auto;
     max-width: 100%;
     -webkit-overflow-scrolling: touch;
@@ -693,7 +707,8 @@ caption.a11y-visually-hidden {
 /* ==========================================================================
    2.2.1 Timing Adjustable — session expiry warning dialog
    ========================================================================== */
-.a11y-timeout-dialog {
+.a11y-timeout-dialog,
+.a11y-confirm-dialog {
     position: fixed;
     inset: 0;
     z-index: 100001;
@@ -704,7 +719,8 @@ caption.a11y-visually-hidden {
 }
 
 .a11y-timeout-dialog[open],
-.a11y-timeout-dialog.is-open {
+.a11y-timeout-dialog.is-open,
+.a11y-confirm-dialog.is-open {
     display: flex;
 }
 
@@ -738,15 +754,79 @@ caption.a11y-visually-hidden {
 }
 
 /* ==========================================================================
-   2.5.x Pointer — target size comfort (not an AA requirement at 2.1, but the
-   icon-only toolbar buttons are 30px and hard to hit; 44px costs nothing).
+   2.4.5 Multiple Ways — the sidebar menu search
    ========================================================================== */
-.a11y-report-btn,
-.main-header .nav-link,
-.close,
-button.close {
-    min-width: 44px;
-    min-height: 44px;
+.a11y-nav-search {
+    padding: .5rem 0 .25rem;
+}
+
+.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover) .a11y-nav-search {
+    display: none;
+}
+
+/* ==========================================================================
+   Buttons that replaced script-only links (2.1.1, 4.1.2)
+   A control that runs script is a <button>, but it must not change the design:
+   these render exactly like the inline link they replaced.
+   ========================================================================== */
+.a11y-link-button {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    vertical-align: baseline;
+    /* Takes the colour of the text it sits in, as the replaced link did
+       (links in the portal shell are black). Inside running text the underline
+       is what marks it as a control, so colour is not the only cue (1.4.1). */
+    color: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* A control that stands on its own line — a document list, not a sentence —
+   needs no underline to be told apart from surrounding text. */
+.a11y-link-button.a11y-standalone {
+    text-decoration: none;
+}
+
+.a11y-link-button.a11y-standalone:hover {
+    text-decoration: underline;
+}
+
+/* An image that was itself the click target (the sign-in CAPTCHA refresh),
+   wrapped in a button. The button has no box of its own: same size and
+   place as the bare image, which stays the flex item's content. */
+.a11y-image-button {
+    display: inline-flex;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: none;
+    line-height: 0;
+    cursor: pointer;
+}
+
+/* 1.4.10 — may shrink with the row at 320 CSS px, as the bare image could. */
+.a11y-image-button > img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* A visual label promoted to a real heading keeps the size it was designed at;
+   only the semantics change (1.3.1). */
+.a11y-heading-reset {
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+    margin-top: 0;
+    margin-bottom: 1rem;
 }
 
 /* ==========================================================================

@@ -58,8 +58,10 @@
                     <div class="card d-block">
                         @* 2.1.1 Keyboard / 4.1.2 Name, Role, Value — a <div onclick> is not
                          focusable and announces no role. accessibility.js binds
-                         Enter and Space to anything carrying role="button". *@
-                        <div id="Card_All_SIP" class="card-body GrandTotalRow" onclick="ShowTableData('All')" style="cursor:pointer" role="button" tabindex="0" aria-label="Show all SIPs">
+                         Enter and Space to anything carrying role="button".
+                         2.5.3 Label in Name — the name comes from the visible card
+                         text, with the action added as hidden text at the end. *@
+                        <div id="Card_All_SIP" class="card-body GrandTotalRow" onclick="ShowTableData('All')" style="cursor:pointer" role="button" tabindex="0">
                             <div class="text-center">
                                 <h3>Total</h3>
                             </div>
@@ -67,7 +69,7 @@
                                 Number of SIPs : <b id="TotalSIPs"></b>
                             </p>
                             <p class="card-text">
-                                Amount : <b id="TotalAmount"></b>
+                                Amount : <b id="TotalAmount"></b><span class="a11y-visually-hidden">. Show these SIPs in the table below.</span>
                             </p>
                         </div>
                     </div>
@@ -77,8 +79,10 @@
                     <div class="card d-block">
                         @* 2.1.1 Keyboard / 4.1.2 Name, Role, Value — a <div onclick> is not
                          focusable and announces no role. accessibility.js binds
-                         Enter and Space to anything carrying role="button". *@
-                        <div id="Card_Recent_SIP" class="card-body" onclick="ShowTableData('Recent')" style="cursor:pointer" role="button" tabindex="0" aria-label="Show recent SIPs">
+                         Enter and Space to anything carrying role="button".
+                         2.5.3 Label in Name — the name comes from the visible card
+                         text, with the action added as hidden text at the end. *@
+                        <div id="Card_Recent_SIP" class="card-body" onclick="ShowTableData('Recent')" style="cursor:pointer" role="button" tabindex="0">
                             <div class="text-center">
                                 <h3>Recent</h3>
                             </div>
@@ -86,7 +90,7 @@
                                 Number of SIPs : <b id="RecentSIPs"></b>
                             </p>
                             <p class="card-text">
-                                Amount : <b id="RecentAmount"></b>
+                                Amount : <b id="RecentAmount"></b><span class="a11y-visually-hidden">. Show these SIPs in the table below.</span>
                             </p>
                         </div>
                     </div>
@@ -96,8 +100,10 @@
                     <div class="card d-block">
                         @* 2.1.1 Keyboard / 4.1.2 Name, Role, Value — a <div onclick> is not
                          focusable and announces no role. accessibility.js binds
-                         Enter and Space to anything carrying role="button". *@
-                        <div id="Card_Tert_SIP" class="card-body" onclick="ShowTableData('Terminating')" style="cursor:pointer" role="button" tabindex="0" aria-label="Show terminating SIPs">
+                         Enter and Space to anything carrying role="button".
+                         2.5.3 Label in Name — the name comes from the visible card
+                         text, with the action added as hidden text at the end. *@
+                        <div id="Card_Tert_SIP" class="card-body" onclick="ShowTableData('Terminating')" style="cursor:pointer" role="button" tabindex="0">
                             <div class="text-center">
                                 <h3>Terminanting</h3>
                             </div>
@@ -105,7 +111,7 @@
                                 Number of SIPs : <b id="ExSIPs"></b>
                             </p>
                             <p class="card-text">
-                                Amount : <b id="ExAmount"></b>
+                                Amount : <b id="ExAmount"></b><span class="a11y-visually-hidden">. Show these SIPs in the table below.</span>
                             </p>
                         </div>
                     </div>

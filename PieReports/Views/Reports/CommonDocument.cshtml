@@ -75,9 +75,10 @@
                                                per document, so screen readers announced a form
                                                field that does not exist and the ids collided.
                                                2.1.1 / 4.1.2 — opening a document in a dialog is a
-                                               button action, not a link to "#". *@
-                                            <p style="font-weight: 500; margin-bottom: 0px; margin-left: 6px;">
-                                                <button type="button" class="btn btn-link p-0" style="font-family: inherit; font-size: 15px;"
+                                               button action, not a link to "#". The <p> keeps the
+                                               label's inline-block 16px/24px box, so rows measure the same. *@
+                                            <p style="display: inline-block; font-size: 16px; line-height: 24px; font-weight: 500; margin-bottom: 0px; margin-left: 6px;">
+                                                <button type="button" class="a11y-link-button a11y-standalone" style="font-family: inherit; font-size: 15px;"
                                                         onclick="ReportIFrame('@items.report_link','@items.report_caption');">
                                                     @items.report_caption
                                                 </button>

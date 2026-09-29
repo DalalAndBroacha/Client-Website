@@ -1,9 +1,12 @@
-﻿@{
+﻿@* 4.1.1 Parsing — some reports render this partial once per section, so every
+   id goes through A11yIds.Unique (Utility/A11yIds.cs): the first copy keeps
+   the plain id, later copies get -2, -3. *@
+@{
     var headerId = "header_div_" + @ViewBag.ReportHeaderDiv;
     var report_date = "report_date_" + @ViewBag.ReportHeaderDiv;
 }
 
-<div class="SubTotalRow row" id=@headerId>
+<div class="SubTotalRow row" id="@A11yIds.Unique(Context, headerId)">
     <div class="offset-2"></div>
     <div class="col-8 d-flex justify-content-center">
         <p style="text-align:center">
@@ -11,17 +14,17 @@
                name is the page heading. A native <h1> here would break out of the
                inline run of date text and change the layout, so the heading role
                and level are supplied explicitly instead. *@
-            <b id="lblReport_Name" role="heading" aria-level="1">@ViewBag.ReportName</b>
+            <b id="@A11yIds.Unique(Context, "lblReport_Name")" role="heading" aria-level="1">@ViewBag.ReportName</b>
             @if (ViewBag.GenDate == "True")
             {
                 if (ViewBag.GenPeriod == "True")
                 {
-                    <b><b id="report_start_date"></b> to <b id="report_end_date"></b></b>
+                    <b><b id="@A11yIds.Unique(Context, "report_start_date")"></b> to <b id="@A11yIds.Unique(Context, "report_end_date")"></b></b>
                     <br />
                 }
                 else
                 {
-                    <b id="@report_date">@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b>
+                    <b id="@A11yIds.Unique(Context, report_date)">@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b>
                     <br />
                 }
             }
@@ -33,7 +36,7 @@
         <div class="row justify-content-center mt-2">
             @if (ViewBag.PrimaryReport != "True")
             {
-                <button title="Back to previous Report" id=@ViewBag.ElementBackBtnID aria-label="Back to the previous report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                <button title="Back to previous Report" id="@A11yIds.Unique(Context, (string)ViewBag.ElementBackBtnID)" aria-label="Back to previous report" type="button" class="a11y-report-btn" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
                     <i class="fas fa-arrow-left" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                 </button>
             }
@@ -64,7 +67,7 @@
 
             </div> *@
             @*
-            <button title="Print This Page" id=@ViewBag.ElementPrintBtnID onclick=@ViewBag.ElementPrintBtnOnClickEvent aria-label="Print this report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+            <button title="Print This Page" id="@A11yIds.Unique(Context, (string)ViewBag.ElementPrintBtnID)" onclick=@ViewBag.ElementPrintBtnOnClickEvent aria-label="Print this page" type="button" class="a11y-report-btn" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
             <i class="fas fa-print" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
             </button>*@
 
@@ -72,7 +75,7 @@
 
             <i class="fab fa-whatsapp" aria-hidden="true"></i>
 
-            <button title="Export to PDF" id=@ViewBag.ElementPDFBtnID data-toggle="modal" data-target="@ViewBag.PdfBackdropID" aria-label="Export this report to PDF" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+            <button title="Export to PDF" id="@A11yIds.Unique(Context, (string)ViewBag.ElementPDFBtnID)" data-toggle="modal" data-target="@ViewBag.PdfBackdropID" aria-label="Export to PDF" type="button" class="a11y-report-btn" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
                 <i class="fab fa-whatsapp" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
             </button>
 
@@ -81,13 +84,13 @@
 
                 @if (ViewBag.PdfBackdropID != null)
                 {
-                    <button title="Export to PDF" id=@ViewBag.ElementPDFBtnID data-toggle="modal" data-target="@ViewBag.PdfBackdropID" aria-label="Export this report to PDF" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                    <button title="Export to PDF" id="@A11yIds.Unique(Context, (string)ViewBag.ElementPDFBtnID)" data-toggle="modal" data-target="@ViewBag.PdfBackdropID" aria-label="Export to PDF" type="button" class="a11y-report-btn" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
                         <i class="far fa-file-pdf" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                     </button>
                 }
                 else
                 {
-                    <button title="Export to PDF" id=@ViewBag.ElementPDFBtnID aria-label="Export this report to PDF" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                    <button title="Export to PDF" id="@A11yIds.Unique(Context, (string)ViewBag.ElementPDFBtnID)" aria-label="Export to PDF" type="button" class="a11y-report-btn" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
                         <i class="far fa-file-pdf" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                     </button>
                 }
@@ -96,13 +99,13 @@
             {
                 @if (ViewBag.ExcelBackdropID != null)
                 {
-                    <button title="Export to Excel" id=@ViewBag.ElementExcelBtnID data-toggle="modal" data-target="@ViewBag.ExcelBackdropID" aria-label="Export this report to Excel" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                    <button title="Export to Excel" id="@A11yIds.Unique(Context, (string)ViewBag.ElementExcelBtnID)" data-toggle="modal" data-target="@ViewBag.ExcelBackdropID" aria-label="Export to Excel" type="button" class="a11y-report-btn" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
                         <i class="far fa-file-excel" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                     </button>
                 }
                 else
                 {
-                    <button title="Export to Excel" id=@ViewBag.ElementExcelBtnID aria-label="Export this report to Excel" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                    <button title="Export to Excel" id="@A11yIds.Unique(Context, (string)ViewBag.ElementExcelBtnID)" aria-label="Export to Excel" type="button" class="a11y-report-btn" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
                         <i class="far fa-file-excel" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                     </button>
                 }
@@ -112,13 +115,13 @@
             {
                 @if (ViewBag.EmailBackdropID != null)
                 {
-                    <button title="Email" id=@ViewBag.ElementEmailBtnID data-toggle="modal" data-target="@ViewBag.EmailBackdropID" aria-label="Email this report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                    <button title="Email" id="@A11yIds.Unique(Context, (string)ViewBag.ElementEmailBtnID)" data-toggle="modal" data-target="@ViewBag.EmailBackdropID" aria-label="Email" type="button" class="a11y-report-btn" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
                         <i class="fas fa-envelope" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                     </button>
                 }
                 else
                 {
-                    <button title="Email" id=@ViewBag.ElementEmailBtnID aria-label="Email this report" type="button" class="a11y-report-btn" style="border: 2px solid var(--a11y-action-red); padding: 0; background-color: var(--a11y-action-red);">
+                    <button title="Email" id="@A11yIds.Unique(Context, (string)ViewBag.ElementEmailBtnID)" aria-label="Email" type="button" class="a11y-report-btn" style="border: 2px solid #FCE0E0; padding: 0; background-color: #ff3333;">
                         <i class="fas fa-envelope" aria-hidden="true" style="color: white; padding:0; width:30px;"></i>
                     </button>
                 }

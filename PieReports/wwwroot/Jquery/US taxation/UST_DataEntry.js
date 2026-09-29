@@ -436,52 +436,65 @@ $(document).on("click", ".Edit_rec", function () {
 });
 
 $(document).on("click", ".Delete_rec", function () {
+    // WCAG 3.3.4 Error Prevention — deleting data needs a confirmation step,
+    // with a button that names the consequence. The original body runs
+    // unchanged, with `this` preserved, once the user confirms.
+    var a11yTrigger = this;
+    var a11yAsk = (window.a11y && window.a11y.confirm)
+        ? window.a11y.confirm({ title: 'Delete this entry?', message: 'The US taxation entry will be deleted. This cannot be undone.', confirmLabel: 'Delete entry' })
+        : Promise.resolve(window.confirm('Delete this entry?'));
+    a11yAsk.then(function (confirmed) {
+        if (!confirmed) { return; }
+        (function () {
 
-    var delete_rec_id = $(this).parents('tr').find('input:hidden[name=rec_id]').val()
-    var delete_subcat_id = $(this).parents('tr').find('input:hidden[name=subcat_id]').val()
+            var delete_rec_id = $(this).parents('tr').find('input:hidden[name=rec_id]').val()
+            var delete_subcat_id = $(this).parents('tr').find('input:hidden[name=subcat_id]').val()
 
-    if (delete_subcat_id == 4) { //Bank Tax is 4 1 in taxWithHeld Table
-        delete_subcat_id = "1";
-    }
-
-    var user_input = confirm("Are you sure you want to delete this record?")
-
-    if (user_input) {
-
-        var main_client_id = $('#ddlUSClientList :selected').val();
-        var bank_account = $('#ddlBankAccountsList :selected').val();
-
-        var formdata = {
-            "loginid": "0",
-            "rec_id": delete_rec_id,
-            "main_client_id": main_client_id,
-            "bank_account": bank_account,
-            "client_cat": "0",
-            "trans_date": "01/01/2020",
-            "segment": "0",
-            "trans_type": delete_subcat_id,
-            "narration": " ",
-            "amount": "0",
-            "flag": "3"
-        }
-
-        var posturl = "/ClientPortal/Pie/psp_amd_nri_client_data_entry";
-
-        $.ajax({
-            url: posturl,
-            type: "post",
-            contentType: "application/json",
-            data: JSON.stringify(formdata),
-            success: function (data) {
-
-                GetExistingTaxData();
-
-            },
-            error: function (xhr, err) {
-                alert(err)
+            if (delete_subcat_id == 4) { //Bank Tax is 4 1 in taxWithHeld Table
+                delete_subcat_id = "1";
             }
-        })
-    }
+
+            var user_input = true; // confirmed in the accessible dialog above
+
+            if (user_input) {
+
+                var main_client_id = $('#ddlUSClientList :selected').val();
+                var bank_account = $('#ddlBankAccountsList :selected').val();
+
+                var formdata = {
+                    "loginid": "0",
+                    "rec_id": delete_rec_id,
+                    "main_client_id": main_client_id,
+                    "bank_account": bank_account,
+                    "client_cat": "0",
+                    "trans_date": "01/01/2020",
+                    "segment": "0",
+                    "trans_type": delete_subcat_id,
+                    "narration": " ",
+                    "amount": "0",
+                    "flag": "3"
+                }
+
+                var posturl = "/ClientPortal/Pie/psp_amd_nri_client_data_entry";
+
+                $.ajax({
+                    url: posturl,
+                    type: "post",
+                    contentType: "application/json",
+                    data: JSON.stringify(formdata),
+                    success: function (data) {
+
+                        GetExistingTaxData();
+
+                    },
+                    error: function (xhr, err) {
+                        alert(err)
+                    }
+                })
+            }
+
+        }).call(a11yTrigger);
+    });
 });
 
 

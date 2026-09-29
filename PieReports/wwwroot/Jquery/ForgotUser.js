@@ -80,17 +80,13 @@
             success: function (data) {
                 $("#spnmsguser").html(data.sql_message)
                 if (data.sql_message == "Nickname Updated successfully") {
-                   
-                        var counter = 0;
-                        var interval = setInterval(function () {
-                            counter++;
-                            // Display 'counter' wherever you want to display it.
-                            if (counter == 3) {
-                                // Display a login box
-                                window.location = "/ClientPortal/Login/Index";
-                            }
-                        }, 1000);
-                    
+                    // WCAG 2.2.1 Timing Adjustable — this used to redirect to the
+                    // sign-in page three seconds after the message appeared, which
+                    // is a timed change of context the user cannot stop, and too
+                    // short for the message to be read or announced. The user now
+                    // moves on when ready.
+                    $("#spnmsguser").append(
+                        ' <a href="/ClientPortal/Login/Index">Sign in with your new username</a>');
                 } else {
                     //$("#myform").html(data.sql_message);
                 }

@@ -160,42 +160,55 @@ $(document).on("click", ".Edit_rec", function () {
 });
 
 $(document).on("click", ".Del_rec", function () {
+    // WCAG 3.3.4 Error Prevention — deleting data needs a confirmation step,
+    // with a button that names the consequence. The original body runs
+    // unchanged, with `this` preserved, once the user confirms.
+    var a11yTrigger = this;
+    var a11yAsk = (window.a11y && window.a11y.confirm)
+        ? window.a11y.confirm({ title: 'Delete this research report?', message: 'The report will be removed from the list and from the website. This cannot be undone.', confirmLabel: 'Delete report' })
+        : Promise.resolve(window.confirm('Delete this research report?'));
+    a11yAsk.then(function (confirmed) {
+        if (!confirmed) { return; }
+        (function () {
 
-    let abc = new Array();
-    $(this).parents("tr").find("td:not(:last-child)").each(function () {
-        abc.push($(this).text());
+            let abc = new Array();
+            $(this).parents("tr").find("td:not(:last-child)").each(function () {
+                abc.push($(this).text());
+            });
+
+            let rec_id = $(this).parents('tr').find('input:hidden[name=dsp_id]').val()
+
+            let formdata = {
+                "flag": "D",
+                "rec_id": Number(rec_id),
+                "repo_title": abc[1],
+                "URL": abc[5],
+                "category": abc[2]
+            }
+
+            let posturl = "/ClientPortal/Research/deleteReport";
+            $.ajax({
+                url: posturl,
+                type: "post",
+                contentType: "application/json",
+                data: JSON.stringify(formdata),
+                success: function (data) {
+                    alert(data);
+
+                    /*The reload() function takes an optional parameter that can be set to true to force
+                    a reload from the server rather than the cache.The parameter defaults to false,
+                    so by default the page may reload from the browser's cache.*/
+                    location.reload(true);
+
+                },
+                error: function (xhr, err) {
+                    alert(err)
+                }
+            })
+
+
+        }).call(a11yTrigger);
     });
-
-    let rec_id = $(this).parents('tr').find('input:hidden[name=dsp_id]').val()
-
-    let formdata = {
-        "flag": "D",
-        "rec_id": Number(rec_id),
-        "repo_title": abc[1],
-        "URL": abc[5],
-        "category": abc[2]
-    }
-
-    let posturl = "/ClientPortal/Research/deleteReport";
-    $.ajax({
-        url: posturl,
-        type: "post",
-        contentType: "application/json",
-        data: JSON.stringify(formdata),
-        success: function (data) {
-            alert(data);
-
-            /*The reload() function takes an optional parameter that can be set to true to force
-            a reload from the server rather than the cache.The parameter defaults to false,
-            so by default the page may reload from the browser's cache.*/
-            location.reload(true);
-
-        },
-        error: function (xhr, err) {
-            alert(err)
-        }
-    })
-
 });
 
 $(document).on("click", ".Push_Notification", function () {

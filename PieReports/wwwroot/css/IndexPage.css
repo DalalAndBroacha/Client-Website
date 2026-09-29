@@ -7,6 +7,27 @@
     color:black;
 }
 
+/* WCAG 4.1.2: the sign-in tabs are <button role="tab"> rather than <a>.
+   Give the buttons exactly what the anchors had (style.css sizes `a` at
+   13px, 14px from 1400px) so the tab strip looks and measures the same. */
+#TabsUL li button.nav-link {
+    color: black;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: start;
+    border: 0;
+    border-radius: 0;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+@media only screen and (min-width: 1400px) {
+    #TabsUL li button.nav-link {
+        font-size: 14px;
+    }
+}
+
 #TabsUL li:first-of-type {
     border-left: 1px solid red;
 }

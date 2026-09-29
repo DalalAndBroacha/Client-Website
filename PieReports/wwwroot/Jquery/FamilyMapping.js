@@ -454,34 +454,47 @@ function AddNewRm() {
 }
 
 $(document).on("click", ".Del_rec", function () {
+    // WCAG 3.3.4 Error Prevention — deleting data needs a confirmation step,
+    // with a button that names the consequence. The original body runs
+    // unchanged, with `this` preserved, once the user confirms.
+    var a11yTrigger = this;
+    var a11yAsk = (window.a11y && window.a11y.confirm)
+        ? window.a11y.confirm({ title: 'Remove this relationship manager?', message: 'The relationship manager will be removed from this family. This cannot be undone.', confirmLabel: 'Remove relationship manager' })
+        : Promise.resolve(window.confirm('Remove this relationship manager?'));
+    a11yAsk.then(function (confirmed) {
+        if (!confirmed) { return; }
+        (function () {
 
-    let rec_id = $(this).parents('tr').find('input:hidden[name=rmId]').val()
+            let rec_id = $(this).parents('tr').find('input:hidden[name=rmId]').val()
 
-    let formdata = {
-        "login_id": $("#LoggedInUID").val(),
-        "family_token": $("#ddlRMFamilyList").val(),
-        "amd_flag": "D",
-        "rm_id": rec_id
-    }
-
-    const posturl = "/ClientPortal/Pie/PspAmdFamilyMappingRmUpdate";
-    $.ajax({
-        url: posturl,
-        type: "post",
-        contentType: "application/json",
-        data: JSON.stringify(formdata),
-        success: function (data) {
-            if (data != null) {
-                $("#ddlRMFamilyList").trigger("change");
-                alert(data.sql_msg);
+            let formdata = {
+                "login_id": $("#LoggedInUID").val(),
+                "family_token": $("#ddlRMFamilyList").val(),
+                "amd_flag": "D",
+                "rm_id": rec_id
             }
-            else {
-                alert("Error!");
-            }
-        },
-        error: function (xhr, err) {
-            alert(err)
-        }
-    })
 
+            const posturl = "/ClientPortal/Pie/PspAmdFamilyMappingRmUpdate";
+            $.ajax({
+                url: posturl,
+                type: "post",
+                contentType: "application/json",
+                data: JSON.stringify(formdata),
+                success: function (data) {
+                    if (data != null) {
+                        $("#ddlRMFamilyList").trigger("change");
+                        alert(data.sql_msg);
+                    }
+                    else {
+                        alert("Error!");
+                    }
+                },
+                error: function (xhr, err) {
+                    alert(err)
+                }
+            })
+
+
+        }).call(a11yTrigger);
+    });
 });

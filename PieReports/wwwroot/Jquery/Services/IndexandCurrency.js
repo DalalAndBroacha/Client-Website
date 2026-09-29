@@ -336,12 +336,25 @@ $("#btnViewData").click(function () {
 
 
 $(document).on("click", ".Delete_rec", function () {
+    // WCAG 3.3.4 Error Prevention — deleting data needs a confirmation step,
+    // with a button that names the consequence. The original body runs
+    // unchanged, with `this` preserved, once the user confirms.
+    var a11yTrigger = this;
+    var a11yAsk = (window.a11y && window.a11y.confirm)
+        ? window.a11y.confirm({ title: 'Delete this rate?', message: 'The index or currency rate will be deleted. This cannot be undone.', confirmLabel: 'Delete rate' })
+        : Promise.resolve(window.confirm('Delete this rate?'));
+    a11yAsk.then(function (confirmed) {
+        if (!confirmed) { return; }
+        (function () {
 
-    let delete_rec_id = $(this).parents('tr').find('input:hidden[name=rec_id]').val()
-    let delete_entity_id = $(this).parents('tr').find('input:hidden[name=master_id]').val()
+            let delete_rec_id = $(this).parents('tr').find('input:hidden[name=rec_id]').val()
+            let delete_entity_id = $(this).parents('tr').find('input:hidden[name=master_id]').val()
 
-    DeleteData(delete_rec_id, delete_entity_id);
+            DeleteData(delete_rec_id, delete_entity_id);
    
+
+        }).call(a11yTrigger);
+    });
 });
 
 $(document).on("click", ".Edit_rec", function () {

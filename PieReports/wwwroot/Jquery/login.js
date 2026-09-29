@@ -440,7 +440,9 @@ function Resend_OTP(source) {
     })
 }
 
-$("#img_captcha").click(function () {
+// WCAG 2.1.1: the CAPTCHA image sits inside #btnRefreshCaptcha, so a click
+// on the image and Enter/Space on the button both land here, once.
+$("#btnRefreshCaptcha").click(function () {
     resetCaptchaImage();
 });
 

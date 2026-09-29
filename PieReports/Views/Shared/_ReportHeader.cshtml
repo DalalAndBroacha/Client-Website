@@ -1,18 +1,21 @@
-﻿@{ 
+﻿@* 4.1.1 Parsing — some reports render this partial once per section, so every
+   id goes through A11yIds.Unique (Utility/A11yIds.cs): the first copy keeps
+   the plain id, later copies get -2, -3. *@
+@{ 
     var headerId = "header_div_" + @ViewBag.ReportHeaderDiv;
 }
 
-<div class="SubTotalRow" style="text-align:center;" id=@headerId>
+<div class="SubTotalRow" style="text-align:center;" id="@A11yIds.Unique(Context, headerId)">
     @* 1.3.1 Info and Relationships / 2.4.6 Headings and Labels — the report
        name is the page heading. A native <h1> here would break out of the
        inline run of date text and change the layout, so the heading role
        and level are supplied explicitly instead. *@
-    <b id="lblReport_Name" role="heading" aria-level="1">@ViewBag.ReportName</b>
+    <b id="@A11yIds.Unique(Context, "lblReport_Name")" role="heading" aria-level="1">@ViewBag.ReportName</b>
     @if (ViewBag.GenDate == "True")
     {
         if (ViewBag.GenPeriod == "True")
         {
-            <b><b id="report_start_date"></b> to <b id="report_end_date"></b></b><br />
+            <b><b id="@A11yIds.Unique(Context, "report_start_date")"></b> to <b id="@A11yIds.Unique(Context, "report_end_date")"></b></b><br />
             <span style="font-size:9px;">Generated On: <b>@DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss")</b></span>
         }
         else

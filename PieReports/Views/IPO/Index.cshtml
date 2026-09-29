@@ -183,8 +183,10 @@
                             <label for="inpQty" class="a11y-visually-hidden">Quantity</label>
                             <input type="number" id="inpQty" class="form-control ml-2" placeholder="Quantity" style="max-width:110px;" readonly />
 
+                            @* 4.1.2 — the caption beside this checkbox was a <strong>, so the
+                               checkbox had no accessible name. *@
                             <input type="checkbox" id="inpCutOff" class="ml-2"/>
-                            <strong class="ml-2 mt-2">Cutoff price</strong>
+                            <label for="inpCutOff" class="ml-2 mt-2 mb-0" style="font-weight:bold;">Cutoff price</label>
                             <label for="inpPrice" class="a11y-visually-hidden">Price per share</label>
                             <input type="number" id="inpPrice" class="form-control ml-2" placeholder="Price" style="max-width:110px;" />
 
@@ -201,8 +203,8 @@
 
                         <div class="mt-2">
                             <p class="alert alert-danger" style="background-color:#cd3b3b !important;">
-                                <input type="checkbox" id="chkDecla" class="mr-2"/> I hereby undertake that, I have read the Red Herring Prospectus and I am an eligible UPI bidder as per the applicable
-                                provisions of the SEBI (Issue of captial and Disclosure Requirement) Regulation,  2009.
+                                <input type="checkbox" id="chkDecla" class="mr-2"/> <label for="chkDecla" class="d-inline mb-0" style="font-weight:inherit;">I hereby undertake that, I have read the Red Herring Prospectus and I am an eligible UPI bidder as per the applicable
+                                provisions of the SEBI (Issue of captial and Disclosure Requirement) Regulation,  2009.</label>
                             </p>
                         </div>
                         <div>
@@ -213,6 +215,14 @@
 
 
                         <div id="divOTPSection" class="row justify-content-between mt-2" style="display:none;">
+                            @* WCAG 3.3.4 Error Prevention (Financial) — before the OTP commits
+                               the bid, show exactly what will be submitted and offer a way
+                               back to correct it. Filled in by ApplyIPO.js. *@
+                            <div class="col-12 mb-2">
+                                <h2 class="h6 mb-1" id="ipoReviewTitle">Check your bid before you confirm it</h2>
+                                <p id="ipoBidSummary" class="mb-1"></p>
+                                <button type="button" id="btnEditBid" class="a11y-link-button">Edit bid</button>
+                            </div>
 
                             <label for="inpOtp" class="a11y-visually-hidden">One-time password</label>
                             <input type="text" id="inpOtp" onkeypress="return onlyNumberKey(event)"

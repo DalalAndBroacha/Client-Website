@@ -90,6 +90,17 @@ li {
     margin-top: 8px;
 }
 
+/* WCAG 2.1.1 / 4.1.2: the report menus' Export / Print items were a
+   <p class="dropdown-item"> wrapping an <a href="#">; they are <button>s now.
+   Same box as the <p> above, and the link's black text. */
+.dropdown-menu-lg button.dropdown-item {
+    margin: 8px 0 0;
+    white-space: normal;
+    color: #000;
+    /* the <p>'s 26px line holding 15px link text measured 27px */
+    line-height: 27px;
+}
+
 .dropdown-item:hover, .dropdown-item:active {
     color: #000;
     text-decoration: none;
