@@ -141,6 +141,14 @@
     color: white;
 }
 
+/* WCAG 1.4.3: Bootstrap's .btn:hover turns the text #212529, which is 3.2:1
+   on this red. The text stays white and the fill darkens as the hover cue
+   (#b3241a, 6.9:1 with white). */
+.btn.DnB-RedLabel:hover {
+    color: white;
+    background-color: #b3241a;
+}
+
 .tableDataLowerCol {
     font-size: 12px !important;
     font-family: Roboto, sans-serif;

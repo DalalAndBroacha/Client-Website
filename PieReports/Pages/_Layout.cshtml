@@ -71,10 +71,10 @@
 <link rel="stylesheet" href="~/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 <link href="~/css/DnB.css" rel="stylesheet" asp-append-version="true" />
 <script src="~/Jquery/DnB.js"></script>
-<script src="~/Jquery/Dashboard.js"></script>
+<script src="~/Jquery/Dashboard.js" asp-append-version="true"></script>
 <link href="~/css/ChangePassword.css" rel="stylesheet" asp-append-version="true" />
-<script src="~/Jquery/changePassword.js"></script>
-<script src="~/Jquery/ForgotUser.js"></script>
+<script src="~/Jquery/changePassword.js" asp-append-version="true"></script>
+<script src="~/Jquery/ForgotUser.js" asp-append-version="true"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6FJ1RE3WC0"></script>
 
 <div class="wrapper">
@@ -85,13 +85,17 @@
         <!-- Left navbar links -->
         <ul class="navbar-nav" id="main_UL">
             <li class="nav-item">
-                @* 4.1.2 Name, Role, Value — an icon-only control needs a name
-                   and, as a disclosure, an aria-expanded that JS keeps in
-                   sync (see accessibility.js). *@
-                <button class="nav-link btn btn-link" type="button" data-widget="pushmenu"
-                        aria-label="Toggle navigation menu" aria-expanded="true" aria-controls="main-sidebar-nav">
+                @* 4.1.2 Name, Role, Value — an icon-only control needs a name and,
+                   as a disclosure, an aria-expanded that accessibility.js keeps in
+                   sync with AdminLTE's sidebar state. This stays an <a> because the
+                   navbar's layout is built for <a class="nav-link">: a <button
+                   class="btn"> resets the 13px font the fa-2x icons scale from and
+                   made the whole header taller. accessibility.js gives every
+                   a[role=button] the Space key, which a link lacks natively. *@
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"
+                   aria-label="Toggle navigation menu" aria-expanded="true" aria-controls="main-sidebar-nav">
                     <i class="fas fa-bars" aria-hidden="true"></i>
-                </button>
+                </a>
             </li>
             <li class="nav-item mb-mleft5" style="margin-left: 10px;">
                 @* 1.1.1 — decorative icon beside a labelled control. *@
@@ -152,7 +156,7 @@
                         <div id="divFetchfev"></div>
                     </div>
                 </li>*@
-            <li class="nav-item">
+            <li class="nav-item dropdown">
                 @* 2.4.4 Link Purpose — the accessible name comes from the
                    aria-label, not from a `title` on a decorative glyph. *@
                 <a class="nav-link" href="/ClientPortal/Pie/Contact_Us" aria-label="Contact us">
@@ -161,26 +165,27 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item">
-                @* This opens a PDF in an in-page dialog, so it is a button,
-                   not a link (2.1.1, 4.1.2). *@
-                <button type="button" class="nav-link btn btn-link" data-toggle="modal" data-target="#myModalLayout"
-                        aria-label="Open the client portal user manual"
-                        onclick="ReportIFrameLayout('https://dalal-broacha.com/pdfs/Client%20Portal%20User%20Manual.pdf','User Manual');">
+            <li class="nav-item dropdown">
+                @* 4.1.2 — this opens a PDF in an in-page dialog, so it is exposed
+                   as a button that opens a dialog. ReportIFrameLayout() shows the
+                   dialog itself; the data-toggle it used to carry was redundant. *@
+                <a href="#" class="nav-link" role="button" aria-haspopup="dialog"
+                   aria-label="Open the client portal user manual"
+                   onclick="ReportIFrameLayout('https://dalal-broacha.com/pdfs/Client%20Portal%20User%20Manual.pdf','User Manual'); return false;">
                     <span><i class="fas fa-info-circle fa-2x White_Red_Icon" aria-hidden="true"></i></span>
-                </button>
+                </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item dropdown">
                 <a class="nav-link" href="/ClientPortal/Pie/Download_Reports" aria-label="Go to downloads">
                     <span><i class="fas fa-cloud-download-alt fa-2x White_Red_Icon" aria-hidden="true"></i></span>
                 </a>
             </li>
 
             <li class="nav-item dropdown">
-                <button type="button" class="nav-link btn btn-link" data-toggle="dropdown"
-                        aria-expanded="false" aria-haspopup="true" aria-label="User details">
+                <a class="nav-link" data-toggle="dropdown" href="#" role="button"
+                   aria-expanded="false" aria-haspopup="true" aria-label="User details">
                     <span><i class="fas fa-user fa-2x White_Red_Icon" aria-hidden="true"></i></span>
-                </button>
+                </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
                     <div class="form-group-dashboard">
 
@@ -196,9 +201,13 @@
                         <input type="hidden" id="Curr_Fam_ID" />
                     </div>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/ClientPortal/Pie/Profile_Update" style="font-family: inherit; font-size: 15px;">
-                        Update Profile
-                    </a>
+                    <div class="form-group-dashboard">
+                        <p class="dropdown-item">
+                            <a href="/ClientPortal/Pie/Profile_Update" style="font-family: inherit; font-size: 15px;">
+                                Update Profile
+                            </a>
+                        </p>
+                    </div>
                     <div class="dropdown-divider"></div>
                     @*<div class="form-group-dashboard">
                             <p name="trading" data-toggle="modal" data-target="#ChangeUsernameM" class="dropdown-item">
@@ -216,20 +225,20 @@
                 </div>
             </li>
 
-            <li class="nav-item" style="margin-left: 20px;">
+            <li class="nav-item dropdown" style="margin-left: 20px;">
                 <p class="mb-mtop0 textweight" style="margin-top:10px;color: #000;"> @Model.Login_client_name </p>
             </li>
-            <li class="nav-item mb-mtop0" style="margin-left: 20px;margin-top: 7px;">
-                @* Signing out is a state change, so it is a POST from a real
-                   submit button rather than a link (2.1.1, 4.1.2). The form
-                   no longer wraps a bare <a>, which was neither submitting
-                   the form nor announcing itself as a link with a purpose. *@
-                <form method="post" action="@Url.Action("LogOut", "Login")" class="d-inline">
-                    <button type="submit" class="btn btn-link nav-link p-0" aria-label="Sign out">
+            <li class="nav-item dropdown mb-mtop0" style="margin-left: 20px;margin-top: 7px;">
+                @* 2.4.4 / 4.1.2 — an icon-only link needs a name. The markup is
+                   otherwise the original: the sign-out URL is navigated to as a
+                   link, exactly as before. *@
+                @using (Html.BeginForm("LogOut", "Dashboard", FormMethod.Post))
+                {
+                    <a href="@Url.Action("LogOut", "Login")" aria-label="Sign out">
                         <span><i class="fas fa-power-off fa-2x White_Red_Icon" aria-hidden="true"
                                  style="border-radius:5px; padding:2px;"></i></span>
-                    </button>
-                </form>
+                    </a>
+                }
             </li>
 
         </ul>
@@ -252,7 +261,7 @@
                this is the second way: a search over the same menu, wired up in
                js/accessibility.js. It reports its result count through a live
                region so the outcome is announced without moving focus (4.1.3). *@
-            <div class="p-2" role="search">
+            <div class="a11y-nav-search" role="search">
                 <label for="a11y-nav-search" class="a11y-visually-hidden">Search the menu</label>
                 <input type="search" id="a11y-nav-search" class="form-control form-control-sm"
                        placeholder="Search the menu" autocomplete="off"
@@ -279,8 +288,12 @@
                             @if (menu.source_path == null || menu.source_path == "")
                             {
                                 @* No destination: this entry only expands its
-                                   submenu, so it is a button (2.1.1). *@
-                                <a href="#" role="button" class="nav-link active">
+                                   submenu, so it is a button (2.1.1).
+                                   4.1.2 — in the icon-only (collapsed) sidebar
+                                   AdminLTE squeezes the <p> to width 0, which
+                                   drops it from the accessibility tree; the
+                                   aria-label carries the same words (2.5.3). *@
+                                <a href="#" role="button" class="nav-link active" aria-label="@menu.name">
                                     <img src="~/images/NavMenu/@menu.Icon_path" alt="" class="img-responsive6" style="width:25px;">
                                     <p name="@menu.name" id="@menu.id" style="font-size:16px;">@menu.name</p>
                                     <i class="right fas fa-angle-down" aria-hidden="true"></i>
@@ -288,7 +301,7 @@
                             }
                             else
                             {
-                                <a href="@menu.source_path" class="nav-link active">
+                                <a href="@menu.source_path" class="nav-link active" aria-label="@menu.name">
                                     <img src="~/images/NavMenu/@menu.Icon_path" alt="" class="img-responsive6" style="width:25px;">
                                     <p name="@menu.name" id="@menu.id" style="font-size:16px;">@menu.name</p>
                                 </a>

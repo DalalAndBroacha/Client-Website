@@ -57,14 +57,27 @@ a {
   @media only screen and (min-width: 1400px) {
     a {
       font-size: 14px; } }
+  /* WCAG 1.4.3: #448aff is 3.3:1 on white. #0056b3 (7.0:1) is the hover
+     colour AdminLTE already applies after sign-in; focus now matches it. */
   a:focus, a:hover {
     text-decoration: none;
-    color: #448aff; }
+    color: #0056b3; }
 
 h4 {
   font-size: 1.375rem; }
 
 h6 {
+  font-size: 15px; }
+
+/* WCAG 1.3.1 / 2.4.6: some headings were moved to their correct level and
+   keep their look through Bootstrap's .h4 / .h6 classes, which use
+   Bootstrap's sizes (1.5rem / 1rem). The portal never used these classes
+   before, so they take this theme's tag sizes and a promoted heading renders
+   exactly as it did. */
+.h4 {
+  font-size: 1.375rem; }
+
+.h6 {
   font-size: 15px; }
 
 p {

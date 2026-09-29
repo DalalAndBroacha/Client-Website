@@ -263,7 +263,11 @@ function InitiateBid() {
 
                                 lockUnlockInputs("Disable")
 
+                                // WCAG 3.3.4 — review step: state exactly what the OTP
+                                // will commit, in text, before it is committed.
+                                showBidSummary(formdata);
                                 $("#divOTPSection").show();
+                                $("#inpOtp").focus();
                             }
                             else {
                                 $("#divOTPSection").hide();
@@ -287,6 +291,24 @@ function InitiateBid() {
         alert("Amount of your bid should be greater than minimum amount.")
     }
 }
+
+function showBidSummary(bid) {
+    var name = $.trim($("#pTxtSymbol").text()) || bid.symbol;
+    var price = bid.bid_cutoff === "Y" ? "at the cut-off price" : "at \u20b9" + bid.bid_price + " per share";
+    $("#ipoBidSummary").text(
+        "You are bidding for " + bid.bid_qty + " shares of " + name + " " + price +
+        ". \u20b9" + Number(bid.bid_ttl_amount).toLocaleString("en-IN") +
+        " will be blocked through UPI ID " + bid.upi_id + ".");
+}
+
+// WCAG 3.3.4 — the user can go back and correct the bid before confirming it.
+$(document).on("click", "#btnEditBid", function () {
+    $("#divOTPSection").hide();
+    $("#inpOtp").val("");
+    lockUnlockInputs("Enable");
+    $("#inpLot").focus();
+    if (window.a11y) { window.a11y.announce("Bid unlocked for editing."); }
+});
 
 function SubmitOtp() {
 

@@ -257,35 +257,48 @@ $(document).on("click", ".Edit_rec", function () {
 });
 
 $(document).on("click", ".Delete_rec", function () {
+    // WCAG 3.3.4 Error Prevention — deleting data needs a confirmation step,
+    // with a button that names the consequence. The original body runs
+    // unchanged, with `this` preserved, once the user confirms.
+    var a11yTrigger = this;
+    var a11yAsk = (window.a11y && window.a11y.confirm)
+        ? window.a11y.confirm({ title: 'Delete this bank account?', message: 'The bank account record will be deleted. This cannot be undone.', confirmLabel: 'Delete bank account' })
+        : Promise.resolve(window.confirm('Delete this bank account?'));
+    a11yAsk.then(function (confirmed) {
+        if (!confirmed) { return; }
+        (function () {
 
-    var delete_rec_id = $(this).parents('tr').find('input:hidden[name=rec_id]').val()
+            var delete_rec_id = $(this).parents('tr').find('input:hidden[name=rec_id]').val()
 
-    var user_input = confirm("Are you sure you want to delete this record?")
+            var user_input = true; // confirmed in the accessible dialog above
 
-    if (user_input) {
+            if (user_input) {
 
-        //var main_client_id = $('#ddlUSClientList :selected').val();
-        //var bank_account = $('#ddlBankAccountsList :selected').val();
+                //var main_client_id = $('#ddlUSClientList :selected').val();
+                //var bank_account = $('#ddlBankAccountsList :selected').val();
 
-        var formdata = {
-            "loginid": "0",
-        }
+                var formdata = {
+                    "loginid": "0",
+                }
 
-        var posturl = "/ClientPortal/Pie/psp_amd_nri_client_data_entry";
+                var posturl = "/ClientPortal/Pie/psp_amd_nri_client_data_entry";
 
-        //$.ajax({
-        //    url: posturl,
-        //    type: "post",
-        //    contentType: "application/json",
-        //    data: JSON.stringify(formdata),
-        //    success: function (data) {
+                //$.ajax({
+                //    url: posturl,
+                //    type: "post",
+                //    contentType: "application/json",
+                //    data: JSON.stringify(formdata),
+                //    success: function (data) {
 
-        //        GetExistingTaxData();
+                //        GetExistingTaxData();
 
-        //    },
-        //    error: function (xhr, err) {
-        //        alert(err)
-        //    }
-        //})
-    }
+                //    },
+                //    error: function (xhr, err) {
+                //        alert(err)
+                //    }
+                //})
+            }
+
+        }).call(a11yTrigger);
+    });
 });

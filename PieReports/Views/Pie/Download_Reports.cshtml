@@ -28,7 +28,14 @@
         <div id="main_Div" class="card" style="position: unset; background-color: white; overflow-y:scroll; max-height:500px; margin-top:70px; display:none;">
             <div style="padding-left:12px;">
                 <div><h2 class="paraTextAlignCenter">Downloads</h2></div>
-                <div class="float-right" id="timer"></div>
+                @* WCAG 2.2.1 Timing Adjustable / 2.2.2 Pause, Stop, Hide — the page
+                   reloads itself every 15 seconds. The user must be able to turn
+                   that off before it happens. The countdown is deliberately not a
+                   live region, so it does not interrupt a screen reader each second. *@
+                <div class="float-right">
+                    <span id="timer"></span>
+                    <button type="button" id="btnAutoRefresh" class="a11y-link-button ml-2">Stop automatic refresh</button>
+                </div>
             </div>
             <div style="margin-top:5px;">
                 <table class="table table-hover dt-responsive w-100">

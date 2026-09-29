@@ -194,13 +194,15 @@
        Every control that collects input needs a persistent, programmatically
        associated label. A placeholder is not a label: it disappears on typing.
        ====================================================================== */
+    // First match wins, so the specific password kinds come before the
+    // generic one ("One-time password" and "New password" contain "password").
     var autofillTokens = [
         [/(^|[^a-z])(user\s*name|username|userid|user_id|login\s*id|loginid)/i, 'username'],
+        [/(one[\s-]*time\s*password|\botp\b)/i, 'one-time-code'],
+        [/(new\s*password|confirm\s*password|retype\s*password|newpass|confpass)/i, 'new-password'],
         [/(^|[^a-z])(current\s*password|password|passwd|pwd)/i, 'current-password'],
-        [/(new\s*password|confirm\s*password|retype\s*password)/i, 'new-password'],
         [/(^|[^a-z])(e-?mail)/i, 'email'],
         [/(mobile|phone|contact\s*(no|number)|telephone)/i, 'tel'],
-        [/(one\s*time\s*password|\botp\b)/i, 'one-time-code'],
         [/(first\s*name)/i, 'given-name'],
         [/(last\s*name|surname)/i, 'family-name'],
         [/(^|[^a-z])(full\s*name|client\s*name|holder\s*name)/i, 'name'],
@@ -316,36 +318,135 @@
        select2 replaces the native <select> with a div. Carry the label across
        so the replacement is still named (4.1.2), and keep it in sync.
        ====================================================================== */
+    /* select2 names its combobox with aria-labelledby pointing at the value
+       text only, which overrides any aria-label, so the field's own label was
+       never announced. The value span inside also carries role="textbox" with
+       no name. Point aria-labelledby at label + value instead, and drop the
+       stray role. Pages call .select2() from jQuery ready handlers, which run
+       after this file's init, so the fix is re-applied after every call. */
+    function applySelect2Names() {
+        $all('select.select2-hidden-accessible').forEach(function (select) {
+            var container = select.nextElementSibling;
+            if (!container || !container.classList || !container.classList.contains('select2')) { return; }
+            var combo = container.querySelector('.select2-selection');
+            if (!combo) { return; }
+
+            var labelEl = select.id ? document.querySelector('label[for="' + (window.CSS && CSS.escape ? CSS.escape(select.id) : select.id) + '"]') : null;
+            var labelId;
+            if (labelEl) {
+                if (!labelEl.id) { labelEl.id = 'a11y-label-' + (select.id || Math.random().toString(36).slice(2, 9)); }
+                labelId = labelEl.id;
+            } else {
+                var name = select.getAttribute('aria-label') || labelTextFor(select) || select.getAttribute('title') || '';
+                if (!name) { return; }
+                var hidden = container.querySelector(':scope > .a11y-select2-name');
+                if (!hidden) {
+                    hidden = document.createElement('span');
+                    hidden.className = 'a11y-visually-hidden a11y-select2-name';
+                    hidden.id = 'a11y-select2-name-' + Math.random().toString(36).slice(2, 9);
+                    container.insertBefore(hidden, container.firstChild);
+                }
+                hidden.textContent = name;
+                labelId = hidden.id;
+            }
+
+            var rendered = combo.querySelector('.select2-selection__rendered');
+            if (rendered) {
+                rendered.removeAttribute('role');
+                rendered.removeAttribute('aria-readonly');
+            }
+            var single = combo.classList.contains('select2-selection--single');
+            combo.removeAttribute('aria-label');
+            combo.setAttribute('aria-labelledby', labelId + (single && rendered && rendered.id ? ' ' + rendered.id : ''));
+
+            // The search field (multi-select, and inside the open dropdown).
+            var labelText = (document.getElementById(labelId) || {}).textContent || '';
+            labelText = labelText.replace(/\s+/g, ' ').trim();
+            $all('.select2-search__field', container).forEach(function (search) {
+                search.setAttribute('aria-label', labelText ? labelText + ': search' : 'Search');
+            });
+
+            // 2.1.1 — a multi-select chip's "×" is a mouse-only <span>; from the
+            // keyboard only the last chip could be removed (Backspace). Each "×"
+            // becomes a button. select2 rebuilds the chips on every change, so
+            // focus goes back to the search field after a removal.
+            $all('.select2-selection__choice__remove', container).forEach(function (x) {
+                if (x.tagName === 'BUTTON') { return; }
+                var chip = x.parentElement;
+                var item = (chip.getAttribute('title') || chip.textContent.replace('×', '')).replace(/\s+/g, ' ').trim();
+                x.setAttribute('role', 'button');
+                x.setAttribute('tabindex', '0');
+                x.setAttribute('aria-label', 'Remove ' + item);
+                if (x.hasAttribute('data-a11y-keys')) { return; }
+                x.setAttribute('data-a11y-keys', 'true');
+                x.addEventListener('keydown', function (event) {
+                    if (event.key !== 'Enter' && event.key !== ' ' && event.key !== 'Spacebar') { return; }
+                    event.preventDefault();
+                    x.click();
+                    window.setTimeout(function () {
+                        var search = container.querySelector('.select2-search__field');
+                        if (search) { search.focus(); }
+                    }, 0);
+                });
+            });
+        });
+        var open = document.querySelector('.select2-container--open .select2-search__field');
+        if (open && !open.getAttribute('aria-label')) { open.setAttribute('aria-label', 'Search'); }
+    }
+
     function fixSelect2() {
         if (!window.jQuery || !window.jQuery.fn || !window.jQuery.fn.select2) { return; }
         var $ = window.jQuery;
-
-        function apply() {
-            $all('select.select2-hidden-accessible').forEach(function (select) {
-                var name = select.getAttribute('aria-label') || labelTextFor(select);
-                var container = select.nextElementSibling;
-                if (!container || !container.classList || !container.classList.contains('select2')) { return; }
-                var rendered = container.querySelector('.select2-selection');
-                if (!rendered) { return; }
-                if (name && !rendered.getAttribute('aria-label')) {
-                    rendered.setAttribute('aria-label', name);
-                }
-                // The search field inside the dropdown also needs a name.
-                var search = container.querySelector('.select2-search__field');
-                if (search && !search.getAttribute('aria-label')) {
-                    search.setAttribute('aria-label', (name ? name + ': ' : '') + 'Search');
-                }
-            });
+        var original = $.fn.select2;
+        if (!original.a11yWrapped) {
+            var wrapped = function () {
+                var result = original.apply(this, arguments);
+                window.setTimeout(applySelect2Names, 0);
+                return result;
+            };
+            Object.keys(original).forEach(function (key) { wrapped[key] = original[key]; });
+            wrapped.a11yWrapped = true;
+            $.fn.select2 = wrapped;
         }
-
-        apply();
-        $(document).on('select2:open select2:close', function () { window.setTimeout(apply, 0); });
+        applySelect2Names();
+        $(document).on('select2:open select2:close select2:select select2:unselect', function () { window.setTimeout(applySelect2Names, 0); });
+        // Script-driven changes (.val(...).trigger('change')) re-render the chips too.
+        $(document).on('change', 'select.select2-hidden-accessible', function () { window.setTimeout(applySelect2Names, 0); });
     }
 
     /* ======================================================================
        1.3.1 Info and Relationships — data tables
        Header cells need `scope`; every table needs an accessible name.
        ====================================================================== */
+    /* Wrap a table in its own scroll container only when it genuinely overflows
+       its container — the only case 1.4.10 is about. Wrapping every table
+       changed the desktop layout: an overflow:auto box inside a flex row gets
+       min-width:0 and collapsed the One-Pager table from 1212px to 201px.
+       Tables inside DataTables' own scroller are left alone: it already scrolls,
+       and wrapping its cloned header breaks the header/body column sync. */
+    function wrapOverflowingTables() {
+        $all('table').forEach(function (table) {
+            if (table.closest('.table-responsive, .dataTables_scroll, .a11y-table-scroll')) { return; }
+            if (table.getAttribute('role') === 'presentation') { return; }
+            var parent = table.parentElement;
+            if (!parent || table.offsetParent === null) { return; }
+            if (table.getBoundingClientRect().width <= parent.clientWidth + 1) { return; }
+            var wrapper = document.createElement('div');
+            wrapper.className = 'a11y-table-scroll';
+            parent.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
+        });
+    }
+
+    // A user who zooms after the page has loaded changes the layout width.
+    var reflowTimer = null;
+    window.addEventListener('resize', function () {
+        window.clearTimeout(reflowTimer);
+        reflowTimer = window.setTimeout(function () {
+            try { fixTables(); } catch (e) { /* no-op */ }
+        }, 250);
+    });
+
     function fixTables() {
         $all('table').forEach(function (table) {
             // Layout tables must be removed from the accessibility tree.
@@ -395,14 +496,7 @@
            sideways. Wrapping each one in its own scroll container keeps the
            page itself reflowed, and the container is focusable so a keyboard
            user can actually reach the scrollbar (2.1.1). */
-        $all('table').forEach(function (table) {
-            if (table.closest('.table-responsive, .dataTables_scrollBody, .a11y-table-scroll')) { return; }
-            if (table.getAttribute('role') === 'presentation') { return; }
-            var wrapper = document.createElement('div');
-            wrapper.className = 'a11y-table-scroll';
-            table.parentNode.insertBefore(wrapper, table);
-            wrapper.appendChild(table);
-        });
+        wrapOverflowingTables();
 
         /* Whichever container ends up holding the table, make it reachable. */
         $all('.table-responsive, .dataTables_scrollBody, .a11y-table-scroll').forEach(function (box) {
@@ -583,6 +677,17 @@
             return true;
         });
 
+        // Controls that get their behaviour from a plugin rather than an
+        // inline onclick — AdminLTE's push-menu toggle, Bootstrap dropdown
+        // triggers — still declare role="button" on an <a>, and a button must
+        // answer to Space as well as Enter.
+        // Not the bootstrap4-toggle wrapper: the real control inside it is the
+        // checkbox, and fixToggleSwitches() strips the wrapper's role.
+        $all('a[role="button"], [role="button"]:not(button):not(input)').forEach(function (el) {
+            if (el.classList.contains('toggle') || el.closest('.toggle')) { return; }
+            if (clickable.indexOf(el) === -1) { clickable.push(el); }
+        });
+
         clickable.forEach(function (el) {
             if (!el.getAttribute('role')) { el.setAttribute('role', 'button'); }
             if (!el.hasAttribute('tabindex')) { el.setAttribute('tabindex', '0'); }
@@ -698,8 +803,10 @@
         if (!window.MutationObserver) { return; }
         var observer = new MutationObserver(function (records) {
             records.forEach(function (record) {
-                var el = record.target;
-                if (!el.matches || !el.matches(messageSelector)) { return; }
+                // For subtree changes the target is the child that changed.
+                var node = record.target.nodeType === 1 ? record.target : record.target.parentElement;
+                var el = node && node.closest ? node.closest(messageSelector) : null;
+                if (!el) { return; }
                 var text = (el.textContent || '').replace(/\s+/g, ' ').trim();
                 var shown = el.offsetParent !== null;
                 if (shown && text) { a11y.announce(text, true); }
@@ -711,6 +818,84 @@
                 childList: true, characterData: true, subtree: true
             });
         });
+    }
+
+    /* ======================================================================
+       4.1.3 Status Messages — messages the page scripts reveal or fill
+       Result, "no records" and error boxes across the reports and forms are
+       hidden in the markup and revealed with .show() or filled with .html()
+       after an AJAX call (#norecordsfound, #error_msg1, #PassMsg,
+       #survey_status, …). A role="status" on an element that starts out
+       display:none is not reliably announced when it appears, so the text is
+       relayed through the live regions that exist from page load.
+       Messages already visible at load are not announced; a message is
+       announced again only after it has been hidden and shown again, or its
+       text changes.
+       ====================================================================== */
+    var scriptMessageSelector = '.alert:not(.alert-link), [id*="msg" i], [id*="message" i], [id*="error" i], [id*="status" i], [id^="norecords" i]';
+
+    function isScriptMessage(el) {
+        if (!el || el.nodeType !== 1 || !el.matches(scriptMessageSelector)) { return false; }
+        if (el.matches('input, select, textarea, button, a, label, script, style, option, .modal, .select2-container *')) { return false; }
+        if (/^a11y-/.test(el.id || '')) { return false; }
+        if (el.closest('[role="status"], [role="alert"], [role="log"], [aria-live], .a11y-timeout-dialog, .a11y-confirm-dialog')) { return false; }
+        if (el.querySelector('input, select, textarea, table')) { return false; }
+        return true;
+    }
+
+    function wireScriptMessages() {
+        if (!window.MutationObserver) { return; }
+        var announced = new WeakMap();
+        var pending = new WeakMap();
+
+        function textOf(el) { return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim(); }
+        function isShown(el) { return el.offsetParent !== null || getComputedStyle(el).position === 'fixed'; }
+
+        function check(el) {
+            pending.delete(el);
+            var text = textOf(el);
+            if (!isShown(el) || !text) { announced.delete(el); return; }
+            if (announced.get(el) === text) { return; }
+            announced.set(el, text);
+            var assertive = el.matches('.alert-danger, [id*="error" i]') || !!el.closest('.alert-danger');
+            a11y.announce(text, assertive);
+        }
+        function schedule(el) {
+            if (pending.get(el)) { return; }
+            pending.set(el, true);
+            window.setTimeout(function () { check(el); }, 60);
+        }
+
+        // Only the outermost message box is watched, so a box and the <p>
+        // inside it are not both announced.
+        var boxes = $all(scriptMessageSelector).filter(isScriptMessage).filter(function (el) {
+            var up = el.parentElement;
+            while (up) { if (isScriptMessage(up)) { return false; } up = up.parentElement; }
+            return true;
+        });
+        boxes.forEach(function (el) {
+            if (isShown(el) && textOf(el)) { announced.set(el, textOf(el)); }
+        });
+
+        // One observer on the document: scripts often toggle a wrapper around
+        // the box (#updateSucc > p.alert), not the box itself, so a change on
+        // the box, inside it or on any ancestor re-checks it.
+        new MutationObserver(function (records) {
+            records.forEach(function (record) {
+                var node = record.target.nodeType === 1 ? record.target : record.target.parentElement;
+                if (!node) { return; }
+                boxes.forEach(function (box) {
+                    if (box === node || box.contains(node) || node.contains(box)) { schedule(box); }
+                });
+                // Alert boxes that scripts build and insert after load.
+                Array.prototype.forEach.call(record.addedNodes || [], function (added) {
+                    if (added.nodeType === 1 && added.matches('.alert:not(.alert-link)') && isScriptMessage(added)) {
+                        if (boxes.indexOf(added) === -1) { boxes.push(added); }
+                        schedule(added);
+                    }
+                });
+            });
+        }).observe(document.body, { attributes: true, attributeFilter: ['style', 'class', 'hidden'], childList: true, characterData: true, subtree: true });
     }
 
     /* ======================================================================
@@ -737,6 +922,100 @@
         // the pagination buttons need names.
         $all('.dataTables_paginate a.paginate_button').forEach(function (btn) {
             if (!btn.getAttribute('role')) { btn.setAttribute('role', 'button'); }
+        });
+    }
+
+    /* ======================================================================
+       2.1.1 Keyboard + 4.1.2 Name, Role, Value — DataTables Select rows
+       Dormant accounts and Outstanding debit pick rows for the bulk e-mail by
+       clicking a CSS-drawn checkbox in the first cell (Select extension,
+       selector 'td:first-child'). The cell is not focusable and says nothing
+       about being selected, so rows could only be picked with a mouse.
+       A focusable checkbox is placed over the drawn box; Space or Enter
+       clicks it, and the click bubbles to the cell the extension listens on.
+       The <td> keeps its cell role so table navigation is unchanged.
+       ====================================================================== */
+    function fixSelectableRows() {
+        $all('table.dataTable tbody td.select-checkbox').forEach(function (cell) {
+            var row = cell.parentElement;
+            if (!row || cell.classList.contains('dataTables_empty')) { return; }
+            var box = cell.querySelector(':scope > .a11y-row-select');
+            if (!box) {
+                box = document.createElement('span');
+                box.className = 'a11y-row-select';
+                box.setAttribute('role', 'checkbox');
+                box.setAttribute('tabindex', '0');
+                box.addEventListener('keydown', function (event) {
+                    if (event.key === ' ' || event.key === 'Spacebar' || event.key === 'Enter') {
+                        event.preventDefault();
+                        box.click();
+                    }
+                });
+                cell.appendChild(box);
+            }
+            var next = cell.nextElementSibling;
+            var rowName = next ? next.textContent.replace(/\s+/g, ' ').trim() : '';
+            box.setAttribute('aria-label', 'Select ' + (rowName || 'this row'));
+            box.setAttribute('aria-checked', row.classList.contains('selected') ? 'true' : 'false');
+        });
+    }
+
+    /* ======================================================================
+       2.1.1 Keyboard + 4.1.2 Name, Role, Value — DataTables Responsive rows
+       When a table is too narrow for its columns, Responsive hides some and
+       draws a "+" in the first cell; clicking the cell shows the hidden
+       values. The cell is not focusable, so from the keyboard those values
+       could not be reached at all. A focusable button is placed over the
+       "+" (only while the table is collapsed, which is when the "+" shows);
+       its click bubbles to the cell Responsive listens on.
+       ====================================================================== */
+    function fixResponsiveDetails() {
+        $all('table.dataTable').forEach(function (table) {
+            // Responsive fires responsive-display with triggerHandler, which
+            // does not bubble, so the listener has to sit on the table.
+            if (window.jQuery && !table.hasAttribute('data-a11y-dtr')) {
+                table.setAttribute('data-a11y-dtr', 'true');
+                window.jQuery(table).on('responsive-display.dt', function () {
+                    window.setTimeout(function () { try { fixResponsiveDetails(); } catch (e) { /* no-op */ } }, 0);
+                });
+            }
+            var collapsed = table.classList.contains('collapsed');
+            $all('tbody td.dtr-control', table).forEach(function (cell) {
+                var toggle = cell.querySelector(':scope > .a11y-dtr-toggle');
+                if (!collapsed || cell.classList.contains('dataTables_empty')) {
+                    if (toggle) { toggle.parentNode.removeChild(toggle); }
+                    return;
+                }
+                if (!toggle) {
+                    toggle = document.createElement('span');
+                    toggle.className = 'a11y-dtr-toggle';
+                    toggle.setAttribute('role', 'button');
+                    toggle.setAttribute('tabindex', '0');
+                    // Keys are handled here; stop fixFauxButtons() adding a
+                    // second Enter handler (two clicks = open, then close).
+                    toggle.setAttribute('data-a11y-keys', 'true');
+                    toggle.addEventListener('keydown', function (event) {
+                        if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+                            event.preventDefault();
+                            toggle.click();
+                        }
+                    });
+                    cell.insertBefore(toggle, cell.firstChild);
+                }
+                var row = cell.parentElement;
+                var open = row.classList.contains('parent') || row.classList.contains('dtr-expanded');
+                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                toggle.setAttribute('aria-label', 'More details for ' + (cell.textContent.replace(/\s+/g, ' ').trim() || 'this row'));
+            });
+        });
+    }
+
+    if (window.jQuery) {
+        window.jQuery(document).on('draw.dt select.dt deselect.dt', function () {
+            window.setTimeout(function () { try { fixSelectableRows(); } catch (e) { /* no-op */ } }, 0);
+        });
+        window.jQuery(document).on('draw.dt responsive-resize.dt', function () {
+            window.setTimeout(function () { try { fixResponsiveDetails(); } catch (e) { /* no-op */ } }, 0);
         });
     }
 
@@ -826,8 +1105,8 @@
        keyboard-only user: there is no way to move the scrollbar. Report
        dialogs with long bodies hit this.
        ====================================================================== */
-    function fixScrollableRegions() {
-        var candidates = $all('.modal-body, .card-body, .table-responsive, [style*="overflow"]');
+    function fixScrollableRegions(root) {
+        var candidates = $all('.modal-body, .card-body, .table-responsive, [style*="overflow"]', root);
         candidates.forEach(function (el) {
             if (el.hasAttribute('tabindex')) { return; }
             var style = window.getComputedStyle(el);
@@ -841,11 +1120,25 @@
             }
             el.setAttribute('tabindex', '0');
             if (!el.getAttribute('role')) { el.setAttribute('role', 'region'); }
-            if (!el.getAttribute('aria-label')) {
+            var modal = el.closest('.modal');
+            var modalTitle = modal && modal.querySelector('.modal-title[id]');
+            if (modalTitle && !el.getAttribute('aria-label')) {
+                // The shell rewrites the title each time it opens the viewer.
+                el.setAttribute('aria-labelledby', modalTitle.id);
+            } else if (!el.getAttribute('aria-label')) {
                 var heading = el.querySelector('h1,h2,h3,h4,h5,h6,caption');
                 el.setAttribute('aria-label',
                     (heading ? heading.textContent.replace(/\s+/g, ' ').trim() + ' — ' : '') + 'scrollable content');
             }
+        });
+    }
+
+    /* Modal bodies have no height while the modal is hidden, so whether they
+       scroll is only known once the modal is open (the document viewer in
+       the shell does: a 600px frame in a shorter body). */
+    if (window.jQuery) {
+        window.jQuery(document).on('shown.bs.modal', function (event) {
+            try { fixScrollableRegions(event.target); } catch (e) { /* no-op */ }
         });
     }
 
@@ -1232,6 +1525,7 @@
         try { fixFauxButtons(); } catch (e) { /* no-op */ }
         try { fixVagueLinks(); } catch (e) { /* no-op */ }
         try { wireValidationMessages(); } catch (e) { /* no-op */ }
+        try { wireScriptMessages(); } catch (e) { /* no-op */ }
         try { wireDataTablesAnnouncements(); } catch (e) { /* no-op */ }
         try { wireLoadingIndicators(); } catch (e) { /* no-op */ }
         try { wireNavSearch(); } catch (e) { /* no-op */ }
@@ -1250,15 +1544,96 @@
         try { fixImages(); } catch (e) { /* no-op */ }
         try { nameIconOnlyControls(); } catch (e) { /* no-op */ }
         try { fixFormControls(); } catch (e) { /* no-op */ }
+        try { applySelect2Names(); } catch (e) { /* no-op */ }
         try { fixTables(); } catch (e) { /* no-op */ }
         try { fixModals(); } catch (e) { /* no-op */ }
         try { fixFauxButtons(); } catch (e) { /* no-op */ }
         try { wireDataTablesAnnouncements(); } catch (e) { /* no-op */ }
+        try { fixSelectableRows(); } catch (e) { /* no-op */ }
+        try { fixResponsiveDetails(); } catch (e) { /* no-op */ }
         try { fixToggleSwitches(); } catch (e) { /* no-op */ }
         try { fixScrollableRegions(); } catch (e) { /* no-op */ }
     }
 
     a11y.refresh = reapply;
+
+    /* ======================================================================
+       3.3.4 Error Prevention (Legal, Financial, Data) — confirmation dialog
+       Deleting data must be reversible, checked or confirmed. Several deletes
+       in the portal ran on the first click; two used window.confirm(), whose
+       buttons say "OK" instead of naming the consequence. This is the ARIA
+       alert-dialog pattern:
+         - the confirm button names the action ("Delete record", not "OK")
+         - focus starts on the non-destructive choice
+         - Esc cancels, Tab stays inside, focus returns to the trigger (2.1.2,
+           2.4.3)
+       Usage:  a11y.confirm({ title, message, confirmLabel }).then(function (ok) { ... })
+       ====================================================================== */
+    a11y.confirm = function (opts) {
+        opts = opts || {};
+        return new Promise(function (resolve) {
+            var opener = document.activeElement;
+            var overlay = document.createElement('div');
+            overlay.className = 'a11y-confirm-dialog is-open';
+            var titleId = 'a11y-confirm-title-' + Date.now();
+            var descId = titleId.replace('title', 'desc');
+            overlay.innerHTML =
+                '<div class="a11y-timeout-dialog__panel" role="alertdialog" aria-modal="true"' +
+                ' aria-labelledby="' + titleId + '" aria-describedby="' + descId + '">' +
+                '<h2 id="' + titleId + '"></h2><p id="' + descId + '"></p>' +
+                '<div class="a11y-timeout-dialog__actions">' +
+                '<button type="button" class="btn btn-danger" data-a11y-ok></button>' +
+                '<button type="button" class="btn btn-secondary" data-a11y-cancel></button>' +
+                '</div></div>';
+            overlay.querySelector('h2').textContent = opts.title || 'Are you sure?';
+            overlay.querySelector('p').textContent = opts.message || '';
+            var ok = overlay.querySelector('[data-a11y-ok]');
+            var cancel = overlay.querySelector('[data-a11y-cancel]');
+            ok.textContent = opts.confirmLabel || 'Confirm';
+            cancel.textContent = opts.cancelLabel || 'Cancel';
+            document.body.appendChild(overlay);
+
+            function close(result) {
+                overlay.parentNode.removeChild(overlay);
+                if (opener && document.contains(opener)) { try { opener.focus(); } catch (e) { /* no-op */ } }
+                resolve(result);
+            }
+            ok.addEventListener('click', function () { close(true); });
+            cancel.addEventListener('click', function () { close(false); });
+            overlay.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') { event.preventDefault(); close(false); return; }
+                if (event.key !== 'Tab') { return; }
+                var first = ok, last = cancel;
+                if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+                else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+            });
+            cancel.focus();
+        });
+    };
+
+    /* 4.1.1 Parsing — AdminLTE's PushMenu appends its #sidebar-overlay to
+       every `.wrapper` on the page (`$('.wrapper').append(...)`). Report views
+       open a second `.wrapper` inside the shell's, so the overlay was cloned
+       with the same id. Keep the first; the copy has no other purpose. */
+    function dedupePluginIds() {
+        ['sidebar-overlay'].forEach(function (id) {
+            var copies = $all('[id="' + id + '"]');
+            copies.slice(1).forEach(function (el) { el.parentNode.removeChild(el); });
+        });
+    }
+    window.addEventListener('load', function () { window.setTimeout(dedupePluginIds, 0); });
+    // Pages that collapse the menu from script (CollapseSideMenu) create
+    // another PushMenu later, which appends the overlay again.
+    if (window.MutationObserver) {
+        new MutationObserver(function (records) {
+            for (var i = 0; i < records.length; i++) {
+                var added = records[i].addedNodes;
+                for (var j = 0; j < added.length; j++) {
+                    if (added[j].id === 'sidebar-overlay') { dedupePluginIds(); return; }
+                }
+            }
+        }).observe(document.documentElement, { childList: true, subtree: true });
+    }
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);

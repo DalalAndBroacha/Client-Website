@@ -171,7 +171,8 @@
                                 <td><input type="hidden" name="scrip_id" value="@key.Scrip_code" />@key.Category</td>
                                 <td class="paraTextAlignCenter"><input type="hidden" name="dsp_web_flag" value="@key.Display_on_web" />@key.Recommendation</td>
                                 <td class="paraTextAlignRight">@key.Price_target</td>
-                                <td class="paraTextAlignCenter"><a href="@key.URL" target="_blank" rel="noopener noreferrer">Open report<span class="a11y-visually-hidden">: @key.Report_Title (opens in a new tab)</span></a></td>
+                                @* 2.4.4 — the URL stays as designed; the hidden prefix names the report in a links list. *@
+                                <td class="paraTextAlignCenter"><a href="@key.URL" target="_blank" rel="noopener noreferrer"><span class="a11y-visually-hidden">Open @key.Report_Title: </span>@key.URL</a></td>
                                 <td class="text-center" style="width:101px;">
                                     <input type="text" value="@key.id" hidden />
                                     @if (key.MobNotifyBtn == "Y")
