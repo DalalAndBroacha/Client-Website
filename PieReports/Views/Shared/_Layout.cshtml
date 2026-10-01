@@ -170,5 +170,22 @@
         };
     </script>
     <script src="~/js/accessibility.js" asp-append-version="true"></script>
+
+    @* EnableUser accessibility widget (enablestack-widget 1.4.0), on every page,
+       before and after sign-in. Installed with `npm install enablestack-widget`
+       and themed at install time: brand colour #b3241a, icon "Accessibility
+       person". That deeper Dalal & Broacha red keeps the widget's white icon
+       and its lighter accent text above 4.5:1 (the logo red #ee3426 is 4.07:1
+       with white). The themed build is vendored here, like the other client
+       libraries. To change colour or icon, re-run
+       `npx enablestack-widget-theme <hex> [icon]` and copy
+       dist/enablestack-widget.js over this file. It renders inside a Shadow
+       DOM, so it does not touch the portal's own styles.
+       The launcher sits bottom-right: bottom-left (the default) lands on the
+       sidebar menu after sign-in. *@
+    <script>
+        window.ENABLESTACK_CONFIG = { widgetPosition: { side: 'right' } };
+    </script>
+    <script src="~/lib/enablestack-widget/enablestack-widget.js" asp-append-version="true" defer></script>
 </body>
 </html>
