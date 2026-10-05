@@ -861,20 +861,3 @@ button.close > span[aria-hidden="true"] {
         outline: 3px solid Highlight !important;
     }
 }
-
-/* ==========================================================================
-   EnableUser accessibility widget (lib/enablestack-widget) — Contrast tool
-   Every Contrast level puts a CSS `filter` on every element of the page. An
-   element with a filter becomes the containing block for position:fixed
-   descendants, so the fixed header, the fixed sidebar and the Bootstrap
-   dialogs (all inside .wrapper) stopped pinning to the viewport: the header
-   dropped 57px under the content. The containers that hold those fixed
-   elements keep the widget's contrast colours but not the filter; everything
-   inside them is still filtered. The :not() pair mirrors the widget's own
-   selector so this rule outranks it.
-   ========================================================================== */
-.eu-high-contrast-medium :has(.main-header, .main-sidebar, .modal):not(#eu-accessibility-widget-container):not(#eu-accessibility-widget-container *),
-.eu-high-contrast-high :has(.main-header, .main-sidebar, .modal):not(#eu-accessibility-widget-container):not(#eu-accessibility-widget-container *),
-.eu-high-contrast-ultra :has(.main-header, .main-sidebar, .modal):not(#eu-accessibility-widget-container):not(#eu-accessibility-widget-container *) {
-    filter: none !important;
-}
