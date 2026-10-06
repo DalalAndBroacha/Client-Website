@@ -925,3 +925,20 @@ button.close > span[aria-hidden="true"] {
 .eu-saturation-none body :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header) > :not(:has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header)):not(#eu-accessibility-widget-container):not(.eu-accessibility-filters) {
     filter: grayscale(100%) saturate(0) !important;
 }
+
+/* ==========================================================================
+   Post-login layout: keep the original 24px gap under the header
+   The original shell (Pages/_Layout.cshtml) had a stray `">` after its
+   favicon <link>. It rendered as one line of text at the top of <body>,
+   hidden behind the fixed header, and that line pushed every post-login page
+   down 24px — the gap between the header and the page title that the live
+   portal shows. Removing the junk text (screen readers read it out) also
+   removed the gap, so this puts back the same empty line, with no text in
+   it. 1.5em is the body's line height, the height of that line at any text
+   size. layout-navbar-fixed is set only by the post-login shell.
+   ========================================================================== */
+body.layout-navbar-fixed::before {
+    content: "";
+    display: block;
+    height: 1.5em;
+}
