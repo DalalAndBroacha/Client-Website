@@ -256,22 +256,6 @@
         <!-- Sidebar -->
         <div class="sidebar">
 
-            @* 2.4.5 Multiple Ways — a set of pages must offer more than one
-               way to reach a page. The portal had only the navigation menu;
-               this is the second way: a search over the same menu, wired up in
-               js/accessibility.js. It reports its result count through a live
-               region so the outcome is announced without moving focus (4.1.3). *@
-            <div class="a11y-nav-search" role="search">
-                <label for="a11y-nav-search" class="a11y-visually-hidden">Search the menu</label>
-                <input type="search" id="a11y-nav-search" class="form-control form-control-sm"
-                       placeholder="Search the menu" autocomplete="off"
-                       aria-describedby="a11y-nav-search-hint">
-                <p id="a11y-nav-search-hint" class="a11y-visually-hidden">
-                    Type to filter the navigation menu below. Results update as you type.
-                </p>
-                <p id="a11y-nav-search-status" role="status" aria-live="polite" class="a11y-visually-hidden"></p>
-            </div>
-
             @* 2.4.5 Multiple Ways / 1.3.1 — the primary navigation landmark.
                role="menu" was removed: it promises the ARIA menu keyboard
                model (arrow keys, menuitem children) that this list of links
@@ -362,6 +346,24 @@
                 </ul>
 
             </nav>
+
+            @* 2.4.5 Multiple Ways — a set of pages must offer more than one
+               way to reach a page. The portal had only the navigation menu;
+               this is the second way: a search over the same menu, wired up in
+               js/accessibility.js. It reports its result count through a live
+               region so the outcome is announced without moving focus (4.1.3).
+               It sits below the menu, not above it, so the menu items stay
+               exactly where the original layout put them. *@
+            <div class="a11y-nav-search" role="search">
+                <label for="a11y-nav-search" class="a11y-visually-hidden">Search the menu</label>
+                <input type="search" id="a11y-nav-search" class="form-control form-control-sm"
+                       placeholder="Search the menu" autocomplete="off"
+                       aria-describedby="a11y-nav-search-hint">
+                <p id="a11y-nav-search-hint" class="a11y-visually-hidden">
+                    Type to filter the navigation menu above. Results update as you type.
+                </p>
+                <p id="a11y-nav-search-status" role="status" aria-live="polite" class="a11y-visually-hidden"></p>
+            </div>
 
             <!-- /.sidebar-menu -->
         </div>

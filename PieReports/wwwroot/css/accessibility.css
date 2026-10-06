@@ -861,3 +861,84 @@ button.close > span[aria-hidden="true"] {
         outline: 3px solid Highlight !important;
     }
 }
+
+/* ==========================================================================
+   EnableUser accessibility widget (lib/enablestack-widget) — keep the fixed
+   header, sidebar and dialogs pinned while a widget colour tool is on
+   Contrast (every element), Colour filter and Saturation (every child of
+   <body>) put a CSS `filter` on the page. An element with a filter becomes
+   the containing block for its position:fixed descendants, so after sign-in
+   the header, sidebar, sidebar overlay and every dialog inside .wrapper
+   scrolled away with the page instead of staying on screen.
+   Nothing here applies unless one of those tools is switched on. The
+   elements that contain a fixed element drop the filter; their other children
+   take it instead, so the whole page still shows the chosen effect. The extra
+   :has()/:not() selectors make these rules outrank the widget's own.
+   The list is every fixed element in the portal's views (shell header,
+   sidebar and its brand link, sidebar overlay, Bootstrap dialogs, the page
+   loader, the SearchClient snackbar, the session-timeout dialog), then every
+   visible absolutely positioned element whose containing block is further up
+   than its parent, which Contrast would otherwise pull out of place: the
+   loading spinner, the select2 arrow, Bootstrap checkboxes and the mapping
+   tabs' section headings.
+   ========================================================================== */
+.eu-high-contrast-medium :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header):not(#eu-accessibility-widget-container):not(#eu-accessibility-widget-container *),
+.eu-high-contrast-high :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header):not(#eu-accessibility-widget-container):not(#eu-accessibility-widget-container *),
+.eu-high-contrast-ultra :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header):not(#eu-accessibility-widget-container):not(#eu-accessibility-widget-container *) {
+    filter: none !important;
+}
+
+.eu-filter-protanopia body > :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header):not(#eu-accessibility-widget-container),
+.eu-filter-deuteranopia body > :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header):not(#eu-accessibility-widget-container),
+.eu-filter-tritanopia body > :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header):not(#eu-accessibility-widget-container),
+.eu-filter-grayscale body > :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header):not(#eu-accessibility-widget-container),
+.eu-saturation-low body > :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header):not(#eu-accessibility-widget-container),
+.eu-saturation-high body > :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header):not(#eu-accessibility-widget-container),
+.eu-saturation-none body > :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header):not(#eu-accessibility-widget-container) {
+    filter: none !important;
+}
+
+.eu-filter-protanopia body :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header) > :not(:has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header)):not(#eu-accessibility-widget-container):not(.eu-accessibility-filters) {
+    filter: url('#protanopia-filter') !important;
+}
+
+.eu-filter-deuteranopia body :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header) > :not(:has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header)):not(#eu-accessibility-widget-container):not(.eu-accessibility-filters) {
+    filter: url('#deuteranopia-filter') !important;
+}
+
+.eu-filter-tritanopia body :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header) > :not(:has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header)):not(#eu-accessibility-widget-container):not(.eu-accessibility-filters) {
+    filter: url('#tritanopia-filter') !important;
+}
+
+.eu-filter-grayscale body :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header) > :not(:has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header)):not(#eu-accessibility-widget-container):not(.eu-accessibility-filters) {
+    filter: grayscale(100%) !important;
+}
+
+.eu-saturation-low body :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header) > :not(:has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header)):not(#eu-accessibility-widget-container):not(.eu-accessibility-filters) {
+    filter: saturate(0.5) !important;
+}
+
+.eu-saturation-high body :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header) > :not(:has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header)):not(#eu-accessibility-widget-container):not(.eu-accessibility-filters) {
+    filter: saturate(10) !important;
+}
+
+.eu-saturation-none body :has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header) > :not(:has(.main-header, .main-sidebar, .brand-link, .modal, #sidebar-overlay, .theme-loader, #snackbar, .a11y-timeout-dialog, .a11y-loading-indicator, .select2-selection__arrow, .form-check-input, .c1header)):not(#eu-accessibility-widget-container):not(.eu-accessibility-filters) {
+    filter: grayscale(100%) saturate(0) !important;
+}
+
+/* ==========================================================================
+   Post-login layout: keep the original 24px gap under the header
+   The original shell (Pages/_Layout.cshtml) had a stray `">` after its
+   favicon <link>. It rendered as one line of text at the top of <body>,
+   hidden behind the fixed header, and that line pushed every post-login page
+   down 24px — the gap between the header and the page title that the live
+   portal shows. Removing the junk text (screen readers read it out) also
+   removed the gap, so this puts back the same empty line, with no text in
+   it. 1.5em is the body's line height, the height of that line at any text
+   size. layout-navbar-fixed is set only by the post-login shell.
+   ========================================================================== */
+body.layout-navbar-fixed::before {
+    content: "";
+    display: block;
+    height: 1.5em;
+}
